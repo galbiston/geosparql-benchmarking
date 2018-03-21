@@ -1,0 +1,60 @@
+apply plugin: 'java'
+
+sourceCompatibility = '1.8'
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+// NetBeans will automatically add "run" and "debug" tasks relying on the
+// "mainClass" property. You may however define the property prior executing
+// tasks by passing a "-PmainClass=<QUALIFIED_CLASS_NAME>" argument.
+//
+// Note however, that you may define your own "run" and "debug" task if you
+// prefer. In this case NetBeans will not add these tasks but you may rely on
+// your own implementation.
+if (!hasProperty('mainClass')) {
+    ext.mainClass = 'geosparql_benchmarking.Main'
+}
+
+repositories {
+
+    maven {
+        url "http://download.osgeo.org/webdav/geotools/"
+    }
+
+    /*
+    maven{
+    url "http://maven.strabon.di.uoa.gr/content/repositories/snapshots"
+    }
+     */
+    //  mavenLocal()
+    mavenCentral()
+
+
+
+}
+
+dependencies {
+
+    //GeoSPARQL Extension
+    ext.geosparqlVersion = "0.9.6"
+    compile "org.ntu:GeoSPARQL:$geosparqlVersion"
+
+    //Geographica Benchmarking - not used due to broken dependency to OpenRDF Sesame - now RDF4J.
+    //ext.geographicaVersion = "1.0-SNAPSHOT"
+    //compile "gr.uoa.di.rdf:runtime:$geographicaVersion"
+
+    //SLF4J - Logback Classic
+    ext.logbackVersion = "1.2.3"
+    compile "ch.qos.logback:logback-classic:$logbackVersion"
+
+    //SLF4J - Log4J Bridge
+    ext.log4jBridgeVersion = "1.7.25"
+    compile "org.slf4j:slf4j-log4j12:$log4jBridgeVersion"
+
+    //JUnit
+    ext.junitVersion = "4.12"
+    testCompile "junit:junit:$junitVersion"
+
+    //ZT Process Exec
+    ext.ztProcessExecVersion = "1.10"
+    compile "org.zeroturnaround:zt-exec:$ztProcessExecVersion"
+}
