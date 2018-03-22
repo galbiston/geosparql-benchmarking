@@ -44,10 +44,10 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.apache.log4j.Logger;
-import org.openrdf.model.IRI;
+import org.openrdf.model.URI;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
-import org.openrdf.model.impl.SimpleValueFactory;
+import org.openrdf.model.impl.ValueFactoryImpl;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.impl.MapBindingSet;
 
@@ -161,7 +161,7 @@ public class ParliamentSUT implements SystemUnderTest {
             if (rs.hasNext()) {
                 QuerySolution querySolution = rs.next();
                 this.firstBindingSet = new MapBindingSet();
-                ValueFactory valueFactory = SimpleValueFactory.getInstance();
+                ValueFactory valueFactory = new ValueFactoryImpl();
                 Iterator<String> varNames = querySolution.varNames();
                 Value value = null;
                 while (varNames.hasNext()) {
@@ -172,14 +172,14 @@ public class ParliamentSUT implements SystemUnderTest {
                         String valueStr = literal.getString();
                         String datatypeStr = literal.getDatatypeURI();
                         if (datatypeStr != null) {
-                            IRI datatype = valueFactory.createIRI(datatypeStr);
+                            URI datatype = valueFactory.createURI(datatypeStr);
                             value = valueFactory.createLiteral(valueStr, datatype);
                         } else {
                             value = valueFactory.createLiteral(valueStr);
                         }
                     } else if (solution.isResource()) {
                         Resource resource = solution.asResource();
-                        value = valueFactory.createIRI(resource.getURI());
+                        value = valueFactory.createURI(resource.getURI());
                     } else {
                         logger.error("Resource not recognized");
                     }
