@@ -69,3 +69,7 @@ dependencies {
     ext.ztProcessExecVersion = "1.10"
     compile "org.zeroturnaround:zt-exec:$ztProcessExecVersion"
 }
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
