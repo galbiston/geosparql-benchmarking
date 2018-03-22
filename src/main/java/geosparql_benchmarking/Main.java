@@ -1,6 +1,7 @@
 package geosparql_benchmarking;
 
 import eu.earthobservatory.runtime.postgis.Strabon;
+import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,11 +35,11 @@ public class Main {
             String user = "postgres";
             String passwd = "postgres";
             Integer port = 5432;
-            String host = "localhost";
+            String host = "localhost"; //"localhost"
             Boolean checkForLockTable = true;
             strabon = new Strabon(db, user, passwd, port, host, checkForLockTable);
 
-            String src = "datasets/gag.nt";
+            String src = new File("datasets/gag.nt").getAbsolutePath();
             String baseURI = null;
             String graph = GraphURI.GADM_URI;
             String format = "NTRIPLES";
