@@ -108,12 +108,12 @@ public class MacroComputeStatisticsQueriesSet extends QueriesSet {
 //						+ "SELECT ?fClass ?fCode (COUNT(DISTINCT ?f) as ?count) \n"
 //						+ "WHERE  \n"
 //						+ "{ \n"
-//						+ "	GRAPH ns:geonames { \n"
-//						+ "		?f rdf:type geonames:Feature. \n"
-//						+ "		?f geonames:featureClass ?fClass. \n"
-//						+ "		?f geonames:featureCode ?fCode. \n"
-//						+ "		?f geonames:hasGeometry ?fGeo. \n"
-//						+ "		?fGeo geonames:asWKT ?fWkt. \n"
+//						+ "	GRAPH ns:GEONAMES_URI { \n"
+//						+ "		?f rdf:type GEONAMES_URI:Feature. \n"
+//						+ "		?f GEONAMES_URI:featureClass ?fClass. \n"
+//						+ "		?f GEONAMES_URI:featureCode ?fCode. \n"
+//						+ "		?f GEONAMES_URI:hasGeometry ?fGeo. \n"
+//						+ "		?fGeo GEONAMES_URI:asWKT ?fWkt. \n"
 //						+ "		FILTER(geof:sfIntersects(?fWkt, "+municipalityWKT+"^^geo:wktLiteral)). \n"
 //						+ " }} \n"
 //						+ "GROUP BY ?fClass ?fCode \n"
@@ -122,7 +122,7 @@ public class MacroComputeStatisticsQueriesSet extends QueriesSet {
 
             case 2:
                 // Auto to query argei polu sto uSeekM (TODO mhpws na to e bgaza h na to
-                // ekana kai auto me clc:continuousUrbanFabric ????
+                // ekana kai auto me CLC_URI:continuousUrbanFabric ????
                 label = "List_GeoNames_categories_per_CLC_category";
                 query = prefixes + "\n"
                         + "SELECT distinct ?fClass ?clcLandUse \n"
@@ -131,7 +131,7 @@ public class MacroComputeStatisticsQueriesSet extends QueriesSet {
                         + "	GRAPH ns:clc { \n"
                         + "		?clc rdf:type clc:Area. \n"
                         + "		?clc clc:hasLandUse ?clcLandUse. \n"
-                        //						+ "		?clc clc:hasLandUse clc:continuousUrbanFabric. \n"
+                        //						+ "		?CLC_URI CLC_URI:hasLandUse CLC_URI:continuousUrbanFabric. \n"
                         + "		?clc clc:hasGeometry ?clcGeo. \n"
                         + "		?clcGeo clc:asWKT ?clcWkt. \n"
                         + "		FILTER(geof:sfIntersects(?clcWkt, " + municipalityWKT + "^^geo:wktLiteral)). \n"
@@ -139,7 +139,7 @@ public class MacroComputeStatisticsQueriesSet extends QueriesSet {
                         + "	GRAPH ns:geonames { \n"
                         + "		?f rdf:type geonames:Feature. \n"
                         + "		?f geonames:featureClass ?fClass. \n"
-                        //						+ "		?f geonames:featureCode ?fCode. \n"
+                        //						+ "		?f GEONAMES_URI:featureCode ?fCode. \n"
                         + "		?f geonames:hasGeometry ?fGeo. \n"
                         + "		?fGeo geonames:asWKT ?fWkt. \n"
                         + "		FILTER(geof:sfIntersects(?fWkt, " + municipalityWKT + "^^geo:wktLiteral)). \n"
@@ -158,7 +158,7 @@ public class MacroComputeStatisticsQueriesSet extends QueriesSet {
                         + "WHERE { \n"
                         + "	GRAPH ns:clc { \n"
                         + "		?clc rdf:type clc:Area. \n"
-                        //						+ "		?clc clc:hasLandUse ?clcLandUse. \n"
+                        //						+ "		?CLC_URI CLC_URI:hasLandUse ?clcLandUse. \n"
                         + "		?clc clc:hasLandUse clc:continuousUrbanFabric. \n"
                         + "		?clc clc:hasGeometry ?clcGeo. \n"
                         + "		?clcGeo clc:asWKT ?clcWkt. \n"
@@ -167,7 +167,7 @@ public class MacroComputeStatisticsQueriesSet extends QueriesSet {
                         + "	GRAPH ns:geonames { \n"
                         + "		?f rdf:type geonames:Feature. \n"
                         + "		?f geonames:featureClass ?fClass. \n"
-                        //						+ "		?f geonames:featureCode ?fCode. \n"
+                        //						+ "		?f GEONAMES_URI:featureCode ?fCode. \n"
                         + "		?f geonames:hasGeometry ?fGeo. \n"
                         + "		?fGeo geonames:asWKT ?fWkt. \n"
                         + "		FILTER(geof:sfIntersects(?fWkt, " + municipalityWKT + "^^geo:wktLiteral)). \n"

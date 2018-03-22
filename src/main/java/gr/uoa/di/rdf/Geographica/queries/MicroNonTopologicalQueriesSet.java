@@ -62,7 +62,7 @@ public class MicroNonTopologicalQueriesSet extends QueriesSet {
 			// Q3 Boundary of many simple Polygons
 			label = "Boundary_CLC"; 
 			query = queryGeosparqlTemplate;
-			query = query.replace("GRAPH1", clc);
+			query = query.replace("GRAPH1", CLC_URI);
 			query = query.replace("ASWKT1", clc_asWKT);
 			query = query.replace("FUNCTION", "boundary");
 			break;
@@ -71,7 +71,7 @@ public class MicroNonTopologicalQueriesSet extends QueriesSet {
 			// Q5 Envelope many "simple" Polygons
 			label = "Envelope_CLC"; 
 			query = queryGeosparqlTemplate;
-			query = query.replace("GRAPH1", clc);
+			query = query.replace("GRAPH1", CLC_URI);
 			query = query.replace("ASWKT1", clc_asWKT);
 			query = query.replace("FUNCTION", "envelope");
 			break;
@@ -80,7 +80,7 @@ public class MicroNonTopologicalQueriesSet extends QueriesSet {
 			// Q8 ConvexHull of many "simple" Polygons
 			label = "ConvexHull_CLC"; 	
 			query = queryGeosparqlTemplate;
-			query = query.replace("GRAPH1", clc);
+			query = query.replace("GRAPH1", CLC_URI);
 			query = query.replace("ASWKT1", clc_asWKT);
 			query = query.replace("FUNCTION", "convexHull");
 			break;
@@ -90,7 +90,7 @@ public class MicroNonTopologicalQueriesSet extends QueriesSet {
 			// Q10 Buffer of Points
 			label = "Buffer_GeoNames_2"; 
 			query = queryBufferTemplate;
-			query = query.replace("GRAPH1", geonames);
+			query = query.replace("GRAPH1", GEONAMES_URI);
 			query = query.replace("ASWKT1", geonames_asWKT);
 			break;
 		
@@ -98,7 +98,7 @@ public class MicroNonTopologicalQueriesSet extends QueriesSet {
 			// Q11 Buffer of Lines
 			label = "Buffer_LGD_2"; 
 			query = queryBufferTemplate;
-			query = query.replace("GRAPH1", lgd);
+			query = query.replace("GRAPH1", LGD_URI);
 			query = query.replace("ASWKT1", lgd_asWKT);
 			break;
 
@@ -107,7 +107,7 @@ public class MicroNonTopologicalQueriesSet extends QueriesSet {
 			label = "Area_CLC"; 
 			query = queryStsparqlTemplate;
 			query = query.replace("FUNCTION", "area");
-			query = query.replace("GRAPH1", clc);
+			query = query.replace("GRAPH1", CLC_URI);
 			query = query.replace("ASWKT1", clc_asWKT);
 			break;
 			

@@ -97,7 +97,7 @@ public class MacroMapSearchQueriesSet extends QueriesSet {
 			String name = names.get(rn.nextInt(names.size()));
 			label = "Thematic_Search"; 
 			query = prefixes + "\n" + "SELECT ?f ?name ?geo ?wkt \n" + "WHERE { \n"
-					+ " GRAPH <"+geonames+"> { \n"
+					+ " GRAPH <"+GEONAMES_URI+"> { \n"
 					+ "	?f geonames:name ?name;\n"
 					+ "	   "+geonames_hasGeometry+" ?geo.\n"
 					+ "	?geo "+geonames_asWKT+" ?wkt.\n"
@@ -111,7 +111,7 @@ public class MacroMapSearchQueriesSet extends QueriesSet {
 					+ "\n"
 					+ " SELECT ?f ?name ?fGeo ?code ?parent ?class ?fGeoWKT \n"
 					+ " WHERE { \n"
-					+ " GRAPH <"+geonames+"> { \n"
+					+ " GRAPH <"+GEONAMES_URI+"> { \n"
 					+ "  ?f geonames:name ?name; \n"
 					+ "     "+geonames_hasGeometry+" ?fGeo; \n"
 					+ "     geonames:featureCode ?code;  \n"
@@ -128,7 +128,7 @@ public class MacroMapSearchQueriesSet extends QueriesSet {
 					+ "\n"
 					+ "SELECT ?r ?type ?label ?rGeo ?rGeoWKT \n"
 					+ "WHERE { \n"
-					+ " GRAPH <"+lgd+"> { \n"
+					+ " GRAPH <"+LGD_URI+"> { \n"
 					+ "	 ?r rdf:type ?type. \n"
 					+ "	 OPTIONAL{ ?r rdfs:label ?label }. \n"
 					+ "	 ?r "+lgd_hasGeometry+" ?rGeo. \n"

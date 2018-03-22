@@ -19,17 +19,17 @@ import org.openrdf.query.TupleQueryResultHandlerException;
  */
 public abstract class QueriesSet {
 
-    // gadm for gag
-    public static final String gadm = "http://geographica.di.uoa.gr/dataset/gag";
-    public static final String clc = "http://geographica.di.uoa.gr/dataset/clc";
-    public static final String lgd = "http://geographica.di.uoa.gr/dataset/lgd";
-    public static final String geonames = "http://geographica.di.uoa.gr/dataset/geonames";
-    public static final String dbpedia = "http://geographica.di.uoa.gr/dataset/dbpedia";
-    public static final String hotspots = "http://geographica.di.uoa.gr/dataset/hotspots";
+    // GADM_URI for gag
+    public static final String GADM_URI = "http://geographica.di.uoa.gr/dataset/gag";
+    public static final String CLC_URI = "http://geographica.di.uoa.gr/dataset/clc";
+    public static final String LGD_URI = "http://geographica.di.uoa.gr/dataset/lgd";
+    public static final String GEONAMES_URI = "http://geographica.di.uoa.gr/dataset/geonames";
+    public static final String DBPEDIA_URI = "http://geographica.di.uoa.gr/dataset/dbpedia";
+    public static final String HOTSPOTS_URI = "http://geographica.di.uoa.gr/dataset/hotspots";
 
     public static String clc_asWKT;
     public static String dbpedia_asWKT;
-    // gadm for gag
+    // GADM_URI for gag
     public static String gadm_asWKT;
     public static String geonames_asWKT;
     public static String hotspots_asWKT;
@@ -73,7 +73,7 @@ public abstract class QueriesSet {
 
         clc_asWKT = "<http://geo.linkedopendata.gr/corine/ontology#asWKT>";
         dbpedia_asWKT = "<http://dbpedia.org/property/asWKT>";
-        // gadm for gag
+        // GADM_URI for gag
         gadm_asWKT = "<http://geo.linkedopendata.gr/gag/ontology/asWKT>";
         geonames_asWKT = "<http://www.geonames.org/ontology#asWKT>";
         hotspots_asWKT = "<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#asWKT>";
@@ -81,7 +81,7 @@ public abstract class QueriesSet {
 
         clc_hasGeometry = "<http://geo.linkedopendata.gr/corine/ontology#hasGeometry>";
         dbpedia_hasGeometry = "<http://dbpedia.org/property/hasGeometry>";
-        // gadm for gag
+        // GADM_URI for gag
         gadm_hasGeometry = "<http://geo.linkedopendata.gr/gag/ontology/hasGeometry>";
         geonames_hasGeometry = "<http://www.geonames.org/ontology#hasGeometry>";
         hotspots_hasGeometry = "<http://teleios.di.uoa.gr/ontologies/noaOntology.owl#hasGeometry>";

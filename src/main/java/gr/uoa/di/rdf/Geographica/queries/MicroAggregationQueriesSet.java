@@ -44,7 +44,7 @@ public class MicroAggregationQueriesSet  extends QueriesSet {
 				// Q2 Extension of Lines
 				label = "Extent_LGD"; 
 				query = queryTemplate;
-				query = query.replace("GRAPH1", lgd);
+				query = query.replace("GRAPH1", LGD_URI);
 				query = query.replace("ASWKT1", lgd_asWKT);
 				query = query.replace("FUNCTION", "extent");
 				break;
@@ -53,7 +53,7 @@ public class MicroAggregationQueriesSet  extends QueriesSet {
 				// Q4 Extension of many simple Polygons
 				label = "Extent_CLC"; 
 				query = queryTemplate;
-				query = query.replace("GRAPH1", clc);
+				query = query.replace("GRAPH1", CLC_URI);
 				query = query.replace("ASWKT1", clc_asWKT);
 				query = query.replace("FUNCTION", "extent");
 				break;
@@ -62,7 +62,7 @@ public class MicroAggregationQueriesSet  extends QueriesSet {
 				// Q2 Union of Lines
 				label = "Union_LGD"; 
 				query = queryTemplate;
-				query = query.replace("GRAPH1", lgd);
+				query = query.replace("GRAPH1", LGD_URI);
 				query = query.replace("ASWKT1", lgd_asWKT);
 				query = query.replace("FUNCTION", "union");
 				break;
@@ -71,7 +71,7 @@ public class MicroAggregationQueriesSet  extends QueriesSet {
 				// Q1 Union of many simple Polygons
 				label = "Union_CLC"; 
 				query = queryTemplate;
-				query = query.replace("GRAPH1", clc);
+				query = query.replace("GRAPH1", CLC_URI);
 				query = query.replace("ASWKT1", clc_asWKT);
 				query = query.replace("FUNCTION", "union");
 				break;

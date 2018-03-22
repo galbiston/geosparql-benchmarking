@@ -56,7 +56,7 @@ public class MacroReverseGeocodingQueriesSet extends QueriesSet {
 				query = prefixes
 					+ " \n SELECT ?f (strdf:distance(?cGeoWKT, \""+pointWKT+"\"^^geo:wktLiteral, <http://www.opengis.net/def/uom/OGC/1.0/metre>) as ?distance)"
 					+ "WHERE { \n"
-					+ " GRAPH <"+geonames+"> { \n"
+					+ " GRAPH <"+GEONAMES_URI+"> { \n"
 					+ "  ?f geonames:featureCode geonames:P.PPL; \n"
 					+ "     "+geonames_hasGeometry+" ?cGeo. \n"
 					+ "  ?cGeo "+geonames_asWKT+" ?cGeoWKT. \n"
@@ -71,7 +71,7 @@ public class MacroReverseGeocodingQueriesSet extends QueriesSet {
 				query = prefixes
 					+ " \n SELECT ?c ?type ?label (strdf:distance(?cGeoWKT, \""+pointWKT+"\"^^geo:wktLiteral, <http://www.opengis.net/def/uom/OGC/1.0/metre>) as ?distance) ?cGeoWKT \n"
 					+ "WHERE { \n"
-					+ " GRAPH <"+lgd+"> { \n"
+					+ " GRAPH <"+LGD_URI+"> { \n"
 					+ "  ?c rdf:type lgdo:Motorway; \n"
 					+ "     rdfs:label ?label; \n"
 					+ "     "+lgd_hasGeometry+" ?cGeo. \n"
