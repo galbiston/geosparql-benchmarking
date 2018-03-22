@@ -39,7 +39,8 @@ dependencies {
     compile "org.ntu:GeoSPARQL:$geosparqlVersion"
 
     //Jar Libraries
-    compile fileTree(dir: 'libs', include: '*.jar')
+    compile fileTree(dir: 'libs/strabon', include: '*.jar')
+    compile fileTree(dir: 'libs/parliament', include: '*.jar')
 
     //Apache Jena for Parliament
     compile group: 'com.hp.hpl.jena', name: 'jena', version: '2.6.4'
@@ -51,7 +52,12 @@ dependencies {
     //compile "gr.uoa.di.rdf:runtime:$geographicaVersion"
 
     //OpenRDF Sesame
-    compile group: 'org.openrdf.sesame', name: 'sesame-runtime', version: '4.1.2'
+    //ext.openRDFVersion = "4.1.2"
+    //compile "org.openrdf.sesame:sesame-runtime:$openRDFVersion"
+    //compile group: 'org.openrdf.sesame', name: 'sesame-sail-rdbms', version: '2.9.0'
+
+    //Postgresql
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.2'
 
     //SLF4J - Logback Classic
     ext.logbackVersion = "1.2.3"
