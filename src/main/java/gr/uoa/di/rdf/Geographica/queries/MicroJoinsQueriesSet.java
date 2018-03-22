@@ -8,6 +8,7 @@
  */
 package gr.uoa.di.rdf.Geographica.queries;
 
+import geosparql_benchmarking.GraphURI;
 import gr.uoa.di.rdf.Geographica.systemsundertest.SystemUnderTest;
 
 import org.apache.log4j.Logger;
@@ -56,9 +57,9 @@ public class MicroJoinsQueriesSet extends QueriesSet {
 				// Q1 Find equal points in GeoNames & DBPedia
 				label = "Equals_GeoNames_DBPedia";
 				query = queryTemplate;
-				query = query.replace("GRAPH1", GEONAMES_URI);
+				query = query.replace("GRAPH1", GraphURI.GEONAMES_URI);
 				query = query.replace("ASWKT1", geonames_asWKT);
-				query = query.replace("GRAPH2", DBPEDIA_URI);
+				query = query.replace("GRAPH2", GraphURI.DBPEDIA_URI);
 				query = query.replace("ASWKT2", dbpedia_asWKT);
 				query = query.replace("FUNCTION", "sfEquals");
 				
@@ -69,9 +70,9 @@ public class MicroJoinsQueriesSet extends QueriesSet {
 				// Q2 POIS of GeoNames reached by road
 				label = "Intersects_GeoNames_LGD"; 
 				query = queryTemplate;
-				query = query.replace("GRAPH1", GEONAMES_URI);
+				query = query.replace("GRAPH1", GraphURI.GEONAMES_URI);
 				query = query.replace("ASWKT1", geonames_asWKT);
-				query = query.replace("GRAPH2", LGD_URI);
+				query = query.replace("GRAPH2", GraphURI.LGD_URI);
 				query = query.replace("ASWKT2", lgd_asWKT);
 				query = query.replace("FUNCTION", "sfIntersects");
 				break;
@@ -80,9 +81,9 @@ public class MicroJoinsQueriesSet extends QueriesSet {
 				// Q5 POIS of GeoNames in an area
 				label = "Intersects_GeoNames_GADM"; 
 				query = queryTemplate;
-				query = query.replace("GRAPH1", GEONAMES_URI);
+				query = query.replace("GRAPH1", GraphURI.GEONAMES_URI);
 				query = query.replace("ASWKT1", geonames_asWKT);
-				query = query.replace("GRAPH2", GADM_URI);
+				query = query.replace("GRAPH2", GraphURI.GADM_URI);
 				query = query.replace("ASWKT2", gadm_asWKT);
 				query = query.replace("FUNCTION", "sfIntersects");
 				break;
@@ -91,9 +92,9 @@ public class MicroJoinsQueriesSet extends QueriesSet {
 				// Q6 Roads of an area
 				label = "Intersects_LGD_GADM"; 
 				query = queryTemplate;
-				query = query.replace("GRAPH1", LGD_URI);
+				query = query.replace("GRAPH1", GraphURI.LGD_URI);
 				query = query.replace("ASWKT1", lgd_asWKT);
-				query = query.replace("GRAPH2", GADM_URI);
+				query = query.replace("GRAPH2", GraphURI.GADM_URI);
 				query = query.replace("ASWKT2", gadm_asWKT);
 				query = query.replace("FUNCTION", "sfIntersects");
 				break;
@@ -103,9 +104,9 @@ public class MicroJoinsQueriesSet extends QueriesSet {
 				// Q5 POIS of GeoNames inside an area
 				label = "Within_GeoNames_GADM"; 
 				query = queryTemplate;
-				query = query.replace("GRAPH1", GEONAMES_URI);
+				query = query.replace("GRAPH1", GraphURI.GEONAMES_URI);
 				query = query.replace("ASWKT1", geonames_asWKT);
-				query = query.replace("GRAPH2", GADM_URI);
+				query = query.replace("GRAPH2", GraphURI.GADM_URI);
 				query = query.replace("ASWKT2", gadm_asWKT);
 				query = query.replace("FUNCTION", "sfWithin");
 				break;
@@ -114,9 +115,9 @@ public class MicroJoinsQueriesSet extends QueriesSet {
 				// Q8 Roads within an area
 				label = "Within_LGD_GADM"; 
 				query = queryTemplate;
-				query = query.replace("GRAPH1", LGD_URI);
+				query = query.replace("GRAPH1", GraphURI.LGD_URI);
 				query = query.replace("ASWKT1", lgd_asWKT);
-				query = query.replace("GRAPH2", GADM_URI);
+				query = query.replace("GRAPH2", GraphURI.GADM_URI);
 				query = query.replace("ASWKT2", gadm_asWKT);
 				query = query.replace("FUNCTION", "sfWithin");
 				break;
@@ -125,9 +126,9 @@ public class MicroJoinsQueriesSet extends QueriesSet {
 				// Q13 Areas contained in a country
 				label = "Within_CLC_GADM";
 				query = queryTemplate;
-				query = query.replace("GRAPH1", CLC_URI);
+				query = query.replace("GRAPH1", GraphURI.CLC_URI);
 				query = query.replace("ASWKT1", clc_asWKT);
-				query = query.replace("GRAPH2", GADM_URI);
+				query = query.replace("GRAPH2", GraphURI.GADM_URI);
 				query = query.replace("ASWKT2", gadm_asWKT);
 				query = query.replace("FUNCTION", "sfWithin");
 				break;
@@ -137,9 +138,9 @@ public class MicroJoinsQueriesSet extends QueriesSet {
 				// Q7 Roads leaving/reaching an area
 				label = "Crosses_LGD_GADM"; 
 				query = queryTemplate;
-				query = query.replace("GRAPH1", LGD_URI);
+				query = query.replace("GRAPH1", GraphURI.LGD_URI);
 				query = query.replace("ASWKT1", lgd_asWKT);
-				query = query.replace("GRAPH2", GADM_URI);
+				query = query.replace("GRAPH2", GraphURI.GADM_URI);
 				query = query.replace("ASWKT2", gadm_asWKT);
 				query = query.replace("FUNCTION", "sfCrosses");
 				break;
@@ -148,9 +149,9 @@ public class MicroJoinsQueriesSet extends QueriesSet {
 				// Q9 Intercrossing roads
 				label = "Crosses_LGD_LGD"; 
 				query = queryTemplate2;
-				query = query.replace("GRAPH1", LGD_URI);
+				query = query.replace("GRAPH1", GraphURI.LGD_URI);
 				query = query.replace("ASWKT1", lgd_asWKT);
-				query = query.replace("GRAPH2", LGD_URI);
+				query = query.replace("GRAPH2", GraphURI.LGD_URI);
 				query = query.replace("ASWKT2", lgd_asWKT);
 				query = query.replace("FUNCTION", "sfCrosses");
 				break;
@@ -161,9 +162,9 @@ public class MicroJoinsQueriesSet extends QueriesSet {
 				// Q11 Countries with sharing borders
 				label = "Touches_GADM_GADM"; 
 				query = queryTemplate2;
-				query = query.replace("GRAPH1", GADM_URI);
+				query = query.replace("GRAPH1", GraphURI.GADM_URI);
 				query = query.replace("ASWKT1", gadm_asWKT);
-				query = query.replace("GRAPH2", GADM_URI);
+				query = query.replace("GRAPH2", GraphURI.GADM_URI);
 				query = query.replace("ASWKT2", gadm_asWKT);
 				query = query.replace("FUNCTION", "sfTouches");
 				break;
@@ -173,9 +174,9 @@ public class MicroJoinsQueriesSet extends QueriesSet {
 				// Q12 Areas overlaping countries
 				label = "Overlaps_GADM_CLC"; 
 				query = queryTemplate;
-				query = query.replace("GRAPH1", GADM_URI);
+				query = query.replace("GRAPH1", GraphURI.GADM_URI);
 				query = query.replace("ASWKT1", gadm_asWKT);
-				query = query.replace("GRAPH2", CLC_URI);
+				query = query.replace("GRAPH2", GraphURI.CLC_URI);
 				query = query.replace("ASWKT2", clc_asWKT);
 				query = query.replace("FUNCTION", "sfOverlaps");
 				break;

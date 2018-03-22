@@ -19,17 +19,10 @@ import org.openrdf.query.TupleQueryResultHandlerException;
  */
 public abstract class QueriesSet {
 
-    // GADM_URI for gag
-    public static final String GADM_URI = "http://geographica.di.uoa.gr/dataset/gag";
-    public static final String CLC_URI = "http://geographica.di.uoa.gr/dataset/clc";
-    public static final String LGD_URI = "http://geographica.di.uoa.gr/dataset/lgd";
-    public static final String GEONAMES_URI = "http://geographica.di.uoa.gr/dataset/geonames";
-    public static final String DBPEDIA_URI = "http://geographica.di.uoa.gr/dataset/dbpedia";
-    public static final String HOTSPOTS_URI = "http://geographica.di.uoa.gr/dataset/hotspots";
 
     public static String clc_asWKT;
     public static String dbpedia_asWKT;
-    // GADM_URI for gag
+
     public static String gadm_asWKT;
     public static String geonames_asWKT;
     public static String hotspots_asWKT;

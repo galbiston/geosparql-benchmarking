@@ -8,6 +8,7 @@
  */
 package gr.uoa.di.rdf.Geographica.queries;
 
+import geosparql_benchmarking.GraphURI;
 import gr.uoa.di.rdf.Geographica.systemsundertest.SystemUnderTest;
 
 import org.apache.log4j.Logger;
@@ -44,7 +45,7 @@ public class MicroAggregationQueriesSet  extends QueriesSet {
 				// Q2 Extension of Lines
 				label = "Extent_LGD"; 
 				query = queryTemplate;
-				query = query.replace("GRAPH1", LGD_URI);
+				query = query.replace("GRAPH1", GraphURI.LGD_URI);
 				query = query.replace("ASWKT1", lgd_asWKT);
 				query = query.replace("FUNCTION", "extent");
 				break;
@@ -53,7 +54,7 @@ public class MicroAggregationQueriesSet  extends QueriesSet {
 				// Q4 Extension of many simple Polygons
 				label = "Extent_CLC"; 
 				query = queryTemplate;
-				query = query.replace("GRAPH1", CLC_URI);
+				query = query.replace("GRAPH1", GraphURI.CLC_URI);
 				query = query.replace("ASWKT1", clc_asWKT);
 				query = query.replace("FUNCTION", "extent");
 				break;
@@ -62,7 +63,7 @@ public class MicroAggregationQueriesSet  extends QueriesSet {
 				// Q2 Union of Lines
 				label = "Union_LGD"; 
 				query = queryTemplate;
-				query = query.replace("GRAPH1", LGD_URI);
+				query = query.replace("GRAPH1", GraphURI.LGD_URI);
 				query = query.replace("ASWKT1", lgd_asWKT);
 				query = query.replace("FUNCTION", "union");
 				break;
@@ -71,7 +72,7 @@ public class MicroAggregationQueriesSet  extends QueriesSet {
 				// Q1 Union of many simple Polygons
 				label = "Union_CLC"; 
 				query = queryTemplate;
-				query = query.replace("GRAPH1", CLC_URI);
+				query = query.replace("GRAPH1", GraphURI.CLC_URI);
 				query = query.replace("ASWKT1", clc_asWKT);
 				query = query.replace("FUNCTION", "union");
 				break;

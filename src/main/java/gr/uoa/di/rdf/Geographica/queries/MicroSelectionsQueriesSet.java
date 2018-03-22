@@ -8,6 +8,7 @@
  */
 package gr.uoa.di.rdf.Geographica.queries;
 
+import geosparql_benchmarking.GraphURI;
 import gr.uoa.di.rdf.Geographica.systemsundertest.SystemUnderTest;
 
 import java.io.BufferedReader;
@@ -85,7 +86,7 @@ public class MicroSelectionsQueriesSet extends QueriesSet {
 			// Line = GivenLine
 			label = "Equals_LGD_GivenLine"; 
 			query = queryTemplate;
-			query = query.replace("GRAPH1", LGD_URI);
+			query = query.replace("GRAPH1", GraphURI.LGD_URI);
 			query = query.replace("ASWKT1", lgd_asWKT);
 			query = query.replace("GIVEN_SPATIAL_LITERAL", givenLine);
 			query = query.replace("FUNCTION", "sfEquals");
@@ -95,7 +96,7 @@ public class MicroSelectionsQueriesSet extends QueriesSet {
 			// Polygon = GivenPolygon
 			label = "Equals_GADM_GivenPolygon"; 
 			query = queryTemplate;
-			query = query.replace("GRAPH1", GADM_URI);
+			query = query.replace("GRAPH1", GraphURI.GADM_URI);
 			query = query.replace("ASWKT1", gadm_asWKT);
 			query = query.replace("GIVEN_SPATIAL_LITERAL", givenPolygon);
 			query = query.replace("FUNCTION", "sfEquals");
@@ -106,7 +107,7 @@ public class MicroSelectionsQueriesSet extends QueriesSet {
 			// Line & GivenPolygon
 			label = "Intersects_LGD_GivenPolygon"; 
 			query = queryTemplate;
-			query = query.replace("GRAPH1", LGD_URI);
+			query = query.replace("GRAPH1", GraphURI.LGD_URI);
 			query = query.replace("ASWKT1", lgd_asWKT);
 			query = query.replace("GIVEN_SPATIAL_LITERAL", givenPolygon);
 			query = query.replace("FUNCTION", "sfIntersects");
@@ -116,7 +117,7 @@ public class MicroSelectionsQueriesSet extends QueriesSet {
 			// Polygon & GivenLine
 			label = "Intersects_CLC_GivenLine"; 
 			query = queryTemplate;
-			query = query.replace("GRAPH1", CLC_URI);
+			query = query.replace("GRAPH1", GraphURI.CLC_URI);
 			query = query.replace("ASWKT1", clc_asWKT);
 			query = query.replace("GIVEN_SPATIAL_LITERAL", givenLine2);
 			query = query.replace("FUNCTION", "sfIntersects");
@@ -126,7 +127,7 @@ public class MicroSelectionsQueriesSet extends QueriesSet {
 		case 4:
 			label = "Overlaps_CLC_GivenPolygon"; 
 			query = queryTemplate;
-			query = query.replace("GRAPH1", CLC_URI);
+			query = query.replace("GRAPH1", GraphURI.CLC_URI);
 			query = query.replace("ASWKT1", clc_asWKT);
 			query = query.replace("GIVEN_SPATIAL_LITERAL", givenPolygon);
 			query = query.replace("FUNCTION", "sfOverlaps");
@@ -137,7 +138,7 @@ public class MicroSelectionsQueriesSet extends QueriesSet {
 		case 5:
 			label = "Crosses_LGD_GivenLine"; 
 			query = queryTemplate;
-			query = query.replace("GRAPH1", LGD_URI);
+			query = query.replace("GRAPH1", GraphURI.LGD_URI);
 			query = query.replace("ASWKT1", lgd_asWKT);
 			query = query.replace("GIVEN_SPATIAL_LITERAL", givenLine3);
 			query = query.replace("FUNCTION", "sfCrosses");
@@ -147,7 +148,7 @@ public class MicroSelectionsQueriesSet extends QueriesSet {
 		case 6:
 			label = "Within_GeoNames_GivenPolygon";// times = 345699520 + 840787868 = 1186487388, 136
 			query = queryTemplate;
-			query = query.replace("GRAPH1", GEONAMES_URI);
+			query = query.replace("GRAPH1", GraphURI.GEONAMES_URI);
 			query = query.replace("ASWKT1", geonames_asWKT);
 			query = query.replace("GIVEN_SPATIAL_LITERAL", givenPolygon);
 			query = query.replace("FUNCTION", "sfWithin");
@@ -157,7 +158,7 @@ public class MicroSelectionsQueriesSet extends QueriesSet {
 		case 7:
 			label = "Intersects_GeoNames_Point_Buffer";
 			query = prefixes + "\n select ?s1 where { \n"
-					+ "	GRAPH <" + GEONAMES_URI	+ "> {?s1 "+geonames_asWKT+" ?o1} \n"
+					+ "	GRAPH <" + GraphURI.GEONAMES_URI	+ "> {?s1 "+geonames_asWKT+" ?o1} \n"
 					+ " FILTER(geof:sfWithin(?o1, geof:buffer("
 					+ givenPoint + ", " + givenRadius + ", <http://www.opengis.net/def/uom/OGC/1.0/metre>"
 					+ "))).  \n" 
@@ -169,7 +170,7 @@ public class MicroSelectionsQueriesSet extends QueriesSet {
 		case 8:
 			label = "Intersects_GeoNames_Point_Distance";
 			query = prefixes + "\n select ?s1 where { \n" 
-					+ "	GRAPH <" + GEONAMES_URI	+ "> {?s1 "+geonames_asWKT+" ?o1} \n" 
+					+ "	GRAPH <" + GraphURI.GEONAMES_URI	+ "> {?s1 "+geonames_asWKT+" ?o1} \n" 
 					+ "  FILTER(geof:distance(?o1, "+ givenPoint + ", <http://www.opengis.net/def/uom/OGC/1.0/metre>) <= " + givenRadius + ").  \n" 
 					+ "} "
 					;
@@ -179,7 +180,7 @@ public class MicroSelectionsQueriesSet extends QueriesSet {
 			// Point != GivenPolygon
 			label = "Disjoint_GeoNames_MaxPolygon";
 			query = queryTemplate;
-			query = query.replace("GRAPH1", GEONAMES_URI);
+			query = query.replace("GRAPH1", GraphURI.GEONAMES_URI);
 			query = query.replace("ASWKT1", geonames_asWKT);
 			query = query.replace("GIVEN_SPATIAL_LITERAL", givenPolygon);
 			query = query.replace("FUNCTION", "sfDisjoint");
@@ -188,7 +189,7 @@ public class MicroSelectionsQueriesSet extends QueriesSet {
 			// Line != GivenPolygon
 			label = "Disjoint_LGD_MaxPolygon";
 			query = queryTemplate;
-			query = query.replace("GRAPH1", LGD_URI);
+			query = query.replace("GRAPH1", GraphURI.LGD_URI);
 			query = query.replace("ASWKT1", lgd_asWKT);
 			query = query.replace("GIVEN_SPATIAL_LITERAL", givenPolygon);
 			query = query.replace("FUNCTION", "sfDisjoint");

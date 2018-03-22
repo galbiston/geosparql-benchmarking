@@ -8,6 +8,7 @@
  */
 package gr.uoa.di.rdf.Geographica.queries;
 
+import geosparql_benchmarking.GraphURI;
 import gr.uoa.di.rdf.Geographica.systemsundertest.SystemUnderTest;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -77,7 +78,7 @@ public class MacroRapidMappingQueriesSet extends QueriesSet {
                 query = prefixes + "\n"
                         + "SELECT ?a ?aID ?aLandUse ?aGeo ?aGeoWKT \n"
                         + "WHERE { \n"
-                        + "  GRAPH <" + CLC_URI + "> { \n"
+                        + "  GRAPH <" + GraphURI.CLC_URI + "> { \n"
                         + "    ?a rdf:type clc:Area ; \n"
                         + "       clc:hasID ?aID ; \n"
                         + "       clc:hasLandUse ?aLandUse ; \n"
@@ -92,7 +93,7 @@ public class MacroRapidMappingQueriesSet extends QueriesSet {
                 label = "Get_highways";
                 query = prefixes + "\n"
                         + "SELECT ?r ?rName ?rGeo ?rGeoWKT \n" + "WHERE { \n"
-                        + "  GRAPH <" + LGD_URI + "> { \n"
+                        + "  GRAPH <" + GraphURI.LGD_URI + "> { \n"
                         + "    ?r rdf:type lgdo:HighwayThing ; \n"
                         + "       rdfs:label ?rName ; \n"
                         + "       " + lgd_hasGeometry + " ?rGeo . \n"
@@ -107,7 +108,7 @@ public class MacroRapidMappingQueriesSet extends QueriesSet {
                 query = prefixes + "\n"
                         + "SELECT (geof:boundary(?gGeoWKT) as ?boundary) ?gLabel \n"
                         + "WHERE { \n"
-                        + "  GRAPH <" + GADM_URI + "> { \n"
+                        + "  GRAPH <" + GraphURI.GADM_URI + "> { \n"
                         + "    ?g rdf:type gag:Δήμος; \n"
                         + "       rdfs:label ?gLabel ; \n"
                         + "       " + gadm_hasGeometry + " ?gGeo . \n"
@@ -122,7 +123,7 @@ public class MacroRapidMappingQueriesSet extends QueriesSet {
                 query = prefixes + "\n"
                         + "SELECT ?h ?sensor ?confidence ?producer ?satellite ?chain ?confirmation ?geomentry ?r ?wkt \n"
                         + "WHERE {  \n"
-                        + "  GRAPH <" + HOTSPOTS_URI + "> { \n"
+                        + "  GRAPH <" + GraphURI.HOTSPOTS_URI + "> { \n"
                         + "    ?h rdf:type noa:Hotspot; \n"
                         + "       noa:isDerivedFromSensor ?sensor; \n"
                         + "       noa:hasConfidence ?confidence; \n"
@@ -144,13 +145,13 @@ public class MacroRapidMappingQueriesSet extends QueriesSet {
                 query = prefixes + "\n"
                         + "SELECT ?h ?hWKT \n"
                         + "WHERE { \n"
-                        + "  GRAPH <" + HOTSPOTS_URI + "> { \n"
+                        + "  GRAPH <" + GraphURI.HOTSPOTS_URI + "> { \n"
                         + "    ?h  rdf:type noa:Hotspot ; \n"
                         + "        " + hotspots_hasGeometry + " ?hGeo ; \n"
                         + "        noa:hasAcquisitionTime " + this.timestamp + "^^xsd:dateTime . \n"
                         + "    ?hGeo " + hotspots_asWKT + " ?hWKT. \n"
                         + "  } \n"
-                        + "  GRAPH <" + CLC_URI + "> { \n"
+                        + "  GRAPH <" + GraphURI.CLC_URI + "> { \n"
                         + "    ?a  a clc:Area ; \n"
                         + "        " + clc_hasGeometry + " ?aGeo ; \n"
                         + "        clc:hasLandUse clc:coniferousForest . \n"
@@ -166,13 +167,13 @@ public class MacroRapidMappingQueriesSet extends QueriesSet {
                 query = prefixes + "\n"
                         + "SELECT ?r (geof:difference(?rWKT, ?hWKT) as ?diff) \n"
                         + "WHERE { \n"
-                        + "  GRAPH <" + HOTSPOTS_URI + "> { \n"
+                        + "  GRAPH <" + GraphURI.HOTSPOTS_URI + "> { \n"
                         + "    ?h  rdf:type noa:Hotspot ; \n"
                         + "        " + hotspots_hasGeometry + " ?hGeo ; \n"
                         + "        noa:hasAcquisitionTime ?hAcqTime . \n"
                         + "	   ?hGeo " + hotspots_asWKT + " ?hWKT. \n"
                         + "  } \n"
-                        + "  GRAPH <" + LGD_URI + "> { \n"
+                        + "  GRAPH <" + GraphURI.LGD_URI + "> { \n"
                         + "    ?r  rdf:type lgdo:HighwayThing ; \n"
                         + "        " + lgd_hasGeometry + " ?rGeo . \n"
                         + "	   ?rGeo	" + lgd_asWKT + " ?rWKT. \n"

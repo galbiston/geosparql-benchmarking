@@ -8,6 +8,7 @@
  */
 package gr.uoa.di.rdf.Geographica.queries;
 
+import geosparql_benchmarking.GraphURI;
 import gr.uoa.di.rdf.Geographica.systemsundertest.SystemUnderTest;
 
 import java.util.Random;
@@ -56,7 +57,7 @@ public class MacroReverseGeocodingQueriesSet extends QueriesSet {
 				query = prefixes
 					+ " \n SELECT ?f (strdf:distance(?cGeoWKT, \""+pointWKT+"\"^^geo:wktLiteral, <http://www.opengis.net/def/uom/OGC/1.0/metre>) as ?distance)"
 					+ "WHERE { \n"
-					+ " GRAPH <"+GEONAMES_URI+"> { \n"
+					+ " GRAPH <"+GraphURI.GEONAMES_URI+"> { \n"
 					+ "  ?f geonames:featureCode geonames:P.PPL; \n"
 					+ "     "+geonames_hasGeometry+" ?cGeo. \n"
 					+ "  ?cGeo "+geonames_asWKT+" ?cGeoWKT. \n"
@@ -71,7 +72,7 @@ public class MacroReverseGeocodingQueriesSet extends QueriesSet {
 				query = prefixes
 					+ " \n SELECT ?c ?type ?label (strdf:distance(?cGeoWKT, \""+pointWKT+"\"^^geo:wktLiteral, <http://www.opengis.net/def/uom/OGC/1.0/metre>) as ?distance) ?cGeoWKT \n"
 					+ "WHERE { \n"
-					+ " GRAPH <"+LGD_URI+"> { \n"
+					+ " GRAPH <"+GraphURI.LGD_URI+"> { \n"
 					+ "  ?c rdf:type lgdo:Motorway; \n"
 					+ "     rdfs:label ?label; \n"
 					+ "     "+lgd_hasGeometry+" ?cGeo. \n"
