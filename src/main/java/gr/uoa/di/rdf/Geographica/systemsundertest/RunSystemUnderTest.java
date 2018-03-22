@@ -13,11 +13,12 @@ import gr.uoa.di.rdf.Geographica.experiments.MicroSelectionsExperiment;
 import gr.uoa.di.rdf.Geographica.experiments.SyntheticExperiment;
 import gr.uoa.di.rdf.Geographica.queries.QueriesSet;
 import java.io.IOException;
+import java.util.Arrays;
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.PosixParser;
 import org.apache.log4j.Logger;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
@@ -73,7 +74,7 @@ public abstract class RunSystemUnderTest {
     protected abstract void initSystemUnderTest() throws Exception;
 
     private String[] parseArguments(String[] args) {
-        PosixParser parser = new PosixParser();
+        DefaultParser parser = new DefaultParser();
 
         try {
             cmd = parser.parse(options, args);
@@ -89,7 +90,7 @@ public abstract class RunSystemUnderTest {
             // Check arguments
             if (args.length < 2) {
                 System.out.println("Arguments not correct");
-                System.out.println("Arguments: " + args);
+                System.out.println("Arguments: " + Arrays.toString(args));
                 printHelp();
                 System.exit(-1);
             }
