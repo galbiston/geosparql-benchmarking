@@ -160,10 +160,10 @@ public class ParliamentSUT implements SystemUnderTest {
 
             if (rs.hasNext()) {
                 QuerySolution querySolution = rs.next();
-                this.firstBindingSet = new MapBindingSet();
                 ValueFactory valueFactory = new ValueFactoryImpl();
                 Iterator<String> varNames = querySolution.varNames();
                 Value value = null;
+                MapBindingSet bindingSet = new MapBindingSet();
                 while (varNames.hasNext()) {
                     String varName = varNames.next();
                     RDFNode solution = querySolution.get(varName);
@@ -183,14 +183,13 @@ public class ParliamentSUT implements SystemUnderTest {
                     } else {
                         logger.error("Resource not recognized");
                     }
-                    ((MapBindingSet) this.firstBindingSet).addBinding(varName, value);
+                    bindingSet.addBinding(varName, value);
                 }
-
+                this.firstBindingSet = bindingSet;
                 results++;
             }
             while (rs.hasNext()) {
-                @SuppressWarnings("unused")
-                String rrrr = rs.nextSolution().toString();
+                rs.next();
                 results++;
             }
             long t3 = System.nanoTime();
