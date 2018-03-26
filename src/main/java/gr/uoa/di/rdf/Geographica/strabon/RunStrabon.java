@@ -1,11 +1,17 @@
 package gr.uoa.di.rdf.Geographica.strabon;
 
+import eu.earthobservatory.runtime.postgis.Strabon;
+import geosparql_benchmarking.GraphURI;
 import gr.uoa.di.rdf.Geographica.systemsundertest.RunSystemUnderTest;
-import org.apache.log4j.Logger;
+import java.io.File;
+import java.lang.invoke.MethodHandles;
+import java.util.HashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RunStrabon extends RunSystemUnderTest {
 
-    private static Logger logger = Logger.getLogger(RunStrabon.class.getSimpleName());
+    final static Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     @Override
     protected void addOptions() {
@@ -22,12 +28,12 @@ public class RunStrabon extends RunSystemUnderTest {
     protected void logOptions() {
         super.logOptions();
 
-        logger.info("Excluded options");
-        logger.info("Server:\t" + cmd.getOptionValue("host"));
-        logger.info("Database:\t" + cmd.getOptionValue("database"));
-        logger.info("Port:\t" + cmd.getOptionValue("port"));
-        logger.info("Username:\t" + cmd.getOptionValue("username"));
-        logger.info("Password:\t" + cmd.getOptionValue("password"));
+        LOGGER.info("Excluded options");
+        LOGGER.info("Server:\t{}", cmd.getOptionValue("host"));
+        LOGGER.info("Database:\t{}", cmd.getOptionValue("database"));
+        LOGGER.info("Port:\t{}", cmd.getOptionValue("port"));
+        LOGGER.info("Username:\t{}", cmd.getOptionValue("username"));
+        LOGGER.info("Password:\t{}", cmd.getOptionValue("password"));
     }
 
     @Override
@@ -45,5 +51,44 @@ public class RunStrabon extends RunSystemUnderTest {
         RunSystemUnderTest runStrabon = new RunStrabon();
 
         runStrabon.run(args);
+    }
+
+    public static void loadStrabon(HashMap<String, File> datasetMap) {
+        LOGGER.info("Strabon Loading: Started");
+        Strabon strabon = null;
+        try {
+            String db = "endpoint";
+            String user = "postgres"; //String user = "postgres";
+            String passwd = "postgres"; //String passwd = "postgres";
+            Integer port = 5432;
+            String host = "localhost"; //"localhost"; //"127.0.0.1"
+            Boolean checkForLockTable = true;
+            strabon = new Strabon(db, user, passwd, port, host, checkForLockTable);
+
+            String src = new File("datasets/gag.nt").getAbsolutePath();
+            String baseURI = null;
+            String graph = GraphURI.GADM_URI;
+            String format = "NTRIPLES";
+            Boolean inference = false;
+            strabon.storeInRepo(src, baseURI, graph, format, inference);
+
+            /*
+            for (Entry<String, File> entry : datasetMap.entrySet()) {
+                String src = entry.getValue().getAbsolutePath();
+                String graph = entry.getKey();
+                LOGGER.info("Loading: {} into {}: Started", src, graph);
+                strabon.storeInRepo(src, baseURI, graph, format, inference);
+                LOGGER.info("Loading: {} into {}: Completed", src, graph);
+            }
+             */
+        } catch (Exception ex) {
+            LOGGER.error("Load Strabon exception: {}", ex);
+        } finally {
+            if (strabon != null) {
+                strabon.close();
+            }
+        }
+        LOGGER.info("Strabon Loading: Completed");
+
     }
 }

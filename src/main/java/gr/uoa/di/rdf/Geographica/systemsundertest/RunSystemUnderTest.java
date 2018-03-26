@@ -13,20 +13,22 @@ import gr.uoa.di.rdf.Geographica.experiments.MicroSelectionsExperiment;
 import gr.uoa.di.rdf.Geographica.experiments.SyntheticExperiment;
 import gr.uoa.di.rdf.Geographica.queries.QueriesSet;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.log4j.Logger;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResultHandlerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class RunSystemUnderTest {
 
-    protected Logger logger = Logger.getLogger(RunSystemUnderTest.class.getSimpleName());
+    final static Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     protected Options options = new Options();
     protected CommandLine cmd = null;
     protected SystemUnderTest sut = null;
@@ -61,13 +63,13 @@ public abstract class RunSystemUnderTest {
         int runTimeInMinutes = (cmd.getOptionValue("m") != null ? Integer.parseInt(cmd.getOptionValue("runtime")) : 2 * 60); // 2 hours
         int syntheticN = Integer.parseInt((cmd.getOptionValue("N") != null ? cmd.getOptionValue("N") : "0"));
 
-        logger.info("Shared options");
-        logger.info("Repetitions:\t" + repetitions);
-        logger.info("Time out:\t" + timeoutSecs + " seconds");
-        logger.info("Run time:\t" + runTimeInMinutes + " minutes");
-        logger.info("N:\t" + syntheticN);
-        logger.info("Log Path:\t" + cmd.getOptionValue("logpath"));
-        logger.info("Queries to run:\t" + cmd.getOptionValue("queries"));
+        LOGGER.info("Shared options");
+        LOGGER.info("Repetitions:\t{}", repetitions);
+        LOGGER.info("Time out:\t{} seconds", timeoutSecs);
+        LOGGER.info("Run time:\t{} minutes", runTimeInMinutes);
+        LOGGER.info("N:\t{}", syntheticN);
+        LOGGER.info("Log Path:\t{}", cmd.getOptionValue("logpath"));
+        LOGGER.info("Queries to run:\t{}", cmd.getOptionValue("queries"));
 
     }
 
@@ -161,9 +163,9 @@ public abstract class RunSystemUnderTest {
 
             // Run, test or print queries of experiments
             if (args[0].equalsIgnoreCase("run")) {
-                logger.info("Start " + experiment.getClass().getName());
+                LOGGER.info("Start {}", experiment.getClass().getName());
                 experiment.run();
-                logger.info("End " + experiment.getClass().getName());
+                LOGGER.info("End {}", experiment.getClass().getName());
             } else if (args[0].equalsIgnoreCase("print")) {
                 System.out.println("\n" + experiment.getClass().getName() + "\n");
                 QueriesSet qs = experiment.getQueriesSet();

@@ -3,8 +3,9 @@ package geosparql_benchmarking.geosparql_jena;
 import geosparql_benchmarking.Main;
 import gr.uoa.di.rdf.Geographica.systemsundertest.RunSystemUnderTest;
 import java.io.File;
+import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Map.Entry;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.rdf.model.Model;
@@ -15,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 public class RunGeosparqlJena extends RunSystemUnderTest {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(RunGeosparqlJena.class);
+    final static Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     @Override
     protected void initSystemUnderTest() throws Exception {
@@ -32,7 +33,7 @@ public class RunGeosparqlJena extends RunSystemUnderTest {
         LOGGER.info("Geosparql Jena Loading: Started");
         Dataset dataset = TDBFactory.createDataset(datasetFolder.getAbsolutePath());
 
-        for (Map.Entry<String, File> entry : datasetMap.entrySet()) {
+        for (Entry<String, File> entry : datasetMap.entrySet()) {
             try {
                 dataset.begin(ReadWrite.WRITE);
                 String sourceRDFFile = entry.getValue().getAbsolutePath();
