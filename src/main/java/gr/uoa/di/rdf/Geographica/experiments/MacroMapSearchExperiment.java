@@ -14,17 +14,13 @@ import gr.uoa.di.rdf.Geographica.systemsundertest.SystemUnderTest;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.HashMap;
 import org.apache.log4j.Logger;
-import org.openrdf.query.Binding;
-import org.openrdf.query.BindingSet;
 
 /**
  * @author George Garbis <ggarbis@di.uoa.gr>
  */
 public class MacroMapSearchExperiment extends MacroExperiment {
-
-    protected int[] queriesToRun = null;
-    protected int queriesToRunN;
 
     public MacroMapSearchExperiment(SystemUnderTest sut, int repetitions, int timeoutSecs, int runTimeInMinutes, String logPath) throws IOException {
         super(sut, repetitions, timeoutSecs, runTimeInMinutes, logPath);
@@ -44,7 +40,7 @@ public class MacroMapSearchExperiment extends MacroExperiment {
     @Override
     public void run() {
 
-        QueryStruct queryStruct = null;
+        QueryStruct queryStruct;
         long time;
 
         measurements = new long[4];
@@ -80,9 +76,9 @@ public class MacroMapSearchExperiment extends MacroExperiment {
                     measurements = sut.runQueryWithTimeout(queryStruct.getQuery(), timeoutSecs);
 
                     if (queryI == 0) {
-                        BindingSet firstBindingSet = (BindingSet) sut.getFirstBindingSet();
-                        Binding geo = firstBindingSet.getBinding("wkt");
-                        ((MacroMapSearchQueriesSet) queriesSet).setCurrentPoint(geo.getValue().stringValue());
+                        HashMap<String, String> firstResult = sut.getFirstResult();
+                        String geo = firstResult.get("wkt");
+                        ((MacroMapSearchQueriesSet) queriesSet).setCurrentPoint(geo);
                     }
 
                     logger.info("Query executed ("
