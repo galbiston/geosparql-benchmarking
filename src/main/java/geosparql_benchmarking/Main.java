@@ -1,13 +1,12 @@
 package geosparql_benchmarking;
 
-import eu.earthobservatory.runtime.postgis.Strabon;
 import java.io.File;
 import java.util.HashMap;
-import java.util.Map.Entry;
 import org.apache.jena.query.Dataset;
-import org.apache.jena.query.ReadWrite;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.tdb.TDBFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +21,9 @@ public class Main {
     public static void main(String[] args) {
 
         HashMap<String, File> datasetMap = getDatasets();
-        loadGeosparqlJena(GEOSPARQL_JENA_TDB_FOLDER, datasetMap);
-        //loadStrabon();
+        //loadGeosparqlJena(GEOSPARQL_JENA_TDB_FOLDER, datasetMap);
+        //loadParliament(datasetMap);
+        //loadStrabon(datasetMap);
 
         //Run GeoSPARQL Compliance Testing
         //1) Serialisation - WKT, GML, mixed
@@ -36,8 +36,28 @@ public class Main {
         //1) Apache Jena Extension
         //2) Parliament
         //3) Strabon
+        //Create results directory structure.
+        createResultsFolders();
+
+        //Build experiment arguements.
+        String[] experimentArgs = {"--logpath", GEOSPARQL_JENA_RESULTS.getAbsolutePath(), "--runtime", "120", "--timeout", "3600", "run", "MicroNonTopological"};
+
+        //Run the experiments using the arguements.
+        try {
+            rdfsTest();
+            // RunGeosparqlJena.main(experimentArgs);
+        } catch (Exception ex) {
+            LOGGER.error("Exception: {}", ex);
+        }
     }
     private static final File DATASET_FOLDER = new File("datasets");
+
+    private static void createResultsFolders() {
+        RESULTS_FOLDER.mkdir();
+        GEOSPARQL_JENA_RESULTS.mkdir();
+        PARLIAMENT_RESULTS.mkdir();
+        STRABON_RESULTS.mkdir();
+    }
 
     private static HashMap<String, File> getDatasets() {
         HashMap<String, File> datasetMap = new HashMap<>();
@@ -51,71 +71,26 @@ public class Main {
         return datasetMap;
     }
 
+    //The Jena TDB Folder and Graph URIs need to be stated in the Assembly File.
+    public static final File GEOSPARQL_JENA_TDB_ASSEMBLY_FILE = new File(Main.class.getClassLoader().getResource("geosparql-assemble.ttl").getPath());
     public static final File GEOSPARQL_JENA_TDB_FOLDER = new File("geosparql_jena_tdb");
 
-    private static void loadGeosparqlJena(File datasetFolder, HashMap<String, File> datasetMap) {
-        LOGGER.info("Geosparql Jena Loading: Started");
-        Dataset dataset = TDBFactory.createDataset(datasetFolder.getAbsolutePath());
+    public static final File RESULTS_FOLDER = new File("results");
+    public static final File GEOSPARQL_JENA_RESULTS = new File(RESULTS_FOLDER, "geosparql_jena");
+    public static final File PARLIAMENT_RESULTS = new File(RESULTS_FOLDER, "parliament");
+    public static final File STRABON_RESULTS = new File(RESULTS_FOLDER, "strabon");
 
-        for (Entry<String, File> entry : datasetMap.entrySet()) {
-            try {
-                dataset.begin(ReadWrite.WRITE);
-                String sourceRDFFile = entry.getValue().getAbsolutePath();
-                String graph = entry.getKey();
-                LOGGER.info("Loading: {} into {}: Started", sourceRDFFile, graph);
-                Model model = RDFDataMgr.loadModel(sourceRDFFile);
-                dataset.addNamedModel(graph, model);
-                LOGGER.info("Loading: {} into {}: Completed", sourceRDFFile, graph);
-                dataset.commit();
+    private static final void rdfsTest() {
+        Dataset dataset = TDBFactory.assembleDataset(GEOSPARQL_JENA_TDB_ASSEMBLY_FILE.getAbsolutePath());
+//<http://www.opengis.net/ont/geosparql#asWKT>
+//<http://linkedgeodata.org/ontology/asWKT>
+        String queryString = "SELECT ?sub ?obj WHERE{ GRAPH <http://geographica.di.uoa.gr/dataset/lgd2> { ?sub <http://www.opengis.net/ont/geosparql#asWKT> ?obj}}LIMIT 100";
 
-            } catch (RuntimeException ex) {
-                LOGGER.error("TDB Load Error: {}", ex.getMessage());
-            } finally {
-                dataset.end();
-            }
+        try (QueryExecution qe = QueryExecutionFactory.create(queryString, dataset)) {
+            ResultSet rs = qe.execSelect();
+            ResultSetFormatter.outputAsCSV(rs);
         }
-        dataset.close();
-        TDBFactory.release(dataset);
 
-        LOGGER.info("Geosparql Jena Loading: Completed");
     }
 
-    private static void loadStrabon(HashMap<String, File> datasetMap) {
-        LOGGER.info("Strabon Loading: Started");
-        Strabon strabon = null;
-        try {
-            String db = "endpoint";
-            String user = "postgres"; //String user = "postgres";
-            String passwd = "postgres"; //String passwd = "postgres";
-            Integer port = 5432;
-            String host = "localhost"; //"localhost"; //"127.0.0.1"
-            Boolean checkForLockTable = true;
-            strabon = new Strabon(db, user, passwd, port, host, checkForLockTable);
-
-            String src = new File("datasets/gag.nt").getAbsolutePath();
-            String baseURI = null;
-            String graph = GraphURI.GADM_URI;
-            String format = "NTRIPLES";
-            Boolean inference = false;
-            strabon.storeInRepo(src, baseURI, graph, format, inference);
-
-            /*
-            for (Entry<String, File> entry : datasetMap.entrySet()) {
-                String src = entry.getValue().getAbsolutePath();
-                String graph = entry.getKey();
-                LOGGER.info("Loading: {} into {}: Started", src, graph);
-                strabon.storeInRepo(src, baseURI, graph, format, inference);
-                LOGGER.info("Loading: {} into {}: Completed", src, graph);
-            }
-             */
-        } catch (Exception ex) {
-            LOGGER.error("Load Strabon exception: {}", ex);
-        } finally {
-            if (strabon != null) {
-                strabon.close();
-            }
-        }
-        LOGGER.info("Strabon Loading: Completed");
-
-    }
 }

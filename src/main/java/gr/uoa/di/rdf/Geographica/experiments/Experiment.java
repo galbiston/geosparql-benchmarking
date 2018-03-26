@@ -139,11 +139,11 @@ public abstract class Experiment {
                         break;
                     }
                 }
-            } catch (Exception e) {
-                logger.error("While evaluating query(cold, "
+            } catch (Exception ex) {
+                logger.error(ex.getMessage() + ": while evaluating query(cold, "
                         + queryI + ", " + repetitionI + ")");
                 StringWriter sw = new StringWriter();
-                e.printStackTrace(new PrintWriter(sw));
+                ex.printStackTrace(new PrintWriter(sw));
                 String stacktrace = sw.toString();
                 logger.error(stacktrace);
                 sut.close();
@@ -154,10 +154,10 @@ public abstract class Experiment {
             try {
                 printStatistics(this.getClass().getSimpleName(), "cold", queryI,
                         queryStruct, coldruns);
-            } catch (IOException e) {
-                logger.error("While printing statistics (cold, " + queryI + ")");
+            } catch (IOException ex) {
+                logger.error(ex.getMessage() + ": while printing statistics (cold, " + queryI + ")");
                 StringWriter sw = new StringWriter();
-                e.printStackTrace(new PrintWriter(sw));
+                ex.printStackTrace(new PrintWriter(sw));
                 String stacktrace = sw.toString();
                 logger.error(stacktrace);
             }

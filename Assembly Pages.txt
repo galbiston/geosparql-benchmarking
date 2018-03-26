@@ -1,0 +1,14 @@
+
+https://christinemdraper.wordpress.com/2017/04/09/getting-started-with-rdf-sparql-jena-fuseki/
+
+https://github.com/jfmunozf/Jena-Fuseki-Reasoner-Inference/wiki/Configuring-Apache-Jena-Fuseki-2.4.1-inference-and-reasoning-support-using-SPARQL-1.1:-Jena-inference-rules,-RDFS-Entailment-Regimes-and-OWL-reasoning
+
+https://jena.apache.org/documentation/tdb/assembler.html
+
+https://jena.apache.org/documentation/assembler/assembler.ttl
+
+https://jena.apache.org/documentation/fuseki2/fuseki-configuration.html
+
+https://jena.apache.org/documentation/assembler/
+
+https://jena.apache.org/documentation/assembler/assembler-howto.html

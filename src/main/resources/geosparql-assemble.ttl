@@ -4,66 +4,79 @@
 @prefix ja:    <http://jena.hpl.hp.com/2005/11/Assembler#> .
 @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
 
-:tdb_dataset
-    a             tdb:DatasetTDB ;
-    tdb:location  "<path>/geosparql_jena_tdb" .
+[] ja:loadClass "org.apache.jena.tdb.TDB" .
+tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
+tdb:GraphTDB    rdfs:subClassOf  ja:Model      .
 
-<#gag_graph> rdf:type tdb:GraphTDB ;
-    tdb:dataset :tdb_dataset ;
+#TDB dataset on disk.
+:tdb-dataset rdf:type tdb:DatasetTDB ;
+    tdb:location  "geosparql_jena_tdb" .
+
+#Create a RDFS Factory as re-used.
+:rdfsFactory rdf:type ja:ReasonerFactory;
+    ja:reasonerURL <http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner>;
+    ja:schema :geoRDFS .
+
+#RDFS Schema loaded as memory model.
+:geoRDFS rdf:type ja:MemoryModel ;
+    ja:content [ja:externalContent <file:///geosparql_vocab_all.rdf>] .
+
+#Specify named graph in the dataset.
+:gag-graph rdf:type tdb:GraphTDB ;
+    tdb:dataset :tdb-dataset ;
     tdb:graphName <http://geographica.di.uoa.gr/dataset/gag> .
 
-<#gag_model_inf> a ja:InfModel ;
-    ja:baseModel <#gag_graph> ;
-    ja:reasoner [
-        ja:reasonerURL <http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner>
-    ] .
+#Inference model combining graph and reasoner.
+:gag-model-inf rdf:type ja:InfModel ;
+    ja:baseModel :gag-graph ;
+    ja:reasoner :rdfsFactory.
 
-<#lgd_graph> rdf:type tdb:GraphTDB ;
-    tdb:dataset :tdb_dataset ;
+:lgd-graph rdf:type tdb:GraphTDB ;
+    tdb:dataset :tdb-dataset ;
     tdb:graphName <http://geographica.di.uoa.gr/dataset/lgd> .
 
-<#lgd_model_inf> a ja:InfModel ;
-    ja:baseModel <#lgd_graph> ;
-    ja:reasoner [
-        ja:reasonerURL <http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner>
-    ] .
+:lgd-model-inf rdf:type ja:InfModel ;
+    ja:baseModel :lgd-graph ;
+    ja:reasoner :rdfsFactory .
 
-<#geonames_graph> rdf:type tdb:GraphTDB ;
-    tdb:dataset :tdb_dataset ;
+#Does the name URI need to go against the inference model? Don't know and no answer.
+#:lgd-graph rdf:type tdb:GraphTDB ;
+#    tdb:dataset :tdb-dataset ;
+#    tdb:graphName <http://geographica.di.uoa.gr/dataset/lgd> .
+
+#:lgd-model-inf rdf:type  ja:InfModel ;
+#    ja:baseModel :lgd-graph ;
+#    ja:modelName <http://geographica.di.uoa.gr/dataset/lgd2> ;
+#    ja:reasoner :rdfsFactory.
+
+:geonames-graph rdf:type tdb:GraphTDB ;
+    tdb:dataset :tdb-dataset ;
     tdb:graphName <http://geographica.di.uoa.gr/dataset/geonames> .
 
-<#geonames_model_inf> a ja:InfModel ;
-    ja:baseModel <#geonames_graph> ;
-    ja:reasoner [
-        ja:reasonerURL <http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner>
-    ] .
+:geonames-model-inf rdf:type  ja:InfModel ;
+    ja:baseModel :geonames-graph ;
+    ja:reasoner :rdfsFactory.
 
-<#hotspots_graph> rdf:type tdb:GraphTDB ;
-    tdb:dataset :tdb_dataset ;
+:hotspots-graph rdf:type tdb:GraphTDB ;
+    tdb:dataset :tdb-dataset ;
     tdb:graphName <http://geographica.di.uoa.gr/dataset/hotspots> .
 
-<#hotspots_model_inf> a ja:InfModel ;
-    ja:baseModel <#hotspots_graph> ;
-    ja:reasoner [
-        ja:reasonerURL <http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner>
-    ] .
+:hotspots-model-inf rdf:type ja:InfModel ;
+    ja:baseModel :hotspots-graph ;
+    ja:reasoner :rdfsFactory.
 
-<#clc_graph> rdf:type tdb:GraphTDB ;
-    tdb:dataset :tdb_dataset ;
+:clc-graph rdf:type tdb:GraphTDB ;
+    tdb:dataset :tdb-dataset ;
     tdb:graphName <http://geographica.di.uoa.gr/dataset/clc> .
 
-<#clc_model_inf> a ja:InfModel ;
-    ja:baseModel <#clc_graph> ;
-    ja:reasoner [
-        ja:reasonerURL <http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner>
-    ] .
+:clc-model-inf a ja:InfModel ;
+    ja:baseModel :clc-graph ;
+    ja:reasoner :rdfsFactory.
 
-<#dbpedia_graph> rdf:type tdb:GraphTDB ;
-    tdb:dataset :tdb_dataset ;
+:dbpedia-graph rdf:type tdb:GraphTDB ;
+    tdb:dataset :tdb-dataset ;
     tdb:graphName <http://geographica.di.uoa.gr/dataset/dbpedia> .
 
-<#dbpedia_model_inf> a ja:InfModel ;
-    ja:baseModel <#dbpedia_graph> ;
-    ja:reasoner [
-        ja:reasonerURL <http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner>
-    ] .
+:dbpedia-model-inf a ja:InfModel ;
+    ja:baseModel :dbpedia-graph ;
+    ja:reasoner :rdfsFactory .

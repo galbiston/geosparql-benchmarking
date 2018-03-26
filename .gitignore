@@ -15,3 +15,5 @@ gradle-app.setting
 /.nb-gradle/
 
 /datasets
+/geosparql_jena_tdb
+/logs

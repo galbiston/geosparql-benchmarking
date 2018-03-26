@@ -44,7 +44,7 @@ public class GeosparqlJenaSUT implements SystemUnderTest {
     final static Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private HashMap<String, String> firstResult = new HashMap<>();
-    private Dataset dataset;
+    private Dataset dataset = null;
     private final File assemblyFile;
 
     public GeosparqlJenaSUT(File assemblyFile) {
@@ -124,13 +124,16 @@ public class GeosparqlJenaSUT implements SystemUnderTest {
     @Override
     public void close() {
         TDBFactory.release(dataset);
+        dataset = null;
         firstResult = new HashMap<>();
     }
 
     @Override
     public void clearCaches() {
-        //No caches to clear but release resources and reconnect.
-        TDBFactory.release(dataset);
+        //Release resources and reconnect.
+        if (dataset != null) {
+            TDBFactory.release(dataset);
+        }
         this.dataset = TDBFactory.assembleDataset(assemblyFile.getAbsolutePath());
         firstResult = new HashMap<>();
     }
