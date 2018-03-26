@@ -9,6 +9,7 @@ import gr.uoa.di.rdf.Geographica.systemsundertest.SystemUnderTest;
 import implementation.GeoSPARQLModel;
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -16,6 +17,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -29,12 +31,6 @@ import org.apache.jena.tdb.TDBFactory;
 import org.apache.jena.update.UpdateAction;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
-import org.openrdf.model.URI;
-import org.openrdf.model.Value;
-import org.openrdf.model.ValueFactory;
-import org.openrdf.model.impl.ValueFactoryImpl;
-import org.openrdf.query.BindingSet;
-import org.openrdf.query.impl.MapBindingSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,12 +42,11 @@ public class GeosparqlJenaSUT implements SystemUnderTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GeosparqlJenaSUT.class);
 
-    private BindingSet firstBindingSet;
+    private HashMap<String, String> firstResult = new HashMap<>();
     private Dataset dataset;
     private final File datasetFolder;
 
     public GeosparqlJenaSUT(File datasetFolder) {
-        this.firstBindingSet = null;
         this.datasetFolder = datasetFolder;
         this.dataset = TDBFactory.createDataset(datasetFolder.getAbsolutePath());
     }
@@ -101,7 +96,7 @@ public class GeosparqlJenaSUT implements SystemUnderTest {
             long tt2 = System.nanoTime();
             return new long[]{tt2 - tt1, tt2 - tt1, tt2 - tt1, -1};
         } else {
-            this.firstBindingSet = runnable.getFirstBindingSet();
+            this.firstResult = runnable.getFirstResult();
             return runnable.getRetValue();
         }
     }
@@ -128,7 +123,7 @@ public class GeosparqlJenaSUT implements SystemUnderTest {
     @Override
     public void close() {
         TDBFactory.release(dataset);
-        firstBindingSet = null;
+        firstResult = new HashMap<>();
     }
 
     @Override
@@ -136,7 +131,7 @@ public class GeosparqlJenaSUT implements SystemUnderTest {
         //No caches to clear but release resources and reconnect.
         TDBFactory.release(dataset);
         dataset = TDBFactory.createDataset(datasetFolder.getAbsolutePath());
-        firstBindingSet = null;
+        firstResult = new HashMap<>();
     }
 
     @Override
@@ -144,7 +139,7 @@ public class GeosparqlJenaSUT implements SystemUnderTest {
         //No restarting but release resources and reconnect.
         TDBFactory.release(dataset);
         dataset = TDBFactory.createDataset(datasetFolder.getAbsolutePath());
-        firstBindingSet = null;
+        firstResult = new HashMap<>();
     }
 
     @Override
@@ -159,15 +154,15 @@ public class GeosparqlJenaSUT implements SystemUnderTest {
     }
 
     @Override
-    public BindingSet getFirstBindingSet() {
-        return firstBindingSet;
+    public HashMap<String, String> getFirstResult() {
+        return firstResult;
     }
 
     static class Executor implements Runnable {
 
         private final String queryString;
         private final Dataset dataset;
-        private BindingSet firstBindingSet = null;
+        private final HashMap<String, String> firstResult = new HashMap<>();
         private long[] returnValue;
 
         public Executor(String queryString, Dataset dataset, int timeoutSecs) {
@@ -181,8 +176,8 @@ public class GeosparqlJenaSUT implements SystemUnderTest {
             return returnValue;
         }
 
-        public BindingSet getFirstBindingSet() {
-            return firstBindingSet;
+        public HashMap<String, String> getFirstResult() {
+            return firstResult;
         }
 
         @Override
@@ -203,33 +198,26 @@ public class GeosparqlJenaSUT implements SystemUnderTest {
 
                 if (rs.hasNext()) {
                     QuerySolution querySolution = rs.next();
-
-                    ValueFactory valueFactory = new ValueFactoryImpl();
                     Iterator<String> varNames = querySolution.varNames();
-                    Value value = null;
-                    MapBindingSet bindingSet = new MapBindingSet();
+
                     while (varNames.hasNext()) {
                         String varName = varNames.next();
+                        String valueStr;
                         RDFNode solution = querySolution.get(varName);
                         if (solution.isLiteral()) {
                             Literal literal = solution.asLiteral();
-                            String valueStr = literal.getString();
-                            String datatypeStr = literal.getDatatypeURI();
-                            if (datatypeStr != null) {
-                                URI datatype = valueFactory.createURI(datatypeStr);
-                                value = valueFactory.createLiteral(valueStr, datatype);
-                            } else {
-                                value = valueFactory.createLiteral(valueStr);
-                            }
+                            valueStr = literal.getLexicalForm();
                         } else if (solution.isResource()) {
                             Resource resource = solution.asResource();
-                            value = valueFactory.createURI(resource.getURI());
+                            valueStr = resource.getURI();
                         } else {
-                            LOGGER.error("Resource not recognized");
+                            Node anon = solution.asNode();
+                            valueStr = anon.getBlankNodeLabel();
+                            LOGGER.error("Anon Node result: {}", valueStr);
                         }
-                        bindingSet.addBinding(varName, value);
+                        firstResult.put(varName, valueStr);
+
                     }
-                    this.firstBindingSet = bindingSet;
                     results++;
                 }
                 while (rs.hasNext()) {

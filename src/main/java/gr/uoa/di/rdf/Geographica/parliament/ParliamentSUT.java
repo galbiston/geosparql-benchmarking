@@ -16,6 +16,7 @@ import com.bbn.parliament.jena.graph.index.IndexManager;
 import com.bbn.parliament.jena.graph.index.spatial.Constants;
 import com.bbn.parliament.jena.graph.index.spatial.SpatialIndex;
 import com.bbn.parliament.jena.graph.index.spatial.SpatialIndexFactory;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.DataSource;
 import com.hp.hpl.jena.query.DatasetFactory;
 import com.hp.hpl.jena.query.QueryExecution;
@@ -35,6 +36,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
@@ -43,13 +45,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.apache.log4j.Logger;
-import org.openrdf.model.URI;
-import org.openrdf.model.Value;
-import org.openrdf.model.ValueFactory;
-import org.openrdf.model.impl.ValueFactoryImpl;
-import org.openrdf.query.BindingSet;
-import org.openrdf.query.impl.MapBindingSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author George Garbis <ggarbis@di.uoa.gr>
@@ -58,7 +55,7 @@ import org.openrdf.query.impl.MapBindingSet;
  */
 public class ParliamentSUT implements SystemUnderTest {
 
-    static Logger logger = Logger.getLogger(ParliamentSUT.class.getSimpleName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ParliamentSUT.class);
 
     static QueryExecution qexec = null;
     DataSource dataSource = null;
@@ -67,24 +64,24 @@ public class ParliamentSUT implements SystemUnderTest {
     KbGraph graph = null;
     SpatialIndex index = null;
 
-    BindingSet firstBindingSet;
+    HashMap<String, String> firstResult = new HashMap<>();
 
     public ParliamentSUT() {
     }
 
     @Override
-    public BindingSet getFirstBindingSet() {
-        return firstBindingSet;
+    public HashMap<String, String> getFirstResult() {
+        return firstResult;
     }
 
     @Override
     public void initialize() {
         if (!java.lang.System.getProperty("java.library.path").contains("parliament-dependencies")) {
-            logger.warn("Do not forget to add the folder Geographica/runtime/src/main/resources/parliament-dependencies/linux-32 or 64 to the variable java.library.path.");
-            logger.warn("You will possible get some exceptions...");
+            LOGGER.warn("Do not forget to add the folder Geographica/runtime/src/main/resources/parliament-dependencies/linux-32 or 64 to the variable java.library.path.");
+            LOGGER.warn("You will possible get some exceptions...");
         }
 
-        logger.info("Initializing Parliament...");
+        LOGGER.info("Initializing Parliament...");
         // create spatial index factory and configure for GeoSPARQL. This is used
         // by the GraphStore whenever a new named graph is created.
         factory = new SpatialIndexFactory();
@@ -119,30 +116,30 @@ public class ParliamentSUT implements SystemUnderTest {
         // create a new datasource (that will be used later on to append named graphs)
         dataSource = DatasetFactory.create(graphStore);
 
-        logger.info("Parliament initialized");
+        LOGGER.info("Parliament initialized");
     }
 
     static class Executor implements Runnable {
 
         private final String queryString;
         private final DataSource dataSource;
-        private BindingSet firstBindingSet = null;
+        private final HashMap<String, String> firstResult = new HashMap<>();
         private long[] returnValue;
 
         public Executor(String queryString, DataSource dataSource, int timeoutSecs) {
             this.queryString = queryString;
             this.dataSource = dataSource;
             this.returnValue = new long[]{timeoutSecs + 1, timeoutSecs + 1, timeoutSecs + 1, -1};
-            logger.debug("RetVal initialized: " + this.returnValue[0] + " " + this.returnValue[1] + " " + this.returnValue[2] + " " + this.returnValue[3]);
+            LOGGER.debug("RetVal initialized: " + this.returnValue[0] + " " + this.returnValue[1] + " " + this.returnValue[2] + " " + this.returnValue[3]);
         }
 
         public long[] getRetValue() {
             return returnValue;
         }
 
-        public Object getFirstBindingSet() {
-            return firstBindingSet;
-        } // returns BindingSet
+        public HashMap<String, String> getFirstResult() {
+            return firstResult;
+        }
 
         @Override
         public void run() {
@@ -151,7 +148,7 @@ public class ParliamentSUT implements SystemUnderTest {
 
         public void runQuery() {
 
-            logger.info("Evaluating query");
+            LOGGER.info("Evaluating query");
             long t1 = System.nanoTime();
             qexec = QueryExecutionFactory.create(queryString, dataSource);
             ResultSet rs = qexec.execSelect();
@@ -160,32 +157,24 @@ public class ParliamentSUT implements SystemUnderTest {
 
             if (rs.hasNext()) {
                 QuerySolution querySolution = rs.next();
-                ValueFactory valueFactory = new ValueFactoryImpl();
                 Iterator<String> varNames = querySolution.varNames();
-                Value value = null;
-                MapBindingSet bindingSet = new MapBindingSet();
                 while (varNames.hasNext()) {
                     String varName = varNames.next();
+                    String valueStr;
                     RDFNode solution = querySolution.get(varName);
                     if (solution.isLiteral()) {
                         Literal literal = solution.asLiteral();
-                        String valueStr = literal.getString();
-                        String datatypeStr = literal.getDatatypeURI();
-                        if (datatypeStr != null) {
-                            URI datatype = valueFactory.createURI(datatypeStr);
-                            value = valueFactory.createLiteral(valueStr, datatype);
-                        } else {
-                            value = valueFactory.createLiteral(valueStr);
-                        }
+                        valueStr = literal.getLexicalForm();
                     } else if (solution.isResource()) {
                         Resource resource = solution.asResource();
-                        value = valueFactory.createURI(resource.getURI());
+                        valueStr = resource.getURI();
                     } else {
-                        logger.error("Resource not recognized");
+                        Node anon = solution.asNode();
+                        valueStr = anon.getBlankNodeLabel();
+                        LOGGER.error("Anon Node result: " + valueStr);
                     }
-                    bindingSet.addBinding(varName, value);
+                    firstResult.put(varName, valueStr);
                 }
-                this.firstBindingSet = bindingSet;
                 results++;
             }
             while (rs.hasNext()) {
@@ -193,7 +182,7 @@ public class ParliamentSUT implements SystemUnderTest {
                 results++;
             }
             long t3 = System.nanoTime();
-            logger.info("Query evaluated at " + (t3 - t1));
+            LOGGER.info("Query evaluated at " + (t3 - t1));
             this.returnValue = new long[]{t2 - t1, t3 - t2, t3 - t1, results};
         }
     }
@@ -216,39 +205,39 @@ public class ParliamentSUT implements SystemUnderTest {
             e.printStackTrace();
         } catch (TimeoutException e) {
             isTimedout = true;
-            logger.info("time out!");
+            LOGGER.info("time out!");
         } finally {
             qexec.abort();
             qexec.close();
-            logger.info("Closing Parliament...");
+            LOGGER.info("Closing Parliament...");
             future.cancel(true);
-            logger.debug("Future canceled");
+            LOGGER.debug("Future canceled");
             executor.shutdown();
-            logger.debug("Executor shutdown");
+            LOGGER.debug("Executor shutdown");
             try {
                 //executor.awaitTermination(timeoutSecs, TimeUnit.SECONDS);
                 executor.awaitTermination(1, TimeUnit.SECONDS);
-                logger.debug("Executor terminated");
+                LOGGER.debug("Executor terminated");
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             System.gc();
-            //logger.debug("Garbage collected");
+            //LOGGER.debug("Garbage collected");
             //this.clearCaches();
-            //logger.debug("Caches are cleared");
+            //LOGGER.debug("Caches are cleared");
             //this.close();
-            //logger.debug("Parliament is closed");
+            //LOGGER.debug("Parliament is closed");
             //this.initialize();
-            //logger.debug("Parliament is initialized");
+            //LOGGER.debug("Parliament is initialized");
         }
 
-        logger.debug("RetValue: " + Arrays.toString(runnable.getRetValue()));
+        LOGGER.debug("RetValue: " + Arrays.toString(runnable.getRetValue()));
         if (isTimedout) {
             long tt2 = System.nanoTime();
             return new long[]{tt2 - tt1, tt2 - tt1, tt2 - tt1, -1};
         } else {
-            this.firstBindingSet = (BindingSet) runnable.getFirstBindingSet();
+            this.firstResult = runnable.getFirstResult();
             return runnable.getRetValue();
         }
     }
@@ -256,7 +245,7 @@ public class ParliamentSUT implements SystemUnderTest {
     @Override
     public long[] runUpdate(String update) {
 
-        logger.info("Executing update...");
+        LOGGER.info("Executing update...");
 
         long t1 = System.nanoTime();
 
@@ -267,7 +256,7 @@ public class ParliamentSUT implements SystemUnderTest {
         long t2 = System.nanoTime();
 
         long[] ret = {-1, -1, t2 - t1, -1};
-        logger.info("Update executed...");
+        LOGGER.info("Update executed...");
         return ret;
     }
 
@@ -297,11 +286,11 @@ public class ParliamentSUT implements SystemUnderTest {
                 factory = null;
             }
 
-            firstBindingSet = null;
+            firstResult = new HashMap<>();
         }
 
         System.gc();
-        logger.info("Parliament closed");
+        LOGGER.info("Parliament closed");
     }
 
     @Override
@@ -310,25 +299,25 @@ public class ParliamentSUT implements SystemUnderTest {
 //		Process pr;
 
         try {
-            logger.info("No need to restart parliament");
-//			logger.info("Restarting Parliament...");
+            LOGGER.info("No need to restart parliament");
+//			LOGGER.info("Restarting Parliament...");
 
 //			pr = Runtime.getRuntime().exec(restart_parliament);
 //			pr.waitFor();
 //			if ( pr.exitValue() != 0) {
-//				logger.error("Something went wrong while restarting Parliament");
+//				LOGGER.error("Something went wrong while restarting Parliament");
 //			}
 //
 //			Thread.sleep(5000);
-//			logger.info("Parliament restarted");
+//			LOGGER.info("Parliament restarted");
             //initialize(); // Parliament will be initializd out of clearCaches()
-            firstBindingSet = null;
+            firstResult = new HashMap<>();
         } catch (Exception e) {
-            logger.fatal("Cannont clear caches");
+            LOGGER.error("Cannont clear caches");
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             String stacktrace = sw.toString();
-            logger.fatal(stacktrace);
+            LOGGER.error(stacktrace);
         }
     }
 
@@ -338,25 +327,25 @@ public class ParliamentSUT implements SystemUnderTest {
         Process pr;
 
         try {
-            logger.info("Clearing caches...");
+            LOGGER.info("Clearing caches...");
             //close(); // clearCaches should be called after Parliament is closed
 
             pr = Runtime.getRuntime().exec(clear_caches);
             pr.waitFor();
             if (pr.exitValue() != 0) {
-                logger.error("Something went wrong while clearing caches");
+                LOGGER.error("Something went wrong while clearing caches");
             }
 
             Thread.sleep(5000);
-            logger.info("Caches cleared");
+            LOGGER.info("Caches cleared");
 
             //initialize(); // Parliament will be initializd out of clearCaches()
         } catch (IOException | InterruptedException e) {
-            logger.fatal("Cannont clear caches");
+            LOGGER.error("Cannont clear caches");
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             String stacktrace = sw.toString();
-            logger.fatal(stacktrace);
+            LOGGER.error(stacktrace);
         }
     }
 

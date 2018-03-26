@@ -15,19 +15,23 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.apache.log4j.Logger;
+import org.openrdf.model.Value;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQuery;
 import org.openrdf.query.TupleQueryResult;
 import org.openrdf.query.TupleQueryResultHandlerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author George Garbis <ggarbis@di.uoa.gr>
@@ -35,10 +39,10 @@ import org.openrdf.query.TupleQueryResultHandlerException;
  */
 public class StrabonSUT implements SystemUnderTest {
 
-    static Logger logger = Logger.getLogger(StrabonSUT.class.getSimpleName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(StrabonSUT.class);
 
     private Strabon strabon = null;
-    private BindingSet firstBindingSet;
+    private HashMap<String, String> firstResult = new HashMap<>();
 
     String db = null;
     String user = null;
@@ -57,8 +61,8 @@ public class StrabonSUT implements SystemUnderTest {
     }
 
     @Override
-    public BindingSet getFirstBindingSet() {
-        return firstBindingSet;
+    public HashMap<String, String> getFirstResult() {
+        return firstResult;
     }
 
     @Override
@@ -72,11 +76,11 @@ public class StrabonSUT implements SystemUnderTest {
         try {
             strabon = new Strabon(db, user, passwd, port, host, true);
         } catch (Exception e) {
-            logger.fatal("Cannot initialize strabon");
+            LOGGER.error("Cannot initialize strabon");
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             String stacktrace = sw.toString();
-            logger.fatal(stacktrace);
+            LOGGER.error(stacktrace);
         }
     }
 
@@ -85,7 +89,7 @@ public class StrabonSUT implements SystemUnderTest {
         private final String query;
         private final Strabon strabon;
         private long[] returnValue;
-        private BindingSet firstBindingSet;
+        private final HashMap<String, String> firstResult = new HashMap<>();
 
         public Executor(String query, Strabon strabon, int timeoutSecs) {
             this.query = query;
@@ -97,8 +101,8 @@ public class StrabonSUT implements SystemUnderTest {
             return returnValue;
         }
 
-        public BindingSet getFirstBindingSet() {
-            return firstBindingSet;
+        public HashMap<String, String> getFirstBindingSet() {
+            return firstResult;
         }
 
         @Override
@@ -114,7 +118,7 @@ public class StrabonSUT implements SystemUnderTest {
 
         public void runQuery() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException {
 
-            logger.info("Evaluating query...");
+            LOGGER.info("Evaluating query...");
             TupleQuery tupleQuery = (TupleQuery) strabon.query(query,
                     eu.earthobservatory.utils.Format.TUQU, strabon.getSailRepoConnection(), (OutputStream) System.out);
 
@@ -125,7 +129,15 @@ public class StrabonSUT implements SystemUnderTest {
             long t2 = System.nanoTime();
 
             if (result.hasNext()) {
-                this.firstBindingSet = result.next();
+
+                BindingSet bindingSet = result.next();
+                List<String> bindingNames = result.getBindingNames();
+                for (String binding : bindingNames) {
+
+                    Value value = bindingSet.getValue(binding);
+                    String valueStr = value.stringValue();
+                    firstResult.put(binding, valueStr);
+                }
                 results++;
             }
             while (result.hasNext()) {
@@ -134,7 +146,7 @@ public class StrabonSUT implements SystemUnderTest {
             }
             long t3 = System.nanoTime();
 
-            logger.info("Query evaluated");
+            LOGGER.info("Query evaluated");
             this.returnValue = new long[]{t2 - t1, t3 - t2, t3 - t1, results};
         }
     }
@@ -151,25 +163,25 @@ public class StrabonSUT implements SystemUnderTest {
         //check the outcome of the executor thread and limit the time allowed for it to complete
         long tt1 = System.nanoTime();
         try {
-            logger.debug("Future started");
+            LOGGER.debug("Future started");
             future.get(timeoutSecs, TimeUnit.SECONDS);
-            logger.debug("Future end");
+            LOGGER.debug("Future end");
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         } catch (TimeoutException e) {
             isTimedout = true;
-            logger.info("time out!");
-            logger.info("Restarting Strabon...");
+            LOGGER.info("time out!");
+            LOGGER.info("Restarting Strabon...");
             this.restart();
-            logger.info("Closing Strabon...");
+            LOGGER.info("Closing Strabon...");
             this.close();
         } finally {
-            logger.debug("Future canceling...");
+            LOGGER.debug("Future canceling...");
             future.cancel(true);
-            logger.debug("Executor shutting down...");
+            LOGGER.debug("Executor shutting down...");
             executor.shutdown();
             try {
-                logger.debug("Executor waiting for termination...");
+                LOGGER.debug("Executor waiting for termination...");
                 executor.awaitTermination(timeoutSecs, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
@@ -178,13 +190,13 @@ public class StrabonSUT implements SystemUnderTest {
             System.gc();
         }
 
-        logger.debug("RetValue: " + Arrays.toString(runnable.getRetValue()));
+        LOGGER.debug("RetValue: " + Arrays.toString(runnable.getRetValue()));
 
         if (isTimedout) {
             long tt2 = System.nanoTime();
             return new long[]{tt2 - tt1, tt2 - tt1, tt2 - tt1, -1};
         } else {
-            this.firstBindingSet = runnable.getFirstBindingSet();
+            this.firstResult = runnable.getFirstBindingSet();
             return runnable.getRetValue();
         }
     }
@@ -192,11 +204,11 @@ public class StrabonSUT implements SystemUnderTest {
     @Override
     public long[] runUpdate(String query) throws MalformedQueryException {
 
-        logger.info("Executing update...");
+        LOGGER.info("Executing update...");
         long t1 = System.nanoTime();
         strabon.update(query, strabon.getSailRepoConnection());
         long t2 = System.nanoTime();
-        logger.info("Update executed");
+        LOGGER.info("Update executed");
 
         long[] ret = {-1, -1, t2 - t1, -1};
         return ret;
@@ -205,11 +217,11 @@ public class StrabonSUT implements SystemUnderTest {
     @Override
     public void close() {
 
-        logger.info("Closing..");
+        LOGGER.info("Closing..");
         try {
             strabon.close();
             strabon = null;
-            firstBindingSet = null;
+            firstResult = new HashMap<>();
         } catch (Exception e) {
         }
         // TODO
@@ -222,13 +234,13 @@ public class StrabonSUT implements SystemUnderTest {
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
-            logger.fatal("Cannot clear caches");
+            LOGGER.error("Cannot clear caches");
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             String stacktrace = sw.toString();
-            logger.fatal(stacktrace);
+            LOGGER.error(stacktrace);
         }
-        logger.info("Closed (caches not cleared)");
+        LOGGER.info("Closed (caches not cleared)");
     }
 
     @Override
@@ -239,12 +251,12 @@ public class StrabonSUT implements SystemUnderTest {
         Process pr;
 
         try {
-            logger.info("Restarting Strabon (Postgres) ...");
+            LOGGER.info("Restarting Strabon (Postgres) ...");
 
             pr = Runtime.getRuntime().exec(restart_postgres);
             pr.waitFor();
             if (pr.exitValue() != 0) {
-                logger.error("Something went wrong while stoping postgres");
+                LOGGER.error("Something went wrong while stoping postgres");
             }
 
             Thread.sleep(5000);
@@ -253,21 +265,21 @@ public class StrabonSUT implements SystemUnderTest {
                 try {
                     strabon.close();
                 } catch (Exception e) {
-                    logger.error("Exception occured while restarting Strabon. ");
+                    LOGGER.error("Exception occured while restarting Strabon. ");
                     e.printStackTrace();
                 } finally {
                     strabon = null;
                 }
             }
-            firstBindingSet = null;
+            firstResult = new HashMap<>();
             strabon = new Strabon(db, user, passwd, port, host, true);
-            logger.info("Strabon (Postgres) restarted");
+            LOGGER.info("Strabon (Postgres) restarted");
         } catch (Exception e) {
-            logger.fatal("Cannot restart Strabon");
+            LOGGER.error("Cannot restart Strabon");
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             String stacktrace = sw.toString();
-            logger.fatal(stacktrace);
+            LOGGER.error(stacktrace);
         }
     }
 
@@ -281,13 +293,13 @@ public class StrabonSUT implements SystemUnderTest {
         Process pr;
 
         try {
-            logger.info("Clearing caches...");
+            LOGGER.info("Clearing caches...");
 
             pr = Runtime.getRuntime().exec(stop_postgres);
             pr.waitFor();
 //			System.out.println(pr.exitValue());
             if (pr.exitValue() != 0) {
-                logger.error("Something went wrong while stoping postgres");
+                LOGGER.error("Something went wrong while stoping postgres");
             }
 //			System.in.read();
 
@@ -295,7 +307,7 @@ public class StrabonSUT implements SystemUnderTest {
             pr.waitFor();
 //			System.out.println(pr.exitValue());
             if (pr.exitValue() != 0) {
-                logger.error("Something went wrong while clearing caches");
+                LOGGER.error("Something went wrong while clearing caches");
             }
 //			System.in.read();
 
@@ -303,17 +315,17 @@ public class StrabonSUT implements SystemUnderTest {
             pr.waitFor();
 //			System.out.println(pr.exitValue());
             if (pr.exitValue() != 0) {
-                logger.error("Something went wrong while clearing caches");
+                LOGGER.error("Something went wrong while clearing caches");
             }
 
             Thread.sleep(5000);
-            logger.info("Caches cleared");
+            LOGGER.info("Caches cleared");
         } catch (IOException | InterruptedException e) {
-            logger.fatal("Cannot clear caches");
+            LOGGER.error("Cannot clear caches");
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));
             String stacktrace = sw.toString();
-            logger.fatal(stacktrace);
+            LOGGER.error(stacktrace);
         }
     }
 
