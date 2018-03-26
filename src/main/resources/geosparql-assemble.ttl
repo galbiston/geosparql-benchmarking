@@ -1,0 +1,69 @@
+@prefix :      <http://example.org/geosparql#> .
+@prefix tdb:   <http://jena.hpl.hp.com/2008/tdb#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ja:    <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+
+:tdb_dataset
+    a             tdb:DatasetTDB ;
+    tdb:location  "<path>/geosparql_jena_tdb" .
+
+<#gag_graph> rdf:type tdb:GraphTDB ;
+    tdb:dataset :tdb_dataset ;
+    tdb:graphName <http://geographica.di.uoa.gr/dataset/gag> .
+
+<#gag_model_inf> a ja:InfModel ;
+    ja:baseModel <#gag_graph> ;
+    ja:reasoner [
+        ja:reasonerURL <http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner>
+    ] .
+
+<#lgd_graph> rdf:type tdb:GraphTDB ;
+    tdb:dataset :tdb_dataset ;
+    tdb:graphName <http://geographica.di.uoa.gr/dataset/lgd> .
+
+<#lgd_model_inf> a ja:InfModel ;
+    ja:baseModel <#lgd_graph> ;
+    ja:reasoner [
+        ja:reasonerURL <http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner>
+    ] .
+
+<#geonames_graph> rdf:type tdb:GraphTDB ;
+    tdb:dataset :tdb_dataset ;
+    tdb:graphName <http://geographica.di.uoa.gr/dataset/geonames> .
+
+<#geonames_model_inf> a ja:InfModel ;
+    ja:baseModel <#geonames_graph> ;
+    ja:reasoner [
+        ja:reasonerURL <http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner>
+    ] .
+
+<#hotspots_graph> rdf:type tdb:GraphTDB ;
+    tdb:dataset :tdb_dataset ;
+    tdb:graphName <http://geographica.di.uoa.gr/dataset/hotspots> .
+
+<#hotspots_model_inf> a ja:InfModel ;
+    ja:baseModel <#hotspots_graph> ;
+    ja:reasoner [
+        ja:reasonerURL <http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner>
+    ] .
+
+<#clc_graph> rdf:type tdb:GraphTDB ;
+    tdb:dataset :tdb_dataset ;
+    tdb:graphName <http://geographica.di.uoa.gr/dataset/clc> .
+
+<#clc_model_inf> a ja:InfModel ;
+    ja:baseModel <#clc_graph> ;
+    ja:reasoner [
+        ja:reasonerURL <http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner>
+    ] .
+
+<#dbpedia_graph> rdf:type tdb:GraphTDB ;
+    tdb:dataset :tdb_dataset ;
+    tdb:graphName <http://geographica.di.uoa.gr/dataset/dbpedia> .
+
+<#dbpedia_model_inf> a ja:InfModel ;
+    ja:baseModel <#dbpedia_graph> ;
+    ja:reasoner [
+        ja:reasonerURL <http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner>
+    ] .
