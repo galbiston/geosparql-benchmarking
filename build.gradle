@@ -20,6 +20,10 @@ repositories {
         url "http://download.osgeo.org/webdav/geotools/"
     }
 
+    maven{
+        url "http://maven.geo-solutions.it"
+    }
+
     /*
     maven{
     url "http://maven.strabon.di.uoa.gr/content/repositories/snapshots"
@@ -43,11 +47,17 @@ dependencies {
     //GeoSPARQL Extension
     ext.geosparqlVersion = "0.9.6"
     compile "org.ntu:GeoSPARQL:$geosparqlVersion"
-    
+
     //Apache Jena for Parliament
     compile group: 'com.hp.hpl.jena', name: 'jena', version: '2.6.4'
     compile group: 'com.hp.hpl.jena', name: 'arq', version: '2.8.8'
     compile group: 'com.hp.hpl.jena', name: 'iri', version: '0.8'
+
+    //GeoTools for Parliament
+    compile group: 'org.geotools', name: 'gt-xml', version: '19.0'
+
+    //BerkeleyDB Jave Edition for Parliament
+    compile 'com.sleepycat:je:5.0.73'
 
     //Geographica Benchmarking - not used due to broken dependency to OpenRDF Sesame - now RDF4J.
     //ext.geographicaVersion = "1.0-SNAPSHOT"

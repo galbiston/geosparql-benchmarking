@@ -1,6 +1,8 @@
 package geosparql_benchmarking;
 
+import static gr.uoa.di.rdf.Geographica.parliament.RunParliament.loadParliament;
 import java.io.File;
+import java.net.MalformedURLException;
 import java.util.HashMap;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.QueryExecution;
@@ -18,11 +20,11 @@ public class Main {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws MalformedURLException {
 
         HashMap<String, File> datasetMap = getDatasets();
         //loadGeosparqlJena(GEOSPARQL_JENA_TDB_FOLDER, datasetMap);
-        //loadParliament(datasetMap);
+        loadParliament(datasetMap);
         //loadStrabon(datasetMap);
 
         //Run GeoSPARQL Compliance Testing
@@ -44,7 +46,7 @@ public class Main {
 
         //Run the experiments using the arguements.
         try {
-            rdfsTest();
+            //rdfsTest();
             // RunGeosparqlJena.main(experimentArgs);
         } catch (Exception ex) {
             LOGGER.error("Exception: {}", ex);

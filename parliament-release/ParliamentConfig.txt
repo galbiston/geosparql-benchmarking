@@ -1,7 +1,7 @@
 
 # Parameters file for the Parliament core DLL
 
-kbDirectoryPath        = .
+kbDirectoryPath        = parliament_kb
 stmtFileName           = statements.mem
 rsrcFileName           = resources.mem
 uriTableFileName       = uris.mem
