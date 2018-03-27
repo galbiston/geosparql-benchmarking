@@ -4,9 +4,7 @@ import com.bbn.parliament.jena.graph.KbGraph;
 import com.bbn.parliament.jena.graph.KbGraphFactory;
 import com.bbn.parliament.jena.graph.KbGraphStore;
 import com.bbn.parliament.jena.graph.index.IndexFactoryRegistry;
-import com.bbn.parliament.jena.graph.index.IndexManager;
 import com.bbn.parliament.jena.graph.index.spatial.Constants;
-import com.bbn.parliament.jena.graph.index.spatial.SpatialIndex;
 import com.bbn.parliament.jena.graph.index.spatial.SpatialIndexFactory;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.query.DataSource;
@@ -16,6 +14,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import gr.uoa.di.rdf.Geographica.systemsundertest.RunSystemUnderTest;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
+import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -45,7 +44,7 @@ public class RunParliament extends RunSystemUnderTest {
         runParliament.run(args);
     }
 
-    public static void loadParliament(HashMap<String, File> datasetMap) {
+    public static void loadParliament(HashMap<String, File> datasetMap) throws MalformedURLException {
         LOGGER.info("Parliament Loading: Started");
         LOGGER.info("Initializing Parliament...");
         // create spatial index factory and configure for GeoSPARQL. This is used
@@ -64,11 +63,12 @@ public class RunParliament extends RunSystemUnderTest {
         KbGraphStore graphStore = new KbGraphStore(graph);
         graphStore.initialize();
         // create spatial index from factory
+        /*
         SpatialIndex index = factory.createIndex(graph, null);
         // register index with IndexManager
         IndexManager.getInstance().register(graph, null, factory, index);
         graphStore.setIndexingEnabled(KbGraphStore.DEFAULT_GRAPH_NODE, true);
-
+         */
         //Named graphs for each file loaded.
         for (Entry<String, File> entry : datasetMap.entrySet()) {
             String graphName = entry.getKey();
@@ -77,8 +77,8 @@ public class RunParliament extends RunSystemUnderTest {
             Node graphNode = Node.createURI(graphName);
             KbGraph namedGraph = KbGraphFactory.createNamedGraph();
             Model namedModel = ModelFactory.createModelForGraph(namedGraph);
-            namedModel.read(sourceRDFFile.getAbsolutePath());
-
+            namedModel.read(sourceRDFFile.toURI().toURL().toString(), "N3");
+            /*
             index = factory.createIndex(namedGraph, graphNode);
 
             // register index with IndexManager
@@ -88,6 +88,7 @@ public class RunParliament extends RunSystemUnderTest {
             // indexing graph. This is necessary so that the next time Parliament
             // loads, the index is read in automatically.
             graphStore.setIndexingEnabled(graphNode, true);
+             */
             LOGGER.info("Loading: {} into {}: Completed", sourceRDFFile, graphName);
         }
         DataSource dataSource = DatasetFactory.create(graphStore);
