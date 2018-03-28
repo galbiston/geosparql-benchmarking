@@ -69,7 +69,8 @@ dependencies {
     //compile group: 'org.openrdf.sesame', name: 'sesame-sail-rdbms', version: '2.9.0'
 
     //Postgresql
-    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.2'
+    //compile group: 'org.postgresql', name: 'postgresql', version: '42.2.2'
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
 
     //SLF4J - Logback Classic
     ext.logbackVersion = "1.2.3"
