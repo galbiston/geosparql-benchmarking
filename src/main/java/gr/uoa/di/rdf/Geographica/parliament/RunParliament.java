@@ -62,25 +62,26 @@ public class RunParliament extends RunSystemUnderTest {
         // create a Parliament graph and graph store - default empty
         KbGraph graph = KbGraphFactory.createDefaultGraph();
         KbGraphStore graphStore = new KbGraphStore(graph);
-        graphStore.initialize();
-        // create spatial index from factory
-        /*
+        try {
+            graphStore.initialize();
+            // create spatial index from factory
+            /*
         SpatialIndex index = factory.createIndex(graph, null);
         // register index with IndexManager
         IndexManager.getInstance().register(graph, null, factory, index);
         graphStore.setIndexingEnabled(KbGraphStore.DEFAULT_GRAPH_NODE, true);
-         */
-        //Named graphs for each file loaded.
-        for (Entry<String, File> entry : datasetMap.entrySet()) {
-            String graphName = entry.getKey();
-            File sourceRDFFile = entry.getValue();
-            LOGGER.info("Loading: {} into {}: Started", sourceRDFFile, graphName);
-            Node graphNode = Node.createURI(graphName);
-            KbGraph namedGraph = KbGraphFactory.createNamedGraph();
-            Model namedModel = ModelFactory.createModelForGraph(namedGraph);
-            namedModel.read(sourceRDFFile.toURI().toURL().toString(), "N-TRIPLE");
-            graphStore.addGraph(graphNode, namedGraph);
-            /*
+             */
+            //Named graphs for each file loaded.
+            for (Entry<String, File> entry : datasetMap.entrySet()) {
+                String graphName = entry.getKey();
+                File sourceRDFFile = entry.getValue();
+                LOGGER.info("Loading: {} into {}: Started", sourceRDFFile, graphName);
+                Node graphNode = Node.createURI(graphName);
+                KbGraph namedGraph = KbGraphFactory.createNamedGraph();
+                Model namedModel = ModelFactory.createModelForGraph(namedGraph);
+                namedModel.read(sourceRDFFile.toURI().toURL().toString(), "N-TRIPLE");
+                graphStore.addGraph(graphNode, namedGraph);
+                /*
             index = factory.createIndex(namedGraph, graphNode);
 
             // register index with IndexManager
@@ -90,10 +91,15 @@ public class RunParliament extends RunSystemUnderTest {
             // indexing graph. This is necessary so that the next time Parliament
             // loads, the index is read in automatically.
             graphStore.setIndexingEnabled(graphNode, true);
-             */
-            LOGGER.info("Loading: {} into {}: Completed", sourceRDFFile, graphName);
+                 */
+                LOGGER.info("Loading: {} into {}: Completed", sourceRDFFile, graphName);
+            }
+        } catch (Exception ex) {
+            LOGGER.error("Exception: {}", ex.getMessage());
+        } finally {
+            graphStore.flush();
+            graphStore.close();
         }
-
         LOGGER.info("Parliament Loading: Completed");
     }
 

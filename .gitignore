@@ -18,3 +18,5 @@ gradle-app.setting
 /geosparql_jena_tdb
 /logs
 /parliament_kb
+lgd-jena.ttl
+lgd-parliament.ttl

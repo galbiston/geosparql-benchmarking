@@ -52,6 +52,12 @@ dependencies {
     compile group: 'com.hp.hpl.jena', name: 'jena', version: '2.6.4'
     compile group: 'com.hp.hpl.jena', name: 'arq', version: '2.8.8'
     compile group: 'com.hp.hpl.jena', name: 'iri', version: '0.8'
+    //compile group: 'org.apache.jena', name: 'jena-arq', version: '2.9.4'
+    //compile group: 'org.apache.jena', name: 'jena', version: '2.7.4'
+    //compile group: 'org.apache.jena', name: 'jena-iri', version: '0.9.4'
+
+
+
 
     //GeoTools for Parliament
     compile group: 'org.geotools', name: 'gt-xml', version: '19.0'
