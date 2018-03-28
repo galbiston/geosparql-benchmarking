@@ -5,10 +5,13 @@ import gr.uoa.di.rdf.Geographica.systemsundertest.RunSystemUnderTest;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.ReadWrite;
+import org.apache.jena.rdf.model.InfModel;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.tdb.TDBFactory;
 import org.slf4j.Logger;
@@ -29,9 +32,10 @@ public class RunGeosparqlJena extends RunSystemUnderTest {
         runGeosparql.run(args);
     }
 
-    public static void loadGeosparqlJena(File datasetFolder, HashMap<String, File> datasetMap) {
+    public static void loadDataset(File datasetFolder, HashMap<String, File> datasetMap, Boolean inferenceEnabled) {
         LOGGER.info("Geosparql Jena Loading: Started");
         Dataset dataset = TDBFactory.createDataset(datasetFolder.getAbsolutePath());
+        Model geosparqlSchema = RDFDataMgr.loadModel(RunGeosparqlJena.class.getClassLoader().getResource("geosparql_vocab_all.rdf").toString());
 
         for (Entry<String, File> entry : datasetMap.entrySet()) {
             try {
@@ -39,8 +43,13 @@ public class RunGeosparqlJena extends RunSystemUnderTest {
                 String sourceRDFFile = entry.getValue().getAbsolutePath();
                 String graph = entry.getKey();
                 LOGGER.info("Loading: {} into {}: Started", sourceRDFFile, graph);
-                Model model = RDFDataMgr.loadModel(sourceRDFFile);
-                dataset.addNamedModel(graph, model);
+                Model dataModel = RDFDataMgr.loadModel(sourceRDFFile);
+                if (inferenceEnabled) {
+                    InfModel infModel = ModelFactory.createRDFSModel(geosparqlSchema, dataModel);
+                    dataset.addNamedModel(graph, infModel);
+                } else {
+                    dataset.addNamedModel(graph, dataModel);
+                }
                 LOGGER.info("Loading: {} into {}: Completed", sourceRDFFile, graph);
                 dataset.commit();
 
@@ -54,5 +63,20 @@ public class RunGeosparqlJena extends RunSystemUnderTest {
         TDBFactory.release(dataset);
 
         LOGGER.info("Geosparql Jena Loading: Completed");
+    }
+
+    public static void runBenchmark(File resultsFolder, Integer runtime, Integer timeout, List<String> queryList) {
+
+        for (String query : queryList) {
+            try {
+                LOGGER.info("GeoSPARQL Jena Benchmark - {}: Started", query);
+                String[] experimentArgs = {"--logpath", resultsFolder.getAbsolutePath(), "--runtime", runtime.toString(), "--timeout", timeout.toString(), "run", query};
+                RunGeosparqlJena.main(experimentArgs);
+                LOGGER.info("GeoSPARQL Jena Benchmark - {}: Completed", query);
+            } catch (Exception ex) {
+                LOGGER.error("Exception: {}", ex);
+            }
+        }
+
     }
 }
