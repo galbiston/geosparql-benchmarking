@@ -46,6 +46,7 @@ public class RunGeosparqlJena extends RunSystemUnderTest {
                 Model dataModel = RDFDataMgr.loadModel(sourceRDFFile);
                 if (inferenceEnabled) {
                     InfModel infModel = ModelFactory.createRDFSModel(geosparqlSchema, dataModel);
+                    infModel.prepare();
                     dataset.addNamedModel(graph, infModel);
                 } else {
                     dataset.addNamedModel(graph, dataModel);
