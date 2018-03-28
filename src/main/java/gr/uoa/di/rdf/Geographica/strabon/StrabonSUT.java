@@ -349,6 +349,9 @@ public class StrabonSUT implements SystemUnderTest {
             translatedQuery = translatedQuery.replaceAll(
                     " } \\n	FILTER\\(geof:sfIntersects\\(\\?clcWkt, \\?fWkt\\)\\)\\. \\\n",
                     " \n	FILTER(geof:sfIntersects(?clcWkt, ?fWkt)). } \n");
+        } else if (label.equals("Find_Closest_Populated_Place")
+                || label.equals("Find_Closest_Motorway")) {
+            translatedQuery = translatedQuery.replace("geof:distance", "strdf:distance");  //Moved from Parliament SUT and changed the Geographica query as this is a Strabon variation from GeoSPARQL standard.
         }
 
         return translatedQuery;

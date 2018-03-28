@@ -357,15 +357,14 @@ public class ParliamentSUT implements SystemUnderTest {
     @Override
     public String translateQuery(String query, String label) {
         String translatedQuery = query;
+        /*
+        //These should no longer be required as Parliament has aligned with GeoSPARQL 1.0 namespaces.
         translatedQuery = translatedQuery.replace("PREFIX geo: <http://www.opengis.net/ont/geosparql#>", "PREFIX geo: <http://www.opengis.net/ont/sf#>");
         translatedQuery = translatedQuery.replace("http://www.opengis.net/ont/geosparql#wktLiteral", "http://www.opengis.net/ont/sf#wktLiteral");
         translatedQuery = translatedQuery.replace("geo:wktLiteral", "<http://www.opengis.net/ont/sf#wktLiteral>");
-
+         */
         if (label.equals("Area_CLC")) {
-            translatedQuery = null;
-        } else if (label.equals("Find_Closest_Populated_Place")
-                || label.equals("Find_Closest_Motorway")) {
-            translatedQuery = translatedQuery.replace("strdf:distance", "geof:distance");
+            translatedQuery = null; //?!?!?!? Kill the query? Why?
         }
         return translatedQuery;
     }
