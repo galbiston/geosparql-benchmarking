@@ -1,11 +1,12 @@
 package gr.uoa.di.rdf.Geographica.strabon;
 
 import eu.earthobservatory.runtime.postgis.Strabon;
-import geosparql_benchmarking.GraphURI;
 import gr.uoa.di.rdf.Geographica.systemsundertest.RunSystemUnderTest;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +54,7 @@ public class RunStrabon extends RunSystemUnderTest {
         runStrabon.run(args);
     }
 
-    public static void loadStrabon(HashMap<String, File> datasetMap) {
+    public static void loadStrabon(HashMap<String, File> datasetMap, Boolean inferenceEnabled) {
         LOGGER.info("Strabon Loading: Started");
         Strabon strabon = null;
         try {
@@ -65,22 +66,17 @@ public class RunStrabon extends RunSystemUnderTest {
             Boolean checkForLockTable = true;
             strabon = new Strabon(db, user, passwd, port, host, checkForLockTable);
 
-            String src = new File("datasets/gag.nt").getAbsolutePath();
             String baseURI = null;
-            String graph = GraphURI.GADM_URI;
             String format = "NTRIPLES";
-            Boolean inference = false;
-            strabon.storeInRepo(src, baseURI, graph, format, inference);
 
-            /*
             for (Entry<String, File> entry : datasetMap.entrySet()) {
-                String src = entry.getValue().getAbsolutePath();
+                String src = entry.getValue().toURI().toURL().toString();
                 String graph = entry.getKey();
                 LOGGER.info("Loading: {} into {}: Started", src, graph);
-                strabon.storeInRepo(src, baseURI, graph, format, inference);
+                strabon.storeInRepo(src, baseURI, graph, format, inferenceEnabled);
                 LOGGER.info("Loading: {} into {}: Completed", src, graph);
             }
-             */
+
         } catch (Exception ex) {
             LOGGER.error("Load Strabon exception: {}", ex);
         } finally {
@@ -91,4 +87,20 @@ public class RunStrabon extends RunSystemUnderTest {
         LOGGER.info("Strabon Loading: Completed");
 
     }
+
+    public static void runBenchmark(File resultsFolder, Integer runtime, Integer timeout, List<String> queryList) {
+
+        for (String query : queryList) {
+            try {
+                LOGGER.info("Strabon Benchmark - {}: Started", query);
+                String[] experimentArgs = {"--logpath", resultsFolder.getAbsolutePath(), "--runtime", runtime.toString(), "--timeout", timeout.toString(), "run", query};
+                RunStrabon.main(experimentArgs);
+                LOGGER.info("Strabon Benchmark - {}: Completed", query);
+            } catch (Exception ex) {
+                LOGGER.error("Exception: {}", ex);
+            }
+        }
+
+    }
+
 }
