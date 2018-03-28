@@ -24,7 +24,7 @@ stmtGrowthFactor       = 1.25
 # single memory allocations.
 bdbCacheSize           = 32m,1
 
-runAllRulesAtStartup   = no
+runAllRulesAtStartup   = yes
 
 # If upgrading a triple store from version 2.7.9 or prior, either set this option
 # to "no" or export, clear, and then restore the backup:
@@ -38,9 +38,9 @@ normalizeTypedStringLiterals = yes
 # * If inferRdfsResource is true: "A is a subclass of B" ==> "A and B are subclasses of rdfs:Resource"
 # * If inferOwlThing is true: "A is a subclass of B" ==> "A and B are subclasses of owl:Thing"
 SubclassRule           = on
-inferRdfsClass         = off
+inferRdfsClass         = on
 inferOwlClass          = off
-inferRdfsResource      = off
+inferRdfsResource      = on
 inferOwlThing          = off
 
 # Sets up the following rules:
