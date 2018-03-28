@@ -54,7 +54,7 @@ public class RunStrabon extends RunSystemUnderTest {
         runStrabon.run(args);
     }
 
-    public static void loadStrabon(HashMap<String, File> datasetMap, Boolean inferenceEnabled) {
+    public static void loadDataset(HashMap<String, File> datasetMap, Boolean inferenceEnabled) {
         LOGGER.info("Strabon Loading: Started");
         Strabon strabon = null;
         try {
