@@ -7,8 +7,6 @@ import com.bbn.parliament.jena.graph.index.IndexFactoryRegistry;
 import com.bbn.parliament.jena.graph.index.spatial.Constants;
 import com.bbn.parliament.jena.graph.index.spatial.SpatialIndexFactory;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.DataSource;
-import com.hp.hpl.jena.query.DatasetFactory;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import gr.uoa.di.rdf.Geographica.systemsundertest.RunSystemUnderTest;
@@ -16,6 +14,7 @@ import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.net.MalformedURLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
 import org.slf4j.Logger;
@@ -44,9 +43,11 @@ public class RunParliament extends RunSystemUnderTest {
         runParliament.run(args);
     }
 
-    public static void loadParliament(HashMap<String, File> datasetMap) throws MalformedURLException {
+    public static void loadDataset(HashMap<String, File> datasetMap) throws MalformedURLException {
         LOGGER.info("Parliament Loading: Started");
+        LOGGER.info("Parliament inferencing is controlled in the ParliamentConfig.txt file.");
         LOGGER.info("Initializing Parliament...");
+
         // create spatial index factory and configure for GeoSPARQL. This is used
         // by the GraphStore whenever a new named graph is created.
         SpatialIndexFactory factory = new SpatialIndexFactory();
@@ -77,7 +78,8 @@ public class RunParliament extends RunSystemUnderTest {
             Node graphNode = Node.createURI(graphName);
             KbGraph namedGraph = KbGraphFactory.createNamedGraph();
             Model namedModel = ModelFactory.createModelForGraph(namedGraph);
-            namedModel.read(sourceRDFFile.toURI().toURL().toString(), "N3");
+            namedModel.read(sourceRDFFile.toURI().toURL().toString(), "N-TRIPLE");
+            graphStore.addGraph(graphNode, namedGraph);
             /*
             index = factory.createIndex(namedGraph, graphNode);
 
@@ -91,8 +93,22 @@ public class RunParliament extends RunSystemUnderTest {
              */
             LOGGER.info("Loading: {} into {}: Completed", sourceRDFFile, graphName);
         }
-        DataSource dataSource = DatasetFactory.create(graphStore);
 
-        LOGGER.info("Parliament Jena Loading: Completed");
+        LOGGER.info("Parliament Loading: Completed");
     }
+
+    public static void runBenchmark(File resultsFolder, Integer runtime, Integer timeout, List<String> queryList) {
+
+        for (String query : queryList) {
+            try {
+                LOGGER.info("Parliament Benchmark - {}: Started", query);
+                String[] experimentArgs = {"--logpath", resultsFolder.getAbsolutePath(), "--runtime", runtime.toString(), "--timeout", timeout.toString(), "run", query};
+                RunParliament.main(experimentArgs);
+                LOGGER.info("Parliament Benchmark - {}: Completed", query);
+            } catch (Exception ex) {
+                LOGGER.error("Exception: {}", ex);
+            }
+        }
+    }
+
 }
