@@ -6,10 +6,10 @@
  * Copyright (C) 2013, Pyravlos Team
  *
  */
-package gr.uoa.di.rdf.Geographica.strabon;
+package geosparql_benchmarking.strabon;
 
 import eu.earthobservatory.runtime.postgis.Strabon;
-import gr.uoa.di.rdf.Geographica.systemsundertest.SystemUnderTest;
+import geosparql_benchmarking.systemsundertest.SystemUnderTest;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;

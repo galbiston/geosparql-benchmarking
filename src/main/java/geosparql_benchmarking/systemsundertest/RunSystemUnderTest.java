@@ -1,4 +1,4 @@
-package gr.uoa.di.rdf.Geographica.systemsundertest;
+package geosparql_benchmarking.systemsundertest;
 
 import gr.uoa.di.rdf.Geographica.experiments.Experiment;
 import gr.uoa.di.rdf.Geographica.experiments.MacroComputeStatisticsExperiment;

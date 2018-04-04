@@ -1,7 +1,7 @@
-package gr.uoa.di.rdf.Geographica.strabon;
+package geosparql_benchmarking.strabon;
 
 import eu.earthobservatory.runtime.postgis.Strabon;
-import gr.uoa.di.rdf.Geographica.systemsundertest.RunSystemUnderTest;
+import geosparql_benchmarking.systemsundertest.RunSystemUnderTest;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;

@@ -9,7 +9,7 @@
 package gr.uoa.di.rdf.Geographica.experiments;
 
 import gr.uoa.di.rdf.Geographica.queries.QueriesSet.QueryStruct;
-import gr.uoa.di.rdf.Geographica.systemsundertest.SystemUnderTest;
+import geosparql_benchmarking.systemsundertest.SystemUnderTest;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;

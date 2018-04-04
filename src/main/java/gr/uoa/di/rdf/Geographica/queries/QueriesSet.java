@@ -8,7 +8,7 @@
  */
 package gr.uoa.di.rdf.Geographica.queries;
 
-import gr.uoa.di.rdf.Geographica.systemsundertest.SystemUnderTest;
+import geosparql_benchmarking.systemsundertest.SystemUnderTest;
 import java.io.IOException;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;

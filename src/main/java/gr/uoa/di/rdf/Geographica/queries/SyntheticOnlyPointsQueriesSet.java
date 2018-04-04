@@ -9,7 +9,7 @@
 package gr.uoa.di.rdf.Geographica.queries;
 
 import gr.uoa.di.rdf.Geographica.generators.SyntheticGenerator;
-import gr.uoa.di.rdf.Geographica.systemsundertest.SystemUnderTest;
+import geosparql_benchmarking.systemsundertest.SystemUnderTest;
 
 import java.io.IOException;
 

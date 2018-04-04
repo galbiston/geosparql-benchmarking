@@ -6,7 +6,7 @@
  * Copyright (C) 2013, Pyravlos Team
  *
  */
-package gr.uoa.di.rdf.Geographica.parliament;
+package geosparql_benchmarking.parliament;
 
 import com.bbn.parliament.jena.graph.KbGraph;
 import com.bbn.parliament.jena.graph.KbGraphFactory;
@@ -31,7 +31,7 @@ import com.hp.hpl.jena.update.UpdateExecutionFactory;
 import com.hp.hpl.jena.update.UpdateFactory;
 import com.hp.hpl.jena.update.UpdateProcessor;
 import com.hp.hpl.jena.update.UpdateRequest;
-import gr.uoa.di.rdf.Geographica.systemsundertest.SystemUnderTest;
+import geosparql_benchmarking.systemsundertest.SystemUnderTest;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;

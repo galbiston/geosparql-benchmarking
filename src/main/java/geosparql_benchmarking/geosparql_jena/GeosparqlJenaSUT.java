@@ -5,7 +5,7 @@
  */
 package geosparql_benchmarking.geosparql_jena;
 
-import gr.uoa.di.rdf.Geographica.systemsundertest.SystemUnderTest;
+import geosparql_benchmarking.systemsundertest.SystemUnderTest;
 import implementation.GeoSPARQLModel;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
@@ -35,10 +35,6 @@ import org.apache.jena.update.UpdateRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- *
- */
 public class GeosparqlJenaSUT implements SystemUnderTest {
 
     final static Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

@@ -16,6 +16,7 @@ gradle-app.setting
 
 /datasets
 /geosparql_jena_tdb
+/geosparql_jena_tdb - NO RDFS
 /logs
 /parliament_kb
 lgd-jena.ttl

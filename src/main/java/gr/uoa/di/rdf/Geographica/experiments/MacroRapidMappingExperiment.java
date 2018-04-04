@@ -9,7 +9,7 @@
 package gr.uoa.di.rdf.Geographica.experiments;
 
 import gr.uoa.di.rdf.Geographica.queries.MacroRapidMappingQueriesSet;
-import gr.uoa.di.rdf.Geographica.systemsundertest.SystemUnderTest;
+import geosparql_benchmarking.systemsundertest.SystemUnderTest;
 import java.io.IOException;
 import org.apache.log4j.Logger;
 

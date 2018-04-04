@@ -1,4 +1,4 @@
-package gr.uoa.di.rdf.Geographica.parliament;
+package geosparql_benchmarking.parliament;
 
 import com.bbn.parliament.jena.graph.KbGraph;
 import com.bbn.parliament.jena.graph.KbGraphFactory;
@@ -9,7 +9,7 @@ import com.bbn.parliament.jena.graph.index.spatial.SpatialIndexFactory;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import gr.uoa.di.rdf.Geographica.systemsundertest.RunSystemUnderTest;
+import geosparql_benchmarking.systemsundertest.RunSystemUnderTest;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.net.MalformedURLException;

@@ -1,7 +1,7 @@
 package geosparql_benchmarking.geosparql_jena;
 
 import geosparql_benchmarking.Main;
-import gr.uoa.di.rdf.Geographica.systemsundertest.RunSystemUnderTest;
+import geosparql_benchmarking.systemsundertest.RunSystemUnderTest;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
