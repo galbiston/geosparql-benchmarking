@@ -16,9 +16,11 @@ import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.tdb.TDBFactory;
+import org.apache.jena.vocabulary.RDFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,8 +52,7 @@ public class Main {
         //2) Parliament
         //3) Strabon
         //Create results directory structure.
-        createResultsFolders();
-
+        //createResultsFolders();
         //Build experiment arguements.
         Integer runtime = 120;
         Integer timeout = 3600;
@@ -60,9 +61,9 @@ public class Main {
         //Run the experiments using the arguements.
         //rdfsGeosparqlJenaTest();
         //exportGeosparqlJenaTest();
-        rdfsParliamentTest();
-        exportParliamentTest();
-
+        //rdfsParliamentTest();
+        //exportParliamentTest();
+        //assembleRdfsGeosparqlJenaTest();
         //Benchmark
         //RunGeosparqlJena.runBenchmark(GEOSPARQL_JENA_RESULTS, runtime, timeout, queryList);
         //RunParliament.runBenchmark(PARLIAMENT_RESULTS, runtime, timeout, queryList);
@@ -110,10 +111,30 @@ public class Main {
     public static final File PARLIAMENT_RESULTS = new File(RESULTS_FOLDER, "parliament");
     public static final File STRABON_RESULTS = new File(RESULTS_FOLDER, "strabon");
 
+    private static void assembleRdfsGeosparqlJenaTest() {
+
+        Dataset dataset = TDBFactory.assembleDataset(GEOSPARQL_JENA_TDB_ASSEMBLY_FILE.getAbsolutePath());
+
+        String property = "<http://www.opengis.net/ont/geosparql#asWKT>";
+        //String property = "<http://linkedgeodata.org/ontology/asWKT>";
+        String queryString = "SELECT ?sub ?obj WHERE{ GRAPH <" + GraphURI.LGD_URI + "> { ?sub " + property + " ?obj}}LIMIT 1";
+        //String queryString = "SELECT ?sub ?obj WHERE{ ?sub " + property +  " ?obj}LIMIT 1";
+
+        Model model = dataset.getNamedModel(GraphURI.LGD_URI);
+        boolean isSchemaLoaded = model.contains(ResourceFactory.createResource(property), RDFS.label);
+        LOGGER.info("RDFS Loaded: {}", isSchemaLoaded);
+
+        try (QueryExecution qe = QueryExecutionFactory.create(queryString, dataset)) {
+            ResultSet rs = qe.execSelect();
+            ResultSetFormatter.outputAsCSV(rs);
+        }
+
+    }
+
     private static void rdfsGeosparqlJenaTest() {
 
         Dataset dataset = TDBFactory.createDataset(GEOSPARQL_JENA_TDB_FOLDER.getAbsolutePath());
-        Model unionModel = dataset.getUnionModel();
+
         String property = "<http://www.opengis.net/ont/geosparql#asWKT>";
         //String property = "<http://linkedgeodata.org/ontology/asWKT>";
         String queryString = "SELECT ?sub ?obj WHERE{ GRAPH <" + GraphURI.LGD_URI + "> { ?sub " + property + " ?obj}}LIMIT 1";

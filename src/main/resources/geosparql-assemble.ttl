@@ -4,9 +4,13 @@
 @prefix ja:    <http://jena.hpl.hp.com/2005/11/Assembler#> .
 @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
 
-[] ja:loadClass "org.apache.jena.tdb.TDB" .
-tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
-tdb:GraphTDB    rdfs:subClassOf  ja:Model      .
+<#dataset> rdf:type       ja:RDFDataset ;
+    ja:namedGraph       :gag-model-inf ;
+    ja:namedGraph       :lgd-model-inf ;
+    ja:namedGraph       :geonames-model-inf ;
+    ja:namedGraph       :hotspots-model-inf ;
+    ja:namedGraph       :clc-model-inf ;
+    ja:namedGraph       :dbpedia-model-inf .
 
 #TDB dataset on disk.
 :tdb-dataset rdf:type tdb:DatasetTDB ;
@@ -31,23 +35,22 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model      .
     ja:baseModel :gag-graph ;
     ja:reasoner :rdfsFactory.
 
-:lgd-graph rdf:type tdb:GraphTDB ;
-    tdb:dataset :tdb-dataset ;
-    tdb:graphName <http://geographica.di.uoa.gr/dataset/lgd> .
-
-:lgd-model-inf rdf:type ja:InfModel ;
-    ja:baseModel :lgd-graph ;
-    ja:reasoner :rdfsFactory .
-
-#Does the name URI need to go against the inference model? Don't know and no answer.
 #:lgd-graph rdf:type tdb:GraphTDB ;
 #    tdb:dataset :tdb-dataset ;
 #    tdb:graphName <http://geographica.di.uoa.gr/dataset/lgd> .
 
-#:lgd-model-inf rdf:type  ja:InfModel ;
+#:lgd-model-inf rdf:type ja:InfModel ;
 #    ja:baseModel :lgd-graph ;
-#    ja:modelName <http://geographica.di.uoa.gr/dataset/lgd2> ;
-#    ja:reasoner :rdfsFactory.
+#    ja:reasoner :rdfsFactory .
+
+#Does the name URI need to go against the inference model? Don't know and no answer.
+:lgd-graph rdf:type tdb:GraphTDB ;
+    tdb:dataset :tdb-dataset .
+
+:lgd-model-inf rdf:type  ja:InfModel ;
+    ja:graph :lgd-graph ;
+    ja:graphName <http://geographica.di.uoa.gr/dataset/lgd> ;
+    ja:reasoner :rdfsFactory.
 
 :geonames-graph rdf:type tdb:GraphTDB ;
     tdb:dataset :tdb-dataset ;
