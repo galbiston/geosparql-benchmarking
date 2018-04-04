@@ -9,7 +9,6 @@
 package gr.uoa.di.rdf.Geographica.queries;
 
 import geosparql_benchmarking.GraphURI;
-import geosparql_benchmarking.systemsundertest.SystemUnderTest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +20,7 @@ import org.apache.log4j.Logger;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResultHandlerException;
+import geosparql_benchmarking.experiments.TestSystem;
 
 /**
  * @author George Garbis <ggarbis@di.uoa.gr>
@@ -36,7 +36,7 @@ public class MacroRapidMappingQueriesSet extends QueriesSet {
     // implies changing queriesN
     Random rn;
 
-    public MacroRapidMappingQueriesSet(SystemUnderTest sut) throws IOException {
+    public MacroRapidMappingQueriesSet(TestSystem sut) throws IOException {
         super(sut);
         String timestampsFile = "timestamps.txt";
         timestamps = new ArrayList<String>();

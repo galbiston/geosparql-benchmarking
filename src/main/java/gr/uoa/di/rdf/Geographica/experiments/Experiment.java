@@ -10,7 +10,6 @@ package gr.uoa.di.rdf.Geographica.experiments;
 
 import gr.uoa.di.rdf.Geographica.queries.QueriesSet;
 import gr.uoa.di.rdf.Geographica.queries.QueriesSet.QueryStruct;
-import geosparql_benchmarking.systemsundertest.SystemUnderTest;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -20,6 +19,7 @@ import java.io.StringWriter;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import org.apache.log4j.Logger;
+import geosparql_benchmarking.experiments.TestSystem;
 
 /**
  * @author George Garbis <ggarbis@di.uoa.gr>
@@ -34,20 +34,20 @@ public abstract class Experiment {
 
     protected QueriesSet queriesSet = null;
 
-    protected SystemUnderTest sut = null;
+    protected TestSystem sut = null;
     protected long[][][] warmruns = null;
     protected long[][][] coldruns = null;
     protected int[] queriesToRun = null;
     protected int queriesToRunN;
 
-    Experiment(SystemUnderTest sut, int repetitions, int timeoutSecs, String logPath) {
+    Experiment(TestSystem sut, int repetitions, int timeoutSecs, String logPath) {
         this.sut = sut;
         this.repetitions = repetitions;
         this.timeoutSecs = timeoutSecs;
         this.logPath = logPath;
     }
 
-    Experiment(SystemUnderTest sut, int repetitions, int timeoutSecs, int[] queriesToRun, String logPath) {
+    Experiment(TestSystem sut, int repetitions, int timeoutSecs, int[] queriesToRun, String logPath) {
         this.sut = sut;
         this.repetitions = repetitions;
         this.timeoutSecs = timeoutSecs;

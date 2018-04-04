@@ -9,7 +9,6 @@
 package gr.uoa.di.rdf.Geographica.queries;
 
 import geosparql_benchmarking.GraphURI;
-import geosparql_benchmarking.systemsundertest.SystemUnderTest;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,6 +19,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.log4j.Logger;
+import geosparql_benchmarking.experiments.TestSystem;
 
 /**
  * @author George Garbis <ggarbis@di.uoa.gr>
@@ -35,7 +35,7 @@ public class MacroMapSearchQueriesSet extends QueriesSet {
 	private String currentPoint = null, boundingBox = null;
 	private Random rn;
 
-	public MacroMapSearchQueriesSet(SystemUnderTest sut) throws IOException {
+	public MacroMapSearchQueriesSet(TestSystem sut) throws IOException {
 		super(sut);
 		
 		String geonamesFile = "geonames.txt";

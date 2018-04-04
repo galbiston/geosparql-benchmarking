@@ -9,9 +9,9 @@
 package gr.uoa.di.rdf.Geographica.queries;
 
 import geosparql_benchmarking.GraphURI;
-import geosparql_benchmarking.systemsundertest.SystemUnderTest;
 
 import org.apache.log4j.Logger;
+import geosparql_benchmarking.experiments.TestSystem;
 
 /**
  * @author George Garbis <ggarbis@di.uoa.gr>
@@ -40,7 +40,7 @@ public class MicroNonTopologicalQueriesSet extends QueriesSet {
 	
 	private String queryBufferTemplate;
 	
-	public MicroNonTopologicalQueriesSet(SystemUnderTest sut) {
+	public MicroNonTopologicalQueriesSet(TestSystem sut) {
 		super(sut);
 		
 		queriesN = 6; // IMPORTANT: Add/remove queries in getQuery implies changing queriesN

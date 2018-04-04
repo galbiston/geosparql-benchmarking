@@ -9,9 +9,9 @@
 package gr.uoa.di.rdf.Geographica.queries;
 
 import geosparql_benchmarking.GraphURI;
-import geosparql_benchmarking.systemsundertest.SystemUnderTest;
 
 import org.apache.log4j.Logger;
+import geosparql_benchmarking.experiments.TestSystem;
 
 /**
  * @author George Garbis <ggarbis@di.uoa.gr>
@@ -25,7 +25,7 @@ public class MicroAggregationQueriesSet  extends QueriesSet {
 			+ "	GRAPH <GRAPH1> {?s1 ASWKT1 ?o1} \n"
 			+ "}";
 	
-	public MicroAggregationQueriesSet(SystemUnderTest sut) {
+	public MicroAggregationQueriesSet(TestSystem sut) {
 		super(sut);
 		queriesN = 4; // IMPORTANT: Add/remove queries in getQuery implies changing queriesN
 	}

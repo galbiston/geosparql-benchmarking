@@ -9,9 +9,9 @@
 package gr.uoa.di.rdf.Geographica.queries;
 
 import geosparql_benchmarking.GraphURI;
-import geosparql_benchmarking.systemsundertest.SystemUnderTest;
 
 import org.apache.log4j.Logger;
+import geosparql_benchmarking.experiments.TestSystem;
 
 /**
  * @author George Garbis <ggarbis@di.uoa.gr>
@@ -20,7 +20,7 @@ public class MicroJoinsQueriesSet extends QueriesSet {
 
 	static Logger logger = Logger.getLogger(MicroJoinsQueriesSet.class.getSimpleName());
 		
-	public  MicroJoinsQueriesSet(SystemUnderTest sut) {
+	public  MicroJoinsQueriesSet(TestSystem sut) {
 		super(sut);
 		queriesN = 11; // IMPORTANT: Add/remove queries in getQuery implies changing queriesN
 	}

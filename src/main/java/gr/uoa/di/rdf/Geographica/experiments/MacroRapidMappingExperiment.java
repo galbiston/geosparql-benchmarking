@@ -9,16 +9,16 @@
 package gr.uoa.di.rdf.Geographica.experiments;
 
 import gr.uoa.di.rdf.Geographica.queries.MacroRapidMappingQueriesSet;
-import geosparql_benchmarking.systemsundertest.SystemUnderTest;
 import java.io.IOException;
 import org.apache.log4j.Logger;
+import geosparql_benchmarking.experiments.TestSystem;
 
 /**
  * @author George Garbis <ggarbis@di.uoa.gr>
  */
 public class MacroRapidMappingExperiment extends MacroExperiment {
 
-    public MacroRapidMappingExperiment(SystemUnderTest sut, int repetitions,
+    public MacroRapidMappingExperiment(TestSystem sut, int repetitions,
             int timeoutSecs, int runTimeInMinutes, String logPath) throws IOException {
         super(sut, repetitions, timeoutSecs, runTimeInMinutes, logPath);
         logger = Logger.getLogger(MacroRapidMappingExperiment.class.getSimpleName());
@@ -26,7 +26,7 @@ public class MacroRapidMappingExperiment extends MacroExperiment {
         this.runTimeInMinutes = runTimeInMinutes;
     }
 
-    public MacroRapidMappingExperiment(SystemUnderTest sut, int repetitions,
+    public MacroRapidMappingExperiment(TestSystem sut, int repetitions,
             int timeoutSecs, int runTimeInMinutes, int[] queriesToRun, String logPath) throws IOException {
         super(sut, repetitions, timeoutSecs, runTimeInMinutes, logPath);
         logger = Logger.getLogger(MacroRapidMappingExperiment.class.getSimpleName());

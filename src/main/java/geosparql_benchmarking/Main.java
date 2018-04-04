@@ -3,6 +3,9 @@ package geosparql_benchmarking;
 import com.bbn.parliament.jena.graph.KbGraphFactory;
 import com.bbn.parliament.jena.graph.KbGraphStore;
 import com.hp.hpl.jena.graph.Node;
+import geosparql_benchmarking.experiments.BenchmarkExecution;
+import static geosparql_benchmarking.experiments.BenchmarkExecution.getTestSystemFolders;
+import geosparql_benchmarking.experiments.TestSystem;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,9 +39,9 @@ public class Main {
 
         HashMap<String, File> datasetMap = getDatasets();
         Boolean inferenceEnabled = true;
-        //RunGeosparqlJena.loadDataset(GEOSPARQL_JENA_TDB_FOLDER, datasetMap, inferenceEnabled);
-        //RunParliament.loadDataset(datasetMap);
-        //RunStrabon.loadDataset(datasetMap, inferenceEnabled);
+        //GeosparqlJenaTestSystem.loadDataset(GEOSPARQL_JENA_TDB_FOLDER, datasetMap, inferenceEnabled);
+        //ParliamentTestSystem.loadDataset(datasetMap);
+        //StrabonTestSystem.loadDataset(datasetMap, inferenceEnabled);
 
         //Run GeoSPARQL Compliance Testing
         //1) Serialisation - WKT, GML, mixed
@@ -55,6 +58,7 @@ public class Main {
         //createResultsFolders();
         //Build experiment arguements.
         Integer runtime = 120;
+        Integer repetitions = 5;
         Integer timeout = 3600;
         List<String> queryList = getQueryList();
 
@@ -63,20 +67,16 @@ public class Main {
         //exportGeosparqlJenaTest();
         //rdfsParliamentTest();
         //exportParliamentTest();
-        //assembleRdfsGeosparqlJenaTest();
         //Benchmark
+        HashMap<TestSystem, File> testSystemFolders = getTestSystemFolders();
+        BenchmarkExecution.warmUp(testSystemFolders, timeout, queryList);
+        BenchmarkExecution.runAll(testSystemFolders, repetitions, timeout, queryList);
+
         //RunGeosparqlJena.runBenchmark(GEOSPARQL_JENA_RESULTS, runtime, timeout, queryList);
         //RunParliament.runBenchmark(PARLIAMENT_RESULTS, runtime, timeout, queryList);
         //RunStrabon.runBenchmark(STRABON_RESULTS, runtime, timeout, queryList);
     }
     private static final File DATASET_FOLDER = new File("datasets");
-
-    private static void createResultsFolders() {
-        RESULTS_FOLDER.mkdir();
-        GEOSPARQL_JENA_RESULTS.mkdir();
-        PARLIAMENT_RESULTS.mkdir();
-        STRABON_RESULTS.mkdir();
-    }
 
     private static List<String> getQueryList() {
         List<String> queryList = new ArrayList<>();
@@ -105,11 +105,6 @@ public class Main {
     //The Jena TDB Folder and Graph URIs need to be stated in the Assembly File.
     public static final File GEOSPARQL_JENA_TDB_ASSEMBLY_FILE = new File(Main.class.getClassLoader().getResource("geosparql-assemble.ttl").getPath());
     public static final File GEOSPARQL_JENA_TDB_FOLDER = new File("geosparql_jena_tdb");
-
-    public static final File RESULTS_FOLDER = new File("results");
-    public static final File GEOSPARQL_JENA_RESULTS = new File(RESULTS_FOLDER, "geosparql_jena");
-    public static final File PARLIAMENT_RESULTS = new File(RESULTS_FOLDER, "parliament");
-    public static final File STRABON_RESULTS = new File(RESULTS_FOLDER, "strabon");
 
     private static void assembleRdfsGeosparqlJenaTest() {
 

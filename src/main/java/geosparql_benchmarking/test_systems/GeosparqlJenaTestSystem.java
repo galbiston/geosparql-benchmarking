@@ -3,15 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package geosparql_benchmarking.geosparql_jena;
+package geosparql_benchmarking.test_systems;
 
-import geosparql_benchmarking.systemsundertest.SystemUnderTest;
+import geosparql_benchmarking.experiments.BenchmarkExecution;
+import geosparql_benchmarking.experiments.QueryResult;
+import geosparql_benchmarking.experiments.TestSystem;
 import implementation.GeoSPARQLModel;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,9 +29,13 @@ import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.ResultSet;
+import org.apache.jena.rdf.model.InfModel;
 import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.tdb.TDBFactory;
 import org.apache.jena.update.UpdateAction;
 import org.apache.jena.update.UpdateFactory;
@@ -35,93 +43,73 @@ import org.apache.jena.update.UpdateRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GeosparqlJenaSUT implements SystemUnderTest {
+public class GeosparqlJenaTestSystem implements TestSystem {
 
     final static Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    private HashMap<String, String> firstResult = new HashMap<>();
     private Dataset dataset = null;
     private final File datasetFolder;
 
-    public GeosparqlJenaSUT(File datasetFolder) {
+    public GeosparqlJenaTestSystem(File datasetFolder) {
         this.datasetFolder = datasetFolder;
         this.dataset = TDBFactory.createDataset(datasetFolder.getAbsolutePath());
     }
 
     @Override
-    public long[] runQueryWithTimeout(String query, int timeoutSecs) throws Exception {
-        //maintains a thread for executing the doWork method
-        final ExecutorService executor = Executors.newFixedThreadPool(1);
-        //set the executor thread working
-        Executor runnable = new Executor(query, dataset, timeoutSecs);
+    public QueryResult runQueryWithTimeout(String query, int timeoutSecs) throws Exception {
 
+        final ExecutorService executor = Executors.newFixedThreadPool(1);
+        Executor runnable = new Executor(query, dataset, timeoutSecs);
         final Future<?> future = executor.submit(runnable);
-        boolean isTimedout = false;
-        //check the outcome of the executor thread and limit the time allowed for it to complete
-        long tt1 = System.nanoTime();
+
         try {
-            LOGGER.debug("Future started");
+            LOGGER.debug("GeoSPARQL Jena Future: Started");
             future.get(timeoutSecs, TimeUnit.SECONDS);
-            LOGGER.debug("Future end");
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            isTimedout = true;
-            LOGGER.info("time out!");
-            LOGGER.info("Restarting GeoSPARQL Jena...");
+            LOGGER.debug("GeoSPARQL Jena Future: Completed");
+        } catch (InterruptedException | ExecutionException ex) {
+            LOGGER.error("Exception: {}", ex.getMessage());
+        } catch (TimeoutException ex) {
+            LOGGER.info("GeoSPARQL Jena Query Timeout: Restarting");
             this.restart();
-            LOGGER.info("Closing GeoSPRAQL Jena...");
-            this.close();
         } finally {
-            LOGGER.debug("Future canceling...");
-            future.cancel(true);
-            LOGGER.debug("Executor shutting down...");
+            LOGGER.debug("GeoSPARQL Jena: Executor Shutdown");
             executor.shutdown();
-            try {
-                LOGGER.debug("Executor waiting for termination...");
-                executor.awaitTermination(timeoutSecs, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
             System.gc();
         }
 
-        LOGGER.debug("RetValue: " + Arrays.toString(runnable.getRetValue()));
+        QueryResult queryResult = runnable.getQueryResult();
+        LOGGER.debug("GeoSPARQL Jena Query: {}", queryResult);
 
-        if (isTimedout) {
-            long tt2 = System.nanoTime();
-            return new long[]{tt2 - tt1, tt2 - tt1, tt2 - tt1, -1};
-        } else {
-            this.firstResult = runnable.getFirstResult();
-            return runnable.getRetValue();
-        }
+        return queryResult;
+
     }
 
     @Override
-    public long[] runUpdate(String query) {
-        LOGGER.info("Executing update...");
-        long t1 = System.nanoTime();
+    public QueryResult runUpdate(String query) {
+        LOGGER.info("GeoSPARQL Jena Update: Started");
+        long startNanoTime = System.nanoTime();
         UpdateRequest updateRequest = UpdateFactory.create(query);
         UpdateAction.execute(updateRequest, dataset);
-        long t2 = System.nanoTime();
-        LOGGER.info("Update executed");
+        long resultsNanoTime = System.nanoTime();
+        LOGGER.info("GeoSPARQL Jena Update: Completed");
 
-        long[] ret = {-1, -1, t2 - t1, -1};
-        return ret;
+        return new QueryResult(startNanoTime, resultsNanoTime, true);
+    }
+
+    @Override
+    public String getName() {
+        return "GeoSparqlJena";
     }
 
     @Override
     public void initialize() {
         GeoSPARQLModel.loadFunctions();
-        //TODO May need to apply RDFS inference. May need to apply at Assembly file level.
     }
 
     @Override
     public void close() {
         TDBFactory.release(dataset);
         dataset = null;
-        firstResult = new HashMap<>();
     }
 
     @Override
@@ -131,7 +119,6 @@ public class GeosparqlJenaSUT implements SystemUnderTest {
             TDBFactory.release(dataset);
         }
         this.dataset = TDBFactory.createDataset(datasetFolder.getAbsolutePath());
-        firstResult = new HashMap<>();
     }
 
     @Override
@@ -139,12 +126,6 @@ public class GeosparqlJenaSUT implements SystemUnderTest {
         //No restarting but release resources and reconnect.
         TDBFactory.release(dataset);
         this.dataset = TDBFactory.createDataset(datasetFolder.getAbsolutePath());
-        firstResult = new HashMap<>();
-    }
-
-    @Override
-    public Object getSystem() {
-        return dataset;
     }
 
     @Override
@@ -153,31 +134,20 @@ public class GeosparqlJenaSUT implements SystemUnderTest {
         return query;
     }
 
-    @Override
-    public HashMap<String, String> getFirstResult() {
-        return firstResult;
-    }
-
     static class Executor implements Runnable {
 
         private final String queryString;
         private final Dataset dataset;
-        private final HashMap<String, String> firstResult = new HashMap<>();
-        private long[] returnValue;
+        private QueryResult queryResult;
 
         public Executor(String queryString, Dataset dataset, int timeoutSecs) {
             this.queryString = queryString;
             this.dataset = dataset;
-            this.returnValue = new long[]{timeoutSecs + 1, timeoutSecs + 1, timeoutSecs + 1, -1};
-            LOGGER.debug("RetVal initialized: " + this.returnValue[0] + " " + this.returnValue[1] + " " + this.returnValue[2] + " " + this.returnValue[3]);
+            this.queryResult = new QueryResult(timeoutSecs + 1, timeoutSecs + 1, false);
         }
 
-        public long[] getRetValue() {
-            return returnValue;
-        }
-
-        public HashMap<String, String> getFirstResult() {
-            return firstResult;
+        public QueryResult getQueryResult() {
+            return queryResult;
         }
 
         @Override
@@ -188,17 +158,18 @@ public class GeosparqlJenaSUT implements SystemUnderTest {
         public void runQuery() {
 
             LOGGER.info("Evaluating query");
+            List<HashMap<String, String>> results = new ArrayList<>();
+            boolean isCompleted = true;
+            long startNanoTime = System.nanoTime();
+            long queryNanoTime;
             dataset.begin(ReadWrite.READ);
-            long t1 = System.nanoTime();
-            long t2 = System.nanoTime();
-            int results = 0;
-
             try (QueryExecution qexec = QueryExecutionFactory.create(queryString, dataset)) {
                 ResultSet rs = qexec.execSelect();
-
-                if (rs.hasNext()) {
+                queryNanoTime = System.nanoTime();
+                while (rs.hasNext()) {
                     QuerySolution querySolution = rs.next();
                     Iterator<String> varNames = querySolution.varNames();
+                    HashMap<String, String> result = new HashMap<>();
 
                     while (varNames.hasNext()) {
                         String varName = varNames.next();
@@ -215,23 +186,58 @@ public class GeosparqlJenaSUT implements SystemUnderTest {
                             valueStr = anon.getBlankNodeLabel();
                             LOGGER.error("Anon Node result: {}", valueStr);
                         }
-                        firstResult.put(varName, valueStr);
+                        result.put(varName, valueStr);
 
                     }
-                    results++;
+                    results.add(result);
                 }
-                while (rs.hasNext()) {
-                    rs.next();
-                    results++;
-                }
+
+            } catch (Exception ex) {
+                LOGGER.error("Execption: {}", ex.getMessage());
+                queryNanoTime = startNanoTime;
+                isCompleted = false;
             } finally {
                 dataset.end();
             }
 
-            long t3 = System.nanoTime();
-            LOGGER.info("Query evaluated at " + (t3 - t1));
-            this.returnValue = new long[]{t2 - t1, t3 - t2, t3 - t1, results};
+            long resultsNanoTime = System.nanoTime();
+            LOGGER.info("Elapsed Time - Query: {}, Results: {}", queryNanoTime - startNanoTime, resultsNanoTime - queryNanoTime);
+            this.queryResult = new QueryResult(startNanoTime, queryNanoTime, resultsNanoTime, results, isCompleted);
         }
+    }
+
+    public static void loadDataset(File datasetFolder, HashMap<String, File> datasetMap, Boolean inferenceEnabled) {
+        LOGGER.info("Geosparql Jena Loading: Started");
+        Dataset dataset = TDBFactory.createDataset(datasetFolder.getAbsolutePath());
+        Model geosparqlSchema = RDFDataMgr.loadModel(BenchmarkExecution.class.getClassLoader().getResource("geosparql_vocab_all.rdf").toString());
+
+        for (Map.Entry<String, File> entry : datasetMap.entrySet()) {
+            try {
+                dataset.begin(ReadWrite.WRITE);
+                String sourceRDFFile = entry.getValue().getAbsolutePath();
+                String graph = entry.getKey();
+                LOGGER.info("Loading: {} into {}: Started", sourceRDFFile, graph);
+                Model dataModel = RDFDataMgr.loadModel(sourceRDFFile);
+                if (inferenceEnabled) {
+                    InfModel infModel = ModelFactory.createRDFSModel(geosparqlSchema, dataModel);
+                    infModel.prepare();
+                    dataset.addNamedModel(graph, infModel);
+                } else {
+                    dataset.addNamedModel(graph, dataModel);
+                }
+                LOGGER.info("Loading: {} into {}: Completed", sourceRDFFile, graph);
+                dataset.commit();
+
+            } catch (RuntimeException ex) {
+                LOGGER.error("TDB Load Error: {}", ex.getMessage());
+            } finally {
+                dataset.end();
+            }
+        }
+        dataset.close();
+        TDBFactory.release(dataset);
+
+        LOGGER.info("Geosparql Jena Loading: Completed");
     }
 
 }

@@ -8,11 +8,11 @@
  */
 package gr.uoa.di.rdf.Geographica.queries;
 
-import geosparql_benchmarking.systemsundertest.SystemUnderTest;
 import java.io.IOException;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResultHandlerException;
+import geosparql_benchmarking.experiments.TestSystem;
 
 /**
  * @author George Garbis <ggarbis@di.uoa.gr>
@@ -32,14 +32,14 @@ public abstract class QueriesSet {
             geonames_hasGeometry, hotspots_hasGeometry, lgd_hasGeometry;
 
     public String prefixes;
-    protected SystemUnderTest sut;
+    protected TestSystem sut;
     protected int queriesN;
 
     public int getQueriesN() {
         return queriesN;
     }
 
-    public QueriesSet(SystemUnderTest sut) {
+    public QueriesSet(TestSystem sut) {
 
         this.sut = sut;
 

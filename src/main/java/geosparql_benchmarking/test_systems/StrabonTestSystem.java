@@ -6,17 +6,20 @@
  * Copyright (C) 2013, Pyravlos Team
  *
  */
-package geosparql_benchmarking.strabon;
+package geosparql_benchmarking.test_systems;
 
 import eu.earthobservatory.runtime.postgis.Strabon;
-import geosparql_benchmarking.systemsundertest.SystemUnderTest;
+import eu.earthobservatory.utils.Format;
+import geosparql_benchmarking.experiments.QueryResult;
+import geosparql_benchmarking.experiments.TestSystem;
+import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,22 +40,19 @@ import org.slf4j.LoggerFactory;
  * @author George Garbis <ggarbis@di.uoa.gr>
  *
  */
-public class StrabonSUT implements SystemUnderTest {
+public class StrabonTestSystem implements TestSystem {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StrabonSUT.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StrabonTestSystem.class);
 
     private Strabon strabon = null;
-    private HashMap<String, String> firstResult = new HashMap<>();
 
-    String db = null;
-    String user = null;
-    String passwd = null;
-    Integer port = null;
-    String host = null;
+    String db;
+    String user;
+    String passwd;
+    Integer port;
+    String host;
 
-    public StrabonSUT(String db, String user, String passwd, Integer port,
-            String host) throws Exception {
-
+    public StrabonTestSystem(String db, String user, String passwd, Integer port, String host) {
         this.db = db;
         this.user = user;
         this.passwd = passwd;
@@ -61,13 +61,8 @@ public class StrabonSUT implements SystemUnderTest {
     }
 
     @Override
-    public HashMap<String, String> getFirstResult() {
-        return firstResult;
-    }
-
-    @Override
-    public Object getSystem() {
-        return this.strabon;
+    public String getName() {
+        return "Strabon";
     }
 
     @Override
@@ -75,143 +70,51 @@ public class StrabonSUT implements SystemUnderTest {
 
         try {
             strabon = new Strabon(db, user, passwd, port, host, true);
-        } catch (Exception e) {
-            LOGGER.error("Cannot initialize strabon");
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
-            String stacktrace = sw.toString();
-            LOGGER.error(stacktrace);
-        }
-    }
-
-    static class Executor implements Runnable {
-
-        private final String query;
-        private final Strabon strabon;
-        private long[] returnValue;
-        private final HashMap<String, String> firstResult = new HashMap<>();
-
-        public Executor(String query, Strabon strabon, int timeoutSecs) {
-            this.query = query;
-            this.strabon = strabon;
-            this.returnValue = new long[]{timeoutSecs + 1, timeoutSecs + 1, timeoutSecs + 1, -1};
-        }
-
-        public long[] getRetValue() {
-            return returnValue;
-        }
-
-        public HashMap<String, String> getFirstBindingSet() {
-            return firstResult;
-        }
-
-        @Override
-        public void run() {
-            try {
-                runQuery();
-            } catch (MalformedQueryException | QueryEvaluationException | TupleQueryResultHandlerException | IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-        }
-
-        public void runQuery() throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException {
-
-            LOGGER.info("Evaluating query...");
-            TupleQuery tupleQuery = (TupleQuery) strabon.query(query,
-                    eu.earthobservatory.utils.Format.TUQU, strabon.getSailRepoConnection(), (OutputStream) System.out);
-
-            long results = 0;
-
-            long t1 = System.nanoTime();
-            TupleQueryResult result = tupleQuery.evaluate();
-            long t2 = System.nanoTime();
-
-            if (result.hasNext()) {
-
-                BindingSet bindingSet = result.next();
-                List<String> bindingNames = result.getBindingNames();
-                for (String binding : bindingNames) {
-
-                    Value value = bindingSet.getValue(binding);
-                    String valueStr = value.stringValue();
-                    firstResult.put(binding, valueStr);
-                }
-                results++;
-            }
-            while (result.hasNext()) {
-                results++;
-                result.next();
-            }
-            long t3 = System.nanoTime();
-
-            LOGGER.info("Query evaluated");
-            this.returnValue = new long[]{t2 - t1, t3 - t2, t3 - t1, results};
+        } catch (Exception ex) {
+            LOGGER.error("Strabon: Failed to initialize - {}", ex.getMessage());
         }
     }
 
     @Override
-    public long[] runQueryWithTimeout(String query, int timeoutSecs) {
-        //maintains a thread for executing the doWork method
-        final ExecutorService executor = Executors.newFixedThreadPool(1);
-        //set the executor thread working
-        Executor runnable = new Executor(query, strabon, timeoutSecs);
+    public QueryResult runQueryWithTimeout(String query, int timeoutSecs) {
 
+        final ExecutorService executor = Executors.newFixedThreadPool(1);
+        Executor runnable = new Executor(query, strabon, timeoutSecs);
         final Future<?> future = executor.submit(runnable);
-        boolean isTimedout = false;
-        //check the outcome of the executor thread and limit the time allowed for it to complete
-        long tt1 = System.nanoTime();
+
         try {
-            LOGGER.debug("Future started");
+            LOGGER.debug("Strabon Future: Started");
             future.get(timeoutSecs, TimeUnit.SECONDS);
-            LOGGER.debug("Future end");
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
+            LOGGER.debug("Strabon Future: Completed");
+        } catch (InterruptedException | ExecutionException ex) {
+            LOGGER.error("Exception: {}", ex.getMessage());
         } catch (TimeoutException e) {
-            isTimedout = true;
-            LOGGER.info("time out!");
-            LOGGER.info("Restarting Strabon...");
+            LOGGER.info("Strabon Query Timeout: Restarting");
             this.restart();
-            LOGGER.info("Closing Strabon...");
+            LOGGER.info("Strabon Timeout: Closing");
             this.close();
         } finally {
-            LOGGER.debug("Future canceling...");
-            future.cancel(true);
-            LOGGER.debug("Executor shutting down...");
+            LOGGER.debug("Strabon: Executor Shutdown");
             executor.shutdown();
-            try {
-                LOGGER.debug("Executor waiting for termination...");
-                executor.awaitTermination(timeoutSecs, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
             System.gc();
         }
 
-        LOGGER.debug("RetValue: " + Arrays.toString(runnable.getRetValue()));
+        QueryResult queryResult = runnable.getQueryResult();
+        LOGGER.debug("Strabon Query: {}", queryResult);
 
-        if (isTimedout) {
-            long tt2 = System.nanoTime();
-            return new long[]{tt2 - tt1, tt2 - tt1, tt2 - tt1, -1};
-        } else {
-            this.firstResult = runnable.getFirstBindingSet();
-            return runnable.getRetValue();
-        }
+        return queryResult;
     }
 
     @Override
-    public long[] runUpdate(String query) throws MalformedQueryException {
+    public QueryResult runUpdate(String query) throws MalformedQueryException {
 
-        LOGGER.info("Executing update...");
-        long t1 = System.nanoTime();
+        LOGGER.info("Strabon Update: Started");
+        long startNanoTime = System.nanoTime();
         strabon.update(query, strabon.getSailRepoConnection());
-        long t2 = System.nanoTime();
-        LOGGER.info("Update executed");
+        long resultsNanoTime = System.nanoTime();
+        LOGGER.info("Strabon Update: Completed");
 
-        long[] ret = {-1, -1, t2 - t1, -1};
-        return ret;
+        return new QueryResult(startNanoTime, resultsNanoTime, true);
     }
 
     @Override
@@ -221,15 +124,9 @@ public class StrabonSUT implements SystemUnderTest {
         try {
             strabon.close();
             strabon = null;
-            firstResult = new HashMap<>();
         } catch (Exception e) {
         }
-        // TODO
-//		Runtime run = Runtime.getRuntime();
-//
-//		Process pr = run.exec(restart_script);
-//		pr.waitFor();
-//
+
         System.gc();
         try {
             Thread.sleep(5000);
@@ -251,12 +148,12 @@ public class StrabonSUT implements SystemUnderTest {
         Process pr;
 
         try {
-            LOGGER.info("Restarting Strabon (Postgres) ...");
+            LOGGER.info("Strabon (Postgres): Restarting");
 
             pr = Runtime.getRuntime().exec(restart_postgres);
             pr.waitFor();
             if (pr.exitValue() != 0) {
-                LOGGER.error("Something went wrong while stoping postgres");
+                LOGGER.error("Postgres Stopping Failed");
             }
 
             Thread.sleep(5000);
@@ -264,22 +161,17 @@ public class StrabonSUT implements SystemUnderTest {
             if (strabon != null) {
                 try {
                     strabon.close();
-                } catch (Exception e) {
-                    LOGGER.error("Exception occured while restarting Strabon. ");
-                    e.printStackTrace();
+                } catch (Exception ex) {
+                    LOGGER.error("Strabon Close Failed: {}", ex.getMessage());
                 } finally {
                     strabon = null;
                 }
             }
-            firstResult = new HashMap<>();
+
             strabon = new Strabon(db, user, passwd, port, host, true);
-            LOGGER.info("Strabon (Postgres) restarted");
-        } catch (Exception e) {
-            LOGGER.error("Cannot restart Strabon");
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
-            String stacktrace = sw.toString();
-            LOGGER.error(stacktrace);
+            LOGGER.info("Strabon (Postgres): Restarted");
+        } catch (Exception ex) {
+            LOGGER.error("Strabon Restart Failed: {}", ex.getMessage());
         }
     }
 
@@ -355,5 +247,100 @@ public class StrabonSUT implements SystemUnderTest {
         }
 
         return translatedQuery;
+    }
+
+    static class Executor implements Runnable {
+
+        private final String query;
+        private final Strabon strabon;
+        private QueryResult queryResult;
+
+        public Executor(String query, Strabon strabon, int timeoutSecs) {
+            this.query = query;
+            this.strabon = strabon;
+            this.queryResult = new QueryResult(timeoutSecs + 1, timeoutSecs + 1, false);
+        }
+
+        public QueryResult getQueryResult() {
+            return queryResult;
+        }
+
+        @Override
+        public void run() {
+            runQuery();
+        }
+
+        public void runQuery() {
+
+            LOGGER.info("Evaluating query");
+            List<HashMap<String, String>> results = new ArrayList<>();
+            boolean isCompleted = true;
+            long startNanoTime = System.nanoTime();
+            long queryNanoTime;
+            try {
+
+                TupleQuery tupleQuery = (TupleQuery) strabon.query(query, Format.TUQU, strabon.getSailRepoConnection(), System.out);
+
+                TupleQueryResult tupleQueryResult = tupleQuery.evaluate();
+                queryNanoTime = System.nanoTime();
+
+                while (tupleQueryResult.hasNext()) {
+
+                    BindingSet bindingSet = tupleQueryResult.next();
+                    List<String> bindingNames = tupleQueryResult.getBindingNames();
+                    HashMap<String, String> result = new HashMap<>();
+                    for (String binding : bindingNames) {
+                        Value value = bindingSet.getValue(binding);
+                        String valueStr = value.stringValue();
+                        result.put(binding, valueStr);
+                    }
+                    results.add(result);
+                }
+
+            } catch (MalformedQueryException | QueryEvaluationException | TupleQueryResultHandlerException | IOException ex) {
+                LOGGER.error("Execption: {}", ex.getMessage());
+                queryNanoTime = startNanoTime;
+                isCompleted = false;
+            }
+            long resultsNanoTime = System.nanoTime();
+
+            LOGGER.info("Query evaluated");
+            LOGGER.info("Elapsed Time - Query: {}, Results: {}", queryNanoTime - startNanoTime, resultsNanoTime - queryNanoTime);
+            this.queryResult = new QueryResult(startNanoTime, queryNanoTime, resultsNanoTime, results, isCompleted);
+        }
+    }
+
+    public static void loadDataset(HashMap<String, File> datasetMap, Boolean inferenceEnabled) {
+        LOGGER.info("Strabon Loading: Started");
+        Strabon strabon = null;
+        try {
+            String db = "endpoint";
+            String user = "postgres"; //String user = "postgres";
+            String passwd = "postgres"; //String passwd = "postgres";
+            Integer port = 5432;
+            String host = "localhost"; //"localhost"; //"127.0.0.1"
+            Boolean checkForLockTable = true;
+            strabon = new Strabon(db, user, passwd, port, host, checkForLockTable);
+
+            String baseURI = null;
+            String format = "NTRIPLES";
+
+            for (Map.Entry<String, File> entry : datasetMap.entrySet()) {
+                String src = entry.getValue().toURI().toURL().toString();
+                String graph = entry.getKey();
+                LOGGER.info("Loading: {} into {}: Started", src, graph);
+                strabon.storeInRepo(src, baseURI, graph, format, inferenceEnabled);
+                LOGGER.info("Loading: {} into {}: Completed", src, graph);
+            }
+
+        } catch (Exception ex) {
+            LOGGER.error("Load Strabon exception: {}", ex);
+        } finally {
+            if (strabon != null) {
+                strabon.close();
+            }
+        }
+        LOGGER.info("Strabon Loading: Completed");
+
     }
 }

@@ -9,7 +9,6 @@
 package gr.uoa.di.rdf.Geographica.experiments;
 
 import gr.uoa.di.rdf.Geographica.queries.QueriesSet.QueryStruct;
-import geosparql_benchmarking.systemsundertest.SystemUnderTest;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -17,6 +16,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import org.apache.log4j.Logger;
+import geosparql_benchmarking.experiments.TestSystem;
 
 /**
  * @author George Garbis <ggarbis@di.uoa.gr>
@@ -29,14 +29,14 @@ public abstract class MacroExperiment extends Experiment {
     protected int[] queriesToRun = null;
     protected int queriesToRunN;
 
-    public MacroExperiment(SystemUnderTest sut, int repetitions,
+    public MacroExperiment(TestSystem sut, int repetitions,
             int timeoutSecs, int runTimeInMinutes, String logPath) throws IOException {
         super(sut, repetitions, timeoutSecs, logPath);
         logger = Logger.getLogger(MacroExperiment.class.getSimpleName());
         this.runTimeInMinutes = runTimeInMinutes;
     }
 
-    public MacroExperiment(SystemUnderTest sut, int repetitions,
+    public MacroExperiment(TestSystem sut, int repetitions,
             int timeoutSecs, int runTimeInMinutes, int[] queriesToRun, String logPath) throws IOException {
         super(sut, repetitions, timeoutSecs, logPath);
         logger = Logger.getLogger(MacroExperiment.class.getSimpleName());

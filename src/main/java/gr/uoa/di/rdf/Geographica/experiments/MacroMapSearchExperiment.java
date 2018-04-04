@@ -10,26 +10,26 @@ package gr.uoa.di.rdf.Geographica.experiments;
 
 import gr.uoa.di.rdf.Geographica.queries.MacroMapSearchQueriesSet;
 import gr.uoa.di.rdf.Geographica.queries.QueriesSet.QueryStruct;
-import geosparql_benchmarking.systemsundertest.SystemUnderTest;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
 import org.apache.log4j.Logger;
+import geosparql_benchmarking.experiments.TestSystem;
 
 /**
  * @author George Garbis <ggarbis@di.uoa.gr>
  */
 public class MacroMapSearchExperiment extends MacroExperiment {
 
-    public MacroMapSearchExperiment(SystemUnderTest sut, int repetitions, int timeoutSecs, int runTimeInMinutes, String logPath) throws IOException {
+    public MacroMapSearchExperiment(TestSystem sut, int repetitions, int timeoutSecs, int runTimeInMinutes, String logPath) throws IOException {
         super(sut, repetitions, timeoutSecs, runTimeInMinutes, logPath);
         logger = Logger.getLogger(MacroMapSearchExperiment.class.getSimpleName());
         queriesSet = new MacroMapSearchQueriesSet(sut);
         this.runTimeInMinutes = runTimeInMinutes;
     }
 
-    public MacroMapSearchExperiment(SystemUnderTest sut, int repetitions, int timeoutSecs, int runTimeInMinutes, int[] queriesToRun, String logPath) throws IOException {
+    public MacroMapSearchExperiment(TestSystem sut, int repetitions, int timeoutSecs, int runTimeInMinutes, int[] queriesToRun, String logPath) throws IOException {
         super(sut, repetitions, timeoutSecs, runTimeInMinutes, logPath);
         logger = Logger.getLogger(MacroMapSearchExperiment.class.getSimpleName());
         queriesSet = new MacroMapSearchQueriesSet(sut);

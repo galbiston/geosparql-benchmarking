@@ -9,9 +9,9 @@
 package gr.uoa.di.rdf.Geographica.queries;
 
 import geosparql_benchmarking.GraphURI;
-import geosparql_benchmarking.systemsundertest.SystemUnderTest;
 import java.util.Random;
 import org.apache.log4j.Logger;
+import geosparql_benchmarking.experiments.TestSystem;
 
 /**
  * @author George Garbis <ggarbis@di.uoa.gr>
@@ -24,7 +24,7 @@ public class MacroReverseGeocodingQueriesSet extends QueriesSet {
     private Random rnd = new Random(0);
     private int queriesN = 2; // IMPORTANT: Add/remove queries in getQuery implies changing queriesN
 
-    public MacroReverseGeocodingQueriesSet(SystemUnderTest sut) {
+    public MacroReverseGeocodingQueriesSet(TestSystem sut) {
         super(sut);
     }
 

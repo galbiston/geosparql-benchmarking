@@ -9,11 +9,11 @@
 package gr.uoa.di.rdf.Geographica.queries;
 
 import gr.uoa.di.rdf.Geographica.generators.SyntheticGenerator;
-import geosparql_benchmarking.systemsundertest.SystemUnderTest;
 
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
+import geosparql_benchmarking.experiments.TestSystem;
 
 /**
  * @author Kostis Kyzirakos <kkyzri@di.uoa.gr>
@@ -24,7 +24,7 @@ public class SyntheticOnlyPointsQueriesSet extends QueriesSet {
 	int N;
 	private SyntheticGenerator generator;
 	
-	public SyntheticOnlyPointsQueriesSet(SystemUnderTest sut, int N) throws IOException {
+	public SyntheticOnlyPointsQueriesSet(TestSystem sut, int N) throws IOException {
 		super(sut);
 		queriesN = 16; // IMPORTANT: Add/remove queries in getQuery implies changing queriesN
 		this.N = N;

@@ -8,7 +8,6 @@
  */
 package gr.uoa.di.rdf.Geographica.queries;
 
-import geosparql_benchmarking.systemsundertest.SystemUnderTest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,6 +19,7 @@ import org.apache.log4j.Logger;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResultHandlerException;
+import geosparql_benchmarking.experiments.TestSystem;
 
 /**
  * @author George Garbis <ggarbis@di.uoa.gr>
@@ -35,7 +35,7 @@ public class MacroComputeStatisticsQueriesSet extends QueriesSet {
     // implies changing queriesN
     Random rn;
 
-    public MacroComputeStatisticsQueriesSet(SystemUnderTest sut) throws IOException {
+    public MacroComputeStatisticsQueriesSet(TestSystem sut) throws IOException {
         super(sut);
         String municipalitiesFile = "municipalities.txt"; // TODO
         municipalities = new ArrayList<>();

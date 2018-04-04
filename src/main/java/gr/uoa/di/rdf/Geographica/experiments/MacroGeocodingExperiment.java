@@ -9,16 +9,16 @@
 package gr.uoa.di.rdf.Geographica.experiments;
 
 import gr.uoa.di.rdf.Geographica.queries.MacroGeocodingQueriesSet;
-import geosparql_benchmarking.systemsundertest.SystemUnderTest;
 import java.io.IOException;
 import org.apache.log4j.Logger;
+import geosparql_benchmarking.experiments.TestSystem;
 
 /**
  * @author George Garbis <ggarbis@di.uoa.gr>
  */
 public class MacroGeocodingExperiment extends MacroExperiment {
 
-    public MacroGeocodingExperiment(SystemUnderTest sut, int repetitions,
+    public MacroGeocodingExperiment(TestSystem sut, int repetitions,
             int timeoutSecs, int runTimeInMinutes, String logPath) throws IOException {
         super(sut, repetitions, timeoutSecs, runTimeInMinutes, logPath);
         logger = Logger.getLogger(MacroGeocodingExperiment.class.getSimpleName());
@@ -26,7 +26,7 @@ public class MacroGeocodingExperiment extends MacroExperiment {
         this.runTimeInMinutes = runTimeInMinutes;
     }
 
-    public MacroGeocodingExperiment(SystemUnderTest sut, int repetitions,
+    public MacroGeocodingExperiment(TestSystem sut, int repetitions,
             int timeoutSecs, int runTimeInMinutes, int[] queriesToRun, String logPath) throws IOException {
         super(sut, repetitions, timeoutSecs, runTimeInMinutes, logPath);
         logger = Logger.getLogger(MacroGeocodingExperiment.class.getSimpleName());

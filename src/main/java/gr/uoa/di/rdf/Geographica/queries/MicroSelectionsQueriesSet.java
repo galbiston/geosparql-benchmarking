@@ -9,7 +9,6 @@
 package gr.uoa.di.rdf.Geographica.queries;
 
 import geosparql_benchmarking.GraphURI;
-import geosparql_benchmarking.systemsundertest.SystemUnderTest;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,6 +16,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.apache.log4j.Logger;
+import geosparql_benchmarking.experiments.TestSystem;
 
 /**
  * @author George Garbis <ggarbis@di.uoa.gr>
@@ -40,7 +40,7 @@ public class MicroSelectionsQueriesSet extends QueriesSet {
 	private String givenPoint;
 	private String givenRadius;
 	
-	public MicroSelectionsQueriesSet(SystemUnderTest sut) throws IOException {
+	public MicroSelectionsQueriesSet(TestSystem sut) throws IOException {
 		super(sut);
 		queriesN = 11; // IMPORTANT: Add/remove queries in getQuery implies changing queriesN
 		
