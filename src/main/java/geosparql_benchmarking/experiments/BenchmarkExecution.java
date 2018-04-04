@@ -7,7 +7,6 @@ import geosparql_benchmarking.test_systems.StrabonTestSystem;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,32 +15,34 @@ public class BenchmarkExecution {
 
     final static Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    public static void warmUp(HashMap<TestSystem, File> testSystemFolders, Integer timeoutSecs, List<String> queryList) {
+    public static void warmUp(HashMap<TestSystem, File> testSystemFolders, Integer timeoutSecs, HashMap<String, String> queryMap) {
 
         for (Entry<TestSystem, File> entry : testSystemFolders.entrySet()) {
             TestSystem testSystem = entry.getKey();
             File resultsFolder = entry.getValue();
-            run(testSystem, resultsFolder, 1, timeoutSecs, queryList);
+            run(testSystem, resultsFolder, 1, timeoutSecs, queryMap);
         }
     }
 
-    public static void runAll(HashMap<TestSystem, File> testSystemFolders, Integer repetitions, Integer timeoutSecs, List<String> queryList) {
+    public static void runAll(HashMap<TestSystem, File> testSystemFolders, Integer repetitions, Integer timeoutSecs, HashMap<String, String> queryMap) {
 
         for (Entry<TestSystem, File> entry : testSystemFolders.entrySet()) {
             TestSystem testSystem = entry.getKey();
             File resultsFolder = entry.getValue();
-            run(testSystem, resultsFolder, repetitions, timeoutSecs, queryList);
+            run(testSystem, resultsFolder, repetitions, timeoutSecs, queryMap);
         }
     }
 
-    public static void run(TestSystem testSystem, File resultsFolder, Integer repetitions, Integer timeoutSecs, List<String> queryList) {
+    public static void run(TestSystem testSystem, File resultsFolder, Integer repetitions, Integer timeoutSecs, HashMap<String, String> queryMap) {
 
         for (int i = 0; i < repetitions; i++) {
-            for (String query : queryList) {
+            for (Entry<String, String> entry : queryMap.entrySet()) {
                 try {
-                    QueryResult queryResult = testSystem.runQueryWithTimeout(query, timeoutSecs);
+                    String queryName = entry.getKey();
+                    String queryString = entry.getValue();
+                    QueryResult queryResult = testSystem.runQueryWithTimeout(queryString, timeoutSecs);
                     if (!queryResult.isCompleted()) {
-                        LOGGER.info("System: {}, Query: {} - Did not complete. Skipping repetitions.", testSystem.getName(), query);
+                        LOGGER.info("System: {}, Query: {} - Did not complete. Skipping repetitions.", testSystem.getName(), queryName);
                         break;
                     }
                 } catch (Exception ex) {
