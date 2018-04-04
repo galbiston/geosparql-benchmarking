@@ -1,0 +1,27 @@
+#Query 3 - Get_hotspots:
+
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+
+SELECT ?h ?sensor ?confidence ?producer ?satellite ?chain ?confirmatino ?geometry ?r ?wkt
+WHERE {
+	GRAPH dataset:hotspots {
+		?h rdf:type noa:Hotspot.
+		?h noa:isDerivedFromSensor ?sensor.
+		?h noa:hasConfidence ?confidence.
+		?h noa:isProducedBy ?producer.
+		?h noa:isDerivedFromSatellite ?satellite.
+		?h noa:producedFromProcessingChain ?chain.
+		?h noa:hasConfirmation ?confirmation .
+		?h noa:hasAcquisitionTime "TIMESTAMP"^^xsd:dateTime.
+		?h noa:hasGeometry ?geomentry.
+		OPTIONAL {?h noa:refinedBy ?r}
+		FILTER(!bound(?r))
+		?geometry noa:asWKT ?wkt .
+		FILTER(geof:sfIntersects(?wkt, "GIVEN_POLYGON_IN_WKT"^^geo:wktLiteral))
+	}
+}

@@ -1,0 +1,18 @@
+#Query 30 - Synthetic_Join_Touches_512_1:
+
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX state: <http://geographica.di.uoa.gr/generator/state/>
+
+SELECT ?s1 ?s2
+WHERE {
+	?s2 state:hasGeometry ?s2Geo .
+	?s2Geo state:asWKT ?geo2 .
+	?s2 state:hasTag ?tag2 .
+	?tag2 state:hasKey "1" .
+	?s1 state:hasGeometry ?s1Geo .
+	?s1Geo state:asWKT ?geo1 .
+	?s1 state:hasTag ?tag1 .
+	?tag1 state:hasKey "512" .
+	FILTER(geof:sfTouches(?geo1, ?geo2)) .
+}

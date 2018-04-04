@@ -1,0 +1,19 @@
+#Query 0 - Get_CLC_areas:
+
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX clc: <http://geo.linkedopendata.gr/corine/ontology#>
+
+SELECT ?a ?aID ?aLandUse ?aGeo ?aGeoWKT
+WHERE {
+	GRAPH dataset:clc {
+		?a rdf:type clc:Area.
+		?a clc:hasID ?aID.
+		?a clc:hasLandUse ?aLandUse.
+		?a clc:hasGeometry ?aGeo.
+		?aGeo clc:asWKT ?aGeoWKT.
+		FILTER(geof:sfIntersects(?aGeoWKT, "GIVEN_POLYGON_IN_WKT"^^geo:wktLiteral))
+	}
+}

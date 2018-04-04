@@ -1,0 +1,19 @@
+#Query 34 - Synthetic_Join_Within_512_1:
+
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX state: <http://geographica.di.uoa.gr/generator/state/>
+PREFIX pointOfInterest: <http://geographica.di.uoa.gr/generator/pointOfInterest/>
+
+SELECT ?s1 ?s2
+WHERE {
+  ?s2 state:hasGeometry ?s2Geo .
+  ?s2Geo state:asWKT ?geo2 .
+  ?s2 state:hasTag ?tag2 .
+  ?tag2 state:hasKey "1" .
+  ?s1 pointOfInterest:hasGeometry ?s1Geo .
+  ?s1Geo pointOfInterest:asWKT ?geo1 .
+  ?s1 pointOfInterest:hasTag ?tag1 .
+  ?tag1 pointOfInterest:hasKey "512" .
+  FILTER(geof:sfWithin(?geo1, ?geo2)) .
+}

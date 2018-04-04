@@ -1,0 +1,13 @@
+#Query 18 - Equals_GeoNames_DBPedia:
+
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX geonames: <http://www.geonames.org/ontology#>
+PREFIX dbpedia: <http://dbpedia.org/property/>
+
+SELECT ?s1 ?s2
+WHERE {
+	GRAPH dataset:geonames {?s1 geonames:asWKT ?o1}
+	GRAPH dataset:dbpedia {?s2 dbpedia:asWKT ?o2}
+	FILTER(geof:sfEquals(?o1, ?o2)).
+}

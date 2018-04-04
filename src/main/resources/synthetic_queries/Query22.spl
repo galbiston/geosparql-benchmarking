@@ -1,0 +1,14 @@
+#Query 22 - Synthetic_Selection_Within_1_0.001:
+
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX pointOfInterest: <http://geographica.di.uoa.gr/generator/pointOfInterest/>
+
+SELECT ?s1
+WHERE {
+	?s1 pointOfInterest:hasGeometry ?s1Geo .
+	?s1Geo pointOfInterest:asWKT ?geo1 .
+	?s1 pointOfInterest:hasTag ?tag1 .
+	?tag1 pointOfInterest:hasKey "1" .
+	FILTER(geof:sfWithin(?geo1, "POLYGON ((0.0 0.0, 0.032769571270841485 0.0, 0.032769571270841485 90.0, 0.0 90.0, 0.0 0.0))"^^geo:wktLiteral)) .
+}

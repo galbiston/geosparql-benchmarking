@@ -1,0 +1,27 @@
+#Query 4 - Get_coniferous_forests_in_fire:
+
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX clc: <http://geo.linkedopendata.gr/corine/ontology#>
+PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+
+SELECT ?h ?hWKT
+WHERE {
+	GRAPH dataset:hotspots {
+		?h rdf:type noa:Hotspot.
+		?h noa:hasGeometry ?hGeo.
+		?h noa:hasAcquisitionTime "TIMESTAMP"^^xsd:dateTime.
+		?hGeo noa:asWKT ?hWKT.
+	}
+	GRAPH dataset:clc {
+		?a a clc:Area.
+		?a clc:hasGeometry ?aGeo.
+		?a clc:hasLandUse clc:coniferousForest.
+		?aGeo clc:asWKT ?aWKT.
+	}
+	FILTER(geof:sfIntersects(?hWKT, ?aWKT)) .
+	FILTER(geof:sfIntersects(?aWKT, "GIVEN_POLYGON_IN_WKT"^^geo:wktLiteral))
+}

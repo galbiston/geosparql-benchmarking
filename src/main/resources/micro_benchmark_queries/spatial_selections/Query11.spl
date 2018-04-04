@@ -1,0 +1,12 @@
+#Query 11 - Overlaps_CLC_GivenPolygon:
+
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX clc: <http://geo.linkedopendata.gr/corine/ontology#>
+
+SELECT ?s1 ?o1
+WHERE {
+	GRAPH dataset:clc {?s1 clc:asWKT ?o1}
+	FILTER(geof:sfOverlaps(?o1, "GIVEN_POLYGON_IN_WKT"^^geo:wktLiteral)).
+}

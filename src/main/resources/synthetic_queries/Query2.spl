@@ -1,0 +1,14 @@
+#Query 2 - Synthetic_Selection_Intersects_1_0.75:
+
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX landOwnership: <http://geographica.di.uoa.gr/generator/landOwnership/>
+
+SELECT ?s1
+WHERE {
+	?s1 landOwnership:hasGeometry ?s1Geo .
+	?s1Geo landOwnership:asWKT ?geo1 .
+	?s1 landOwnership:hasTag ?tag1 .
+	?tag1 landOwnership:hasKey "1" .
+	FILTER(geof:sfIntersects(?geo1, "POLYGON ((0.0 0.0, 78.0913058119689 0.0, 78.0913058119689 67.60809780677805, 0.0 67.60809780677805, 0.0 0.0))"^^geo:wktLiteral)) .
+}

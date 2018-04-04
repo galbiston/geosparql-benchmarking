@@ -1,0 +1,19 @@
+#Query 25 - Synthetic_Join_Intersects_1_512:
+
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX landOwnership: <http://geographica.di.uoa.gr/generator/landOwnership/>
+PREFIX state: <http://geographica.di.uoa.gr/generator/state/>
+
+SELECT ?s1 ?s2
+WHERE {
+	?s1 landOwnership:hasGeometry ?s1Geo .
+	?s1Geo landOwnership:asWKT ?geo1 .
+	?s1 landOwnership:hasTag ?tag1 .
+	?tag1 landOwnership:hasKey "1" .
+	?s2 state:hasGeometry ?s2Geo .
+	?s2Geo state:asWKT ?geo2 .
+	?s2 state:hasTag ?tag2 .
+	?tag2 state:hasKey "512" .
+	FILTER(geof:sfIntersects(?geo1, ?geo2)) .
+}

@@ -1,0 +1,13 @@
+#Query 26 - Touches_GAG_GAG:
+
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX gag: <http://geo.linkedopendata.gr/gag/ontology/>
+
+SELECT ?s1 ?s2
+WHERE {
+	GRAPH dataset:gag {?s1 gag:asWKT ?o1}
+	GRAPH dataset:gag {?s2 gag:asWKT ?o2}
+	FILTER(?s1 != ?s2).
+	FILTER(geof:sfTouches(?o1, ?o2)).
+}

@@ -1,0 +1,10 @@
+#Query 2 - Envelope_CLC:
+
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX clc: <http://geo.linkedopendata.gr/corine/ontology#>
+
+SELECT (geof:envelope(?o1) AS ?ret)
+WHERE {
+	GRAPH dataset:clc {?s1 clc:asWKT ?o1}
+}

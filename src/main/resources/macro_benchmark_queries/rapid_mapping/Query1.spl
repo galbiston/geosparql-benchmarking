@@ -1,0 +1,18 @@
+#Query 1 - Get_highways:
+
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX lgd: <http://linkedgeodata.org/ontology/>
+
+SELECT ?r ?rName ?rGeoWKT
+WHERE {
+	GRAPH dataset:lgd {
+		?r rdf:type lgd:HighwayThing.
+		?r rdfs:label ?rName.
+		?r lgd:hasGeometry ?rGeo.
+		?rGeo lgd:asWKT ?rGeoWKT.
+		FILTER(geof:sfIntersects(?rGeoWKT, "GIVEN_POLYGON_IN_WKT"^^geo:wktLiteral))
+	}
+}

@@ -1,0 +1,17 @@
+#Query 2 - Get_Around_Roads:
+
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX lgd: <http://linkedgeodata.org/ontology/>
+
+SELECT ?r ?label ?rGeo ?rGeoWKT
+WHERE {
+	GRAPH dataset:lgd {
+		?r rdf:type ?type.
+		OPTIONAL{ ?r rdfs:label ?label }.
+		?r lgd:hasGeometry ?rGeo.
+		?rGeo lgd:asWKT ?rGeoWKT.
+		FILTER(geof:sfIntersects(?rGeoWKT, "GIVEN_RECTANGLE_IN_WKT"^^geo:wktLiteral)).
+	}
+}

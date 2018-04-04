@@ -1,0 +1,13 @@
+#Query 24 - Within_CLC_GAG:
+
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX clc: <http://geo.linkedopendata.gr/corine/ontology#>
+PREFIX gag: <http://geo.linkedopendata.gr/gag/ontology/>
+
+SELECT ?s1 ?s2
+WHERE {
+	GRAPH dataset:clc {?s1 clc:asWKT ?o1}
+	GRAPH dataset:gag {?s2 gag:asWKT ?o2}
+	FILTER(geof:sfWithin(?o1, ?o2)).
+}

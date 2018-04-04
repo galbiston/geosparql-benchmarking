@@ -1,0 +1,20 @@
+#Query 1 - Find_Closest_Motorway:
+
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX opengis: <http://www.opengis.net/def/uom/OGC/1.0/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX lgd: <http://linkedgeodata.org/ontology/>
+
+SELECT ?c ?type ?label (geof:distance(?cGeoWKT, "GIVEN_POINT_IN_WKT"^^geo:wktLiteral, opengis:metre) as ?distance) ?cGeoWKT
+WHERE {
+	GRAPH dataset:lgd {
+	?c rdf:type lgd:Motorway.
+	?c rdfs:label ?label.
+	?c lgd:hasGeometry ?cGeo.
+	?cGeo lgd:asWKT ?cGeoWKT.
+	}
+}
+ORDER BY ASC(?distance)
+LIMIT 1

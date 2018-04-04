@@ -1,0 +1,12 @@
+#Query 13 - Within_GeoNames_GivenPolygon:
+
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX geonames: <http://www.geonames.org/ontology#>
+
+SELECT ?s1 ?o1
+WHERE {
+	GRAPH dataset:geonames {?s1 geonames:asWKT ?o1}
+	FILTER(geof:sfWithin(?o1, "GIVEN_POLYGON_IN_WKT"^^geo:wktLiteral)).
+}
