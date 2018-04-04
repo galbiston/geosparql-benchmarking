@@ -18,10 +18,10 @@
     <property name="LOG_FOLDER" value="./logs" />
     <timestamp key="TIME_STAMP" datePattern="yyyyMMdd'T'HHmmss"/>
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>${LOG_FOLDER}/Converter-${TIME_STAMP}.log</file>
+        <file>${LOG_FOLDER}/GeoSPARQL_Benchmarking-${TIME_STAMP}.log</file>
         <append>false</append>
         <!-- set immediateFlush to false for much higher logging throughput -->
-        <immediateFlush>true</immediateFlush>
+        <immediateFlush>false</immediateFlush>
 
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg%n</pattern>
