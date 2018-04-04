@@ -45,11 +45,11 @@ public class GeosparqlJenaSUT implements SystemUnderTest {
 
     private HashMap<String, String> firstResult = new HashMap<>();
     private Dataset dataset = null;
-    private final File assemblyFile;
+    private final File datasetFolder;
 
-    public GeosparqlJenaSUT(File assemblyFile) {
-        this.assemblyFile = assemblyFile;
-        this.dataset = TDBFactory.assembleDataset(assemblyFile.getAbsolutePath());
+    public GeosparqlJenaSUT(File datasetFolder) {
+        this.datasetFolder = datasetFolder;
+        this.dataset = TDBFactory.createDataset(datasetFolder.getAbsolutePath());
     }
 
     @Override
@@ -134,7 +134,7 @@ public class GeosparqlJenaSUT implements SystemUnderTest {
         if (dataset != null) {
             TDBFactory.release(dataset);
         }
-        this.dataset = TDBFactory.assembleDataset(assemblyFile.getAbsolutePath());
+        this.dataset = TDBFactory.createDataset(datasetFolder.getAbsolutePath());
         firstResult = new HashMap<>();
     }
 
@@ -142,7 +142,7 @@ public class GeosparqlJenaSUT implements SystemUnderTest {
     public void restart() {
         //No restarting but release resources and reconnect.
         TDBFactory.release(dataset);
-        this.dataset = TDBFactory.assembleDataset(assemblyFile.getAbsolutePath());
+        this.dataset = TDBFactory.createDataset(datasetFolder.getAbsolutePath());
         firstResult = new HashMap<>();
     }
 

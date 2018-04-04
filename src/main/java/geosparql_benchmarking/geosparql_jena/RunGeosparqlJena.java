@@ -23,7 +23,7 @@ public class RunGeosparqlJena extends RunSystemUnderTest {
 
     @Override
     protected void initSystemUnderTest() throws Exception {
-        sut = new GeosparqlJenaSUT(Main.GEOSPARQL_JENA_TDB_ASSEMBLY_FILE);
+        sut = new GeosparqlJenaSUT(Main.GEOSPARQL_JENA_TDB_FOLDER);
     }
 
     public static void main(String[] args) throws Exception {
