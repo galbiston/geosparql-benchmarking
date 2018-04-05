@@ -9,5 +9,5 @@ PREFIX geonames: <http://www.geonames.org/ontology#>
 SELECT ?s1
 WHERE {
 	GRAPH dataset:geonames {?s1 geonames:asWKT ?o1}
-	FILTER(geof:distance(?o1, "GIVEN_POINT_IN_WKT"^^geo:wktLiteral, opengis:metre) <= 3000).
+	FILTER(geof:distance(?o1, "GIVEN_POINT_IN_WKT"^^geo:wktLiteral, opengis:metre) <= GIVEN_RADIUS).
 }
