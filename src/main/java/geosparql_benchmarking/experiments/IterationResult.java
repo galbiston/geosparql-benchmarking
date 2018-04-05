@@ -11,6 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -90,9 +91,11 @@ public class IterationResult {
         return line.toArray(new String[line.size()]);
     }
 
+    private static final DateTimeFormatter FILE_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
+
     public static final void writeSummaryFile(File systemResultsFolder, List<IterationResult> allIterationResults) {
 
-        String filename = "summary-" + LocalDateTime.now() + ".csv";
+        String filename = "summary-" + LocalDateTime.now().format(FILE_DATE_TIME_FORMAT) + ".csv";
         File summaryFile = new File(systemResultsFolder, filename);
         try (CSVWriter writer = new CSVWriter(new FileWriter(summaryFile))) {
             writer.writeNext(SUMMARY_HEADER);
@@ -144,7 +147,7 @@ public class IterationResult {
 
         if (!iterationResults.isEmpty()) {
             IterationResult firstIterationResult = iterationResults.get(0);
-            String filename = firstIterationResult.getResultFileLabel() + "-results-" + LocalDateTime.now() + " .csv";
+            String filename = firstIterationResult.getResultFileLabel() + "-results-" + LocalDateTime.now().format(FILE_DATE_TIME_FORMAT) + " .csv";
             File resultsFile = new File(resultsFolder, filename);
             try (CSVWriter writer = new CSVWriter(new FileWriter(resultsFile))) {
                 writer.writeNext(firstIterationResult.getResultHeader());
