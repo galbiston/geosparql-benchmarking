@@ -80,6 +80,7 @@ public class BenchmarkExecution {
             } catch (Exception ex) {
                 LOGGER.error("Exception: {}", ex.getMessage());
             } finally {
+                testSystem.clearCaches();
                 testSystem.close();
             }
         }
