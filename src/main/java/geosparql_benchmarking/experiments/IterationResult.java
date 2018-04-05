@@ -32,6 +32,7 @@ public class IterationResult {
     private final String queryString;
     private final String iteration;
     private final QueryResult queryResult;
+    private final String nonEmptyResultsCount;
 
     public IterationResult(String testSystemName, String queryType, String queryName, String queryString, Integer iteration, QueryResult queryResult) {
         this.testSystemName = testSystemName;
@@ -40,6 +41,14 @@ public class IterationResult {
         this.queryString = queryString;
         this.iteration = iteration.toString();
         this.queryResult = queryResult;
+
+        Integer nonEmptyCount = 0;
+        for (HashMap<String, String> result : queryResult.getResults()) {
+            if (!result.isEmpty()) {
+                nonEmptyCount++;
+            }
+        }
+        this.nonEmptyResultsCount = nonEmptyCount.toString();
     }
 
     public String getTestSystemName() {
@@ -66,16 +75,20 @@ public class IterationResult {
         return queryResult;
     }
 
+    public String getNonEmptyResultsCount() {
+        return nonEmptyResultsCount;
+    }
+
     public String getResultFileLabel() {
         return testSystemName + "-" + queryType + "-" + queryName;
     }
 
     @Override
     public String toString() {
-        return "IterationResult{" + "testSystemName=" + testSystemName + ", queryType=" + queryType + ", queryName=" + queryName + ", queryString=" + queryString + ", iteration=" + iteration + ", queryResult=" + queryResult + '}';
+        return "IterationResult{" + "testSystemName=" + testSystemName + ", queryType=" + queryType + ", queryName=" + queryName + ", queryString=" + queryString + ", iteration=" + iteration + ", queryResult=" + queryResult + ", nonEmptyResults=" + nonEmptyResultsCount + '}';
     }
 
-    public static final String[] SUMMARY_HEADER = {"TestSystem", "QueryType", "QueryName", "Iteration", "Completed", "ResultsCount", "StartQueryDuration", "QueryResultsDuration", "StartResultsDuration"};
+    public static final String[] SUMMARY_HEADER = {"TestSystem", "QueryType", "QueryName", "Iteration", "Completed", "ResultsCount", "NonEmptyResultsCount", "StartQueryDuration", "QueryResultsDuration", "StartResultsDuration"};
 
     public String[] writeSummary() {
         List<String> line = new ArrayList<>(SUMMARY_HEADER.length);
@@ -85,6 +98,7 @@ public class IterationResult {
         line.add(iteration);
         line.add(queryResult.isCompleted().toString());
         line.add(queryResult.getResultsCount().toString());
+        line.add(nonEmptyResultsCount);
         line.add(queryResult.getStartQueryDuration().toString());
         line.add(queryResult.getQueryResultsDuration().toString());
         line.add(queryResult.getStartResultsDuration().toString());
