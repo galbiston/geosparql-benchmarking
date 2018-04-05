@@ -25,6 +25,16 @@ public class QueryResult {
     private final List<HashMap<String, String>> results;
     private final boolean isCompleted;
 
+    /**
+     * Provides a QueryResult that stores the three time checks, results and
+     * whether the query completed successfully.
+     *
+     * @param startNanoTime
+     * @param queryNanoTime
+     * @param resultsNanoTime
+     * @param results
+     * @param isCompleted
+     */
     public QueryResult(long startNanoTime, long queryNanoTime, long resultsNanoTime, List<HashMap<String, String>> results, boolean isCompleted) {
         this.startNanoTime = startNanoTime;
         this.queryNanoTime = queryNanoTime;
@@ -36,8 +46,22 @@ public class QueryResult {
         this.isCompleted = isCompleted;
     }
 
+    /**
+     * Provides a QueryResult with no query time and used for Update tasks.
+     *
+     * @param startNanoTime
+     * @param resultsNanoTime
+     * @param isCompleted
+     */
     public QueryResult(long startNanoTime, long resultsNanoTime, boolean isCompleted) {
         this(startNanoTime, startNanoTime, resultsNanoTime, new ArrayList<>(), isCompleted);
+    }
+
+    /**
+     * Provides a default failure QueryResult.
+     */
+    public QueryResult() {
+        this(0, 0, false);
     }
 
     public long getStartNanoTime() {
