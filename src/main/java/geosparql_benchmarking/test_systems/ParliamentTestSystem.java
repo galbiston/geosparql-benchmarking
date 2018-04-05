@@ -236,8 +236,7 @@ public class ParliamentTestSystem implements TestSystem {
     }
 
     @Override
-    public String translateQuery(String query, String label
-    ) {
+    public String translateQuery(String query) {
         String translatedQuery = query;
         /*
         //These should no longer be required as Parliament has aligned with GeoSPARQL 1.0 namespaces.
@@ -245,9 +244,6 @@ public class ParliamentTestSystem implements TestSystem {
         translatedQuery = translatedQuery.replace("http://www.opengis.net/ont/geosparql#wktLiteral", "http://www.opengis.net/ont/sf#wktLiteral");
         translatedQuery = translatedQuery.replace("geo:wktLiteral", "<http://www.opengis.net/ont/sf#wktLiteral>");
          */
-        if (label.equals("Area_CLC")) {
-            translatedQuery = null; //?!?!?!? Kill the query? Why?
-        }
         return translatedQuery;
     }
 

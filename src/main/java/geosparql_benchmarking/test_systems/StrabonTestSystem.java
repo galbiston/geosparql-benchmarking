@@ -224,11 +224,11 @@ public class StrabonTestSystem implements TestSystem {
     }
 
     @Override
-    public String translateQuery(String query, String label) {
+    public String translateQuery(String query) {
         String translatedQuery = query;
 
-        translatedQuery = translatedQuery.replaceAll("geof:distance", "strdf:distance");
-
+        //translatedQuery = translatedQuery.replaceAll("geof:distance", "strdf:distance");
+        /*
         if (label.matches("Get_CLC_areas")
                 || label.matches("Get_highways")
                 || label.matches("Get_municipalities")
@@ -247,7 +247,7 @@ public class StrabonTestSystem implements TestSystem {
                 || label.equals("Find_Closest_Motorway")) {
             translatedQuery = translatedQuery.replace("geof:distance", "strdf:distance");  //Moved from Parliament SUT and changed the Geographica query as this is a Strabon variation from GeoSPARQL standard.
         }
-
+         */
         return translatedQuery;
     }
 

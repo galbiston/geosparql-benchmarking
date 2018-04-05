@@ -130,8 +130,8 @@ public class GeosparqlJenaTestSystem implements TestSystem {
     }
 
     @Override
-    public String translateQuery(String query, String label) {
-        //No query translation.
+    public String translateQuery(String query) {
+        //No query translation required.
         return query;
     }
 

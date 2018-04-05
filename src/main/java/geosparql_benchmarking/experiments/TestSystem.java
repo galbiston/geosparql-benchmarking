@@ -22,6 +22,6 @@ public interface TestSystem {
 
     public void restart();
 
-    public String translateQuery(String query, String label);
+    public String translateQuery(String query);
 
 }
