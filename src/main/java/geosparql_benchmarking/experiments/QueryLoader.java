@@ -123,7 +123,7 @@ public class QueryLoader {
 
     public static String readFile(String filename) {
 
-        InputStream input = QueryLoader.class.getResourceAsStream(filename);
+        InputStream input = QueryLoader.class.getClassLoader().getResourceAsStream(filename);
 
         try (BufferedReader buffer = new BufferedReader(new InputStreamReader(input))) {
             return buffer.lines().collect(Collectors.joining(System.lineSeparator()));
