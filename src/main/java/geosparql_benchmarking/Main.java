@@ -58,6 +58,7 @@ public class Main {
         //rdfsParliamentTest();
         //exportParliamentTest();
         //Benchmark
+        BenchmarkExecution.createResultsFolders();
         Duration runtime = Duration.ofMinutes(30);
         Integer iterations = 1; //10;
         Duration timeout = Duration.ofSeconds(3600);
