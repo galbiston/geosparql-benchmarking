@@ -46,11 +46,11 @@ public class QueryLoader {
     public static HashMap<String, String> loadNonTopologicalFunctionsQueries() {
 
         HashMap<String, String> queryMap = new HashMap<>();
-        queryMap.put("NonTopological Functions - Query1", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query1.spl"));
-        queryMap.put("NonTopological Functions - Query2", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query2.spl"));
-        queryMap.put("NonTopological Functions - Query3", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query3.spl"));
-        queryMap.put("NonTopological Functions - Query4", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query4.spl"));
-        queryMap.put("NonTopological Functions - Query5", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query5.spl"));
+        queryMap.put("NonTopologicalFunctions#Query1", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query1.spl"));
+        queryMap.put("NonTopologicalFunctions#Query2", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query2.spl"));
+        queryMap.put("NonTopologicalFunctions#Query3", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query3.spl"));
+        queryMap.put("NonTopologicalFunctions#Query4", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query4.spl"));
+        queryMap.put("NonTopologicalFunctions#Query5", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query5.spl"));
         return queryMap;
     }
 
@@ -63,7 +63,7 @@ public class QueryLoader {
     public static HashMap<String, String> loadNonTopologicalFunctionsQuery_6() {
 
         HashMap<String, String> queryMap = new HashMap<>();
-        queryMap.put("NonTopological Functions - Query6", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query6.spl"));
+        queryMap.put("NonTopologicalFunctions#Query6", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query6.spl"));
         return queryMap;
     }
 
@@ -76,17 +76,17 @@ public class QueryLoader {
     public static HashMap<String, String> loadSpatialSelectionsQueries() {
 
         HashMap<String, String> queryMap = new HashMap<>();
-        queryMap.put("Spatial Selections - Query7", readFile(SPATIAL_SELECTIONS + "/Query7.spl").replace("GIVEN_LINE_IN_WKT", GIVEN_LINESTRING_1));
-        queryMap.put("Spatial Selections - Query8", readFile(SPATIAL_SELECTIONS + "/Query8.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON));
-        queryMap.put("Spatial Selections - Query9", readFile(SPATIAL_SELECTIONS + "/Query9.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON));
-        queryMap.put("Spatial Selections - Query10", readFile(SPATIAL_SELECTIONS + "/Query10.spl").replace("GIVEN_LINE_IN_WKT", GIVEN_LINESTRING_2));
-        queryMap.put("Spatial Selections - Query11", readFile(SPATIAL_SELECTIONS + "/Query11.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON));
-        queryMap.put("Spatial Selections - Query12", readFile(SPATIAL_SELECTIONS + "/Query12.spl").replace("GIVEN_LINE_IN_WKT", GIVEN_LINESTRING_3));
-        queryMap.put("Spatial Selections - Query13", readFile(SPATIAL_SELECTIONS + "/Query13.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON));
-        queryMap.put("Spatial Selections - Query14", readFile(SPATIAL_SELECTIONS + "/Query14.spl").replace("GIVEN_POINT_IN_WKT", GIVEN_POINT).replace("GIVEN_RADIUS", GIVEN_RADIUS));
-        queryMap.put("Spatial Selections - Query15", readFile(SPATIAL_SELECTIONS + "/Query15.spl").replace("GIVEN_POINT_IN_WKT", GIVEN_POINT).replace("GIVEN_RADIUS", GIVEN_RADIUS));
-        queryMap.put("Spatial Selections - Query16", readFile(SPATIAL_SELECTIONS + "/Query16.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON));
-        queryMap.put("Spatial Selections - Query17", readFile(SPATIAL_SELECTIONS + "/Query17.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON));
+        queryMap.put("SpatialSelections#Query7", readFile(SPATIAL_SELECTIONS + "/Query7.spl").replace("GIVEN_LINE_IN_WKT", GIVEN_LINESTRING_1));
+        queryMap.put("SpatialSelections#Query8", readFile(SPATIAL_SELECTIONS + "/Query8.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON));
+        queryMap.put("SpatialSelections#Query9", readFile(SPATIAL_SELECTIONS + "/Query9.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON));
+        queryMap.put("SpatialSelections#Query10", readFile(SPATIAL_SELECTIONS + "/Query10.spl").replace("GIVEN_LINE_IN_WKT", GIVEN_LINESTRING_2));
+        queryMap.put("SpatialSelections#Query11", readFile(SPATIAL_SELECTIONS + "/Query11.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON));
+        queryMap.put("SpatialSelections#Query12", readFile(SPATIAL_SELECTIONS + "/Query12.spl").replace("GIVEN_LINE_IN_WKT", GIVEN_LINESTRING_3));
+        queryMap.put("SpatialSelections#Query13", readFile(SPATIAL_SELECTIONS + "/Query13.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON));
+        queryMap.put("SpatialSelections#Query14", readFile(SPATIAL_SELECTIONS + "/Query14.spl").replace("GIVEN_POINT_IN_WKT", GIVEN_POINT).replace("GIVEN_RADIUS", GIVEN_RADIUS));
+        queryMap.put("SpatialSelections#Query15", readFile(SPATIAL_SELECTIONS + "/Query15.spl").replace("GIVEN_POINT_IN_WKT", GIVEN_POINT).replace("GIVEN_RADIUS", GIVEN_RADIUS));
+        queryMap.put("SpatialSelections#Query16", readFile(SPATIAL_SELECTIONS + "/Query16.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON));
+        queryMap.put("SpatialSelections#Query17", readFile(SPATIAL_SELECTIONS + "/Query17.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON));
 
         return queryMap;
     }
@@ -94,16 +94,16 @@ public class QueryLoader {
     public static HashMap<String, String> loadSpatialJoinsQueries() {
 
         HashMap<String, String> queryMap = new HashMap<>();
-        queryMap.put("Spatial Joins - Query18", readFile(SPATIAL_JOINS + "/Query18.spl"));
-        queryMap.put("Spatial Joins - Query19", readFile(SPATIAL_JOINS + "/Query19.spl"));
-        queryMap.put("Spatial Joins - Query20", readFile(SPATIAL_JOINS + "/Query20.spl"));
-        queryMap.put("Spatial Joins - Query21", readFile(SPATIAL_JOINS + "/Query21.spl"));
-        queryMap.put("Spatial Joins - Query22", readFile(SPATIAL_JOINS + "/Query22.spl"));
-        queryMap.put("Spatial Joins - Query23", readFile(SPATIAL_JOINS + "/Query23.spl"));
-        queryMap.put("Spatial Joins - Query24", readFile(SPATIAL_JOINS + "/Query24.spl"));
-        queryMap.put("Spatial Joins - Query25", readFile(SPATIAL_JOINS + "/Query25.spl"));
-        queryMap.put("Spatial Joins - Query26", readFile(SPATIAL_JOINS + "/Query26.spl"));
-        queryMap.put("Spatial Joins - Query27", readFile(SPATIAL_JOINS + "/Query27.spl"));
+        queryMap.put("SpatialJoins#Query18", readFile(SPATIAL_JOINS + "/Query18.spl"));
+        queryMap.put("SpatialJoins#Query19", readFile(SPATIAL_JOINS + "/Query19.spl"));
+        queryMap.put("SpatialJoins#Query20", readFile(SPATIAL_JOINS + "/Query20.spl"));
+        queryMap.put("SpatialJoins#Query21", readFile(SPATIAL_JOINS + "/Query21.spl"));
+        queryMap.put("SpatialJoins#Query22", readFile(SPATIAL_JOINS + "/Query22.spl"));
+        queryMap.put("SpatialJoins#Query23", readFile(SPATIAL_JOINS + "/Query23.spl"));
+        queryMap.put("SpatialJoins#Query24", readFile(SPATIAL_JOINS + "/Query24.spl"));
+        queryMap.put("SpatialJoins#Query25", readFile(SPATIAL_JOINS + "/Query25.spl"));
+        queryMap.put("SpatialJoins#Query26", readFile(SPATIAL_JOINS + "/Query26.spl"));
+        queryMap.put("SpatialJoins#Query27", readFile(SPATIAL_JOINS + "/Query27.spl"));
         return queryMap;
     }
 
@@ -116,8 +116,8 @@ public class QueryLoader {
     public static HashMap<String, String> loadAggergationsQueries() {
 
         HashMap<String, String> queryMap = new HashMap<>();
-        queryMap.put("Aggregations - Query28", readFile(AGGREGATIONS + "/Query28.spl"));
-        queryMap.put("Aggregations - Query29", readFile(AGGREGATIONS + "/Query29.spl"));
+        queryMap.put("Aggregations#Query28", readFile(AGGREGATIONS + "/Query28.spl"));
+        queryMap.put("Aggregations#Query29", readFile(AGGREGATIONS + "/Query29.spl"));
         return queryMap;
     }
 
@@ -128,7 +128,7 @@ public class QueryLoader {
         try (BufferedReader buffer = new BufferedReader(new InputStreamReader(input))) {
             return buffer.lines().collect(Collectors.joining(System.lineSeparator()));
         } catch (NullPointerException | IOException ex) {
-            LOGGER.error("Could not open query file: {} - {}", filename, ex.getMessage());
+            LOGGER.error("Could not open query file: {}#{}", filename, ex.getMessage());
             return null;
         }
     }
