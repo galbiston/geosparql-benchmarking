@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 public class BenchmarkExecution {
 
-    final static Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     public enum TEST_SYSTEM_IDENTIFIER {
         GEOSPARQL_JENA, PARLIAMENT, STRABON
@@ -31,7 +31,7 @@ public class BenchmarkExecution {
      * @param queryMap
      * @return
      */
-    public static HashMap<TEST_SYSTEM_IDENTIFIER, List<IterationResult>> runAll(HashMap<TEST_SYSTEM_IDENTIFIER, File> testSystemFolders, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
+    public static final HashMap<TEST_SYSTEM_IDENTIFIER, List<IterationResult>> runAll(HashMap<TEST_SYSTEM_IDENTIFIER, File> testSystemFolders, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
 
         HashMap<TEST_SYSTEM_IDENTIFIER, List<IterationResult>> testSystemIterationResults = new HashMap<>();
         for (Entry<TEST_SYSTEM_IDENTIFIER, File> entry : testSystemFolders.entrySet()) {
@@ -57,10 +57,11 @@ public class BenchmarkExecution {
      * @param queryMap
      * @return
      */
-    public static List<IterationResult> run(TEST_SYSTEM_IDENTIFIER testSystemIdentifier, File resultsFolder, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
+    public static final List<IterationResult> run(TEST_SYSTEM_IDENTIFIER testSystemIdentifier, File resultsFolder, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
 
-        List<IterationResult> iterationResults = new ArrayList<>(queryMap.size());
+        List<IterationResult> allIterationResults = new ArrayList<>(queryMap.size() * iterations);
         for (Entry<String, String> entry : queryMap.entrySet()) {
+            List<IterationResult> iterationResults = new ArrayList<>(iterations);
             String queryName = entry.getKey();
             String queryString = entry.getValue();
             TestSystem testSystem = getTestSystem(testSystemIdentifier);
@@ -98,9 +99,15 @@ public class BenchmarkExecution {
                 testSystem.close();
             }
 
-            //TODO - Handle result. Summary of all queries and iterations in single file labelled by Test System. Place results from each in query in a sub folder.
+            //Write results for all iterations for each query to own file.
+            IterationResult.writeResultsFile(resultsFolder, iterationResults);
+            allIterationResults.addAll(iterationResults);
         }
-        return iterationResults;
+
+        //Write summary for all queries and iterations performed to a single file.
+        IterationResult.writeSummaryFile(resultsFolder, allIterationResults);
+
+        return allIterationResults;
     }
 
     public static final TestSystem getTestSystem(TEST_SYSTEM_IDENTIFIER testSystemIdentifier) {
@@ -142,14 +149,14 @@ public class BenchmarkExecution {
     public static final File PARLIAMENT_RESULTS = new File(RESULTS_FOLDER, "parliament");
     public static final File STRABON_RESULTS = new File(RESULTS_FOLDER, "strabon");
 
-    public static void createResultsFolders() {
+    public static final void createResultsFolders() {
         RESULTS_FOLDER.mkdir();
         GEOSPARQL_JENA_RESULTS.mkdir();
         PARLIAMENT_RESULTS.mkdir();
         STRABON_RESULTS.mkdir();
     }
 
-    public static HashMap<TEST_SYSTEM_IDENTIFIER, File> getTestSystemFolders() {
+    public static final HashMap<TEST_SYSTEM_IDENTIFIER, File> getTestSystemFolders() {
         createResultsFolders();
         HashMap<TEST_SYSTEM_IDENTIFIER, File> testSystemFolders = new HashMap<>();
         testSystemFolders.put(TEST_SYSTEM_IDENTIFIER.GEOSPARQL_JENA, GEOSPARQL_JENA_RESULTS);
