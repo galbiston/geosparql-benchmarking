@@ -36,9 +36,6 @@ import com.hp.hpl.jena.update.UpdateRequest;
 import geosparql_benchmarking.experiments.QueryResult;
 import geosparql_benchmarking.experiments.TestSystem;
 import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.invoke.MethodHandles;
 import java.net.MalformedURLException;
 import java.time.Duration;
@@ -179,58 +176,6 @@ public class ParliamentTestSystem implements TestSystem {
         System.gc();
         LOGGER.info("Parliament closed");
 
-    }
-
-    @Override
-    public void restart() {
-        try {
-            LOGGER.info("No need to restart parliament");
-//			LOGGER.info("Restarting Parliament...");
-
-//			pr = Runtime.getRuntime().exec(restart_parliament);
-//			pr.waitFor();
-//			if ( pr.exitValue() != 0) {
-//				LOGGER.error("Something went wrong while restarting Parliament");
-//			}
-//
-//			Thread.sleep(5000);
-//			LOGGER.info("Parliament restarted");
-            //initialize(); // Parliament will be initializd out of clearCaches()
-        } catch (Exception e) {
-            LOGGER.error("Cannont clear caches");
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
-            String stacktrace = sw.toString();
-            LOGGER.error(stacktrace);
-        }
-    }
-
-    @Override
-    public void clearCaches() {
-        String[] clear_caches = {"/bin/sh", "-c", "sync && echo 3 > /proc/sys/vm/drop_caches"};
-        Process pr;
-
-        try {
-            LOGGER.info("Clearing caches...");
-            //close(); // clearCaches should be called after Parliament is closed
-
-            pr = Runtime.getRuntime().exec(clear_caches);
-            pr.waitFor();
-            if (pr.exitValue() != 0) {
-                LOGGER.error("Something went wrong while clearing caches");
-            }
-
-            Thread.sleep(5000);
-            LOGGER.info("Caches cleared");
-
-            //initialize(); // Parliament will be initializd out of clearCaches()
-        } catch (IOException | InterruptedException e) {
-            LOGGER.error("Cannont clear caches");
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
-            String stacktrace = sw.toString();
-            LOGGER.error(stacktrace);
-        }
     }
 
     @Override

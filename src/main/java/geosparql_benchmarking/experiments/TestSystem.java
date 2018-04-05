@@ -18,10 +18,6 @@ public interface TestSystem {
 
     public void close();
 
-    public void clearCaches();
-
-    public void restart();
-
     public String translateQuery(String query);
 
 }

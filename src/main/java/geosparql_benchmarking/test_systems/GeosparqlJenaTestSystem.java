@@ -111,22 +111,6 @@ public class GeosparqlJenaTestSystem implements TestSystem {
     }
 
     @Override
-    public void clearCaches() {
-        //Release resources and reconnect.
-        if (dataset != null) {
-            TDBFactory.release(dataset);
-        }
-        this.dataset = TDBFactory.createDataset(datasetFolder.getAbsolutePath());
-    }
-
-    @Override
-    public void restart() {
-        //No restarting but release resources and reconnect.
-        TDBFactory.release(dataset);
-        this.dataset = TDBFactory.createDataset(datasetFolder.getAbsolutePath());
-    }
-
-    @Override
     public String translateQuery(String query) {
         //No query translation required.
         return query;
