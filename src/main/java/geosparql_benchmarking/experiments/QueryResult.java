@@ -27,17 +27,7 @@ public class QueryResult {
     private final Integer resultsVariableCount;
     private final List<String> resultsVariableLabels;
 
-    /**
-     * Provides a QueryResult that stores the three time checks, results and
-     * whether the query completed successfully.
-     *
-     * @param startNanoTime
-     * @param queryNanoTime
-     * @param resultsNanoTime
-     * @param results
-     * @param isCompleted
-     */
-    public QueryResult(long startNanoTime, long queryNanoTime, long resultsNanoTime, List<HashMap<String, String>> results, Boolean isCompleted) {
+    private QueryResult(long startNanoTime, long queryNanoTime, long resultsNanoTime, List<HashMap<String, String>> results, Boolean isCompleted) {
         this.startNanoTime = startNanoTime;
         this.queryNanoTime = queryNanoTime;
         this.resultsNanoTime = resultsNanoTime;
@@ -58,21 +48,34 @@ public class QueryResult {
     }
 
     /**
-     * Provides a QueryResult with no query time and used for Update tasks.
+     * Provides a QueryResult that stores the three time checks, results and
+     * whether the query completed successfully.
+     *
+     * @param startNanoTime
+     * @param queryNanoTime
+     * @param resultsNanoTime
+     * @param results
+     */
+    public QueryResult(long startNanoTime, long queryNanoTime, long resultsNanoTime, List<HashMap<String, String>> results) {
+        this(startNanoTime, queryNanoTime, resultsNanoTime, results, !results.isEmpty());
+    }
+
+    /**
+     * Provides a QueryResult with no query time or results but completed. Used
+     * for Update tasks.
      *
      * @param startNanoTime
      * @param resultsNanoTime
-     * @param isCompleted
      */
-    public QueryResult(long startNanoTime, long resultsNanoTime, boolean isCompleted) {
-        this(startNanoTime, startNanoTime, resultsNanoTime, new ArrayList<>(), isCompleted);
+    public QueryResult(long startNanoTime, long resultsNanoTime) {
+        this(startNanoTime, startNanoTime, resultsNanoTime, new ArrayList<>(), true);
     }
 
     /**
      * Provides a default failure QueryResult.
      */
     public QueryResult() {
-        this(0, 0, false);
+        this(0, 0);
     }
 
     public long getStartNanoTime() {

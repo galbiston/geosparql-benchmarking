@@ -81,7 +81,7 @@ public class ParliamentTestSystem implements TestSystem {
      */
     @Override
     public void initialize() {
-        LOGGER.info("Initializing Parliament...");
+        LOGGER.info("Parliament Initialisation: Started");
         // create spatial index factory and configure for GeoSPARQL. This is used
         // by the GraphStore whenever a new named graph is created.
         SpatialIndexFactory factory = new SpatialIndexFactory();
@@ -116,7 +116,7 @@ public class ParliamentTestSystem implements TestSystem {
         // create a new datasource (that will be used later on to append named graphs)
         dataSource = DatasetFactory.create(graphStore);
 
-        LOGGER.info("Parliament initialized");
+        LOGGER.info("Parliament Initialisation: Completed");
     }
 
     @Override
@@ -155,7 +155,7 @@ public class ParliamentTestSystem implements TestSystem {
         long resultsNanoTime = System.nanoTime();
         LOGGER.info("Parliament Update: Completed");
 
-        return new QueryResult(startNanoTime, resultsNanoTime, true);
+        return new QueryResult(startNanoTime, resultsNanoTime);
     }
 
     @Override
@@ -176,10 +176,12 @@ public class ParliamentTestSystem implements TestSystem {
     @Override
     public String translateQuery(String query) {
         String translatedQuery = query;
-        /*
+
         //These should no longer be required as Parliament has aligned with GeoSPARQL 1.0 namespaces.
-        translatedQuery = translatedQuery.replace("PREFIX geo: <http://www.opengis.net/ont/geosparql#>", "PREFIX geo: <http://www.opengis.net/ont/sf#>");
-        translatedQuery = translatedQuery.replace("http://www.opengis.net/ont/geosparql#wktLiteral", "http://www.opengis.net/ont/sf#wktLiteral");
+        //translatedQuery = translatedQuery.replace("PREFIX geof: <http://www.opengis.net/def/function/geosparql/>", "PREFIX geof: <http://www.opengis.net/ont/sf#>");
+        //translatedQuery = translatedQuery.replace("PREFIX geof: <http://www.opengis.net/def/function/geosparql/>", "PREFIX geof: <http://www.opengis.net/def/geosparql/function/>");
+        //translatedQuery = translatedQuery.replace("PREFIX geo: <http://www.opengis.net/ont/geosparql#>", "PREFIX geo: <http://www.opengis.net/ont/sf#>");
+        /*translatedQuery = translatedQuery.replace("http://www.opengis.net/ont/geosparql#wktLiteral", "http://www.opengis.net/ont/sf#wktLiteral");
         translatedQuery = translatedQuery.replace("geo:wktLiteral", "<http://www.opengis.net/ont/sf#wktLiteral>");
          */
         return translatedQuery;
@@ -210,7 +212,6 @@ public class ParliamentTestSystem implements TestSystem {
 
             LOGGER.info("Query Evaluation: Started");
             List<HashMap<String, String>> results = new ArrayList<>();
-            boolean isCompleted = true;
             long startNanoTime = System.nanoTime();
             long queryNanoTime;
             QueryExecution qexec = null;
@@ -244,14 +245,14 @@ public class ParliamentTestSystem implements TestSystem {
             } catch (Exception ex) {
                 LOGGER.error("Exception: {}", ex.getMessage());
                 queryNanoTime = startNanoTime;
-                isCompleted = false;
+                results.clear();
             } finally {
                 if (qexec != null) {
                     qexec.close();
                 }
             }
             long resultsNanoTime = System.nanoTime();
-            this.queryResult = new QueryResult(startNanoTime, queryNanoTime, resultsNanoTime, results, isCompleted);
+            this.queryResult = new QueryResult(startNanoTime, queryNanoTime, resultsNanoTime, results);
             LOGGER.info("Query Evaluation Time - Start->Query: {}, Query->Results: {}, Start->Results: {}", queryResult.getStartQueryDuration(), queryResult.getQueryResultsDuration(), queryResult.getStartResultsDuration());
         }
     }

@@ -91,7 +91,7 @@ public class GeosparqlJenaTestSystem implements TestSystem {
         long resultsNanoTime = System.nanoTime();
         LOGGER.info("GeoSPARQL Jena Update: Completed");
 
-        return new QueryResult(startNanoTime, resultsNanoTime, true);
+        return new QueryResult(startNanoTime, resultsNanoTime);
     }
 
     @Override
@@ -140,7 +140,6 @@ public class GeosparqlJenaTestSystem implements TestSystem {
         public void runQuery() {
 
             List<HashMap<String, String>> results = new ArrayList<>();
-            boolean isCompleted = true;
             long startNanoTime = System.nanoTime();
             long queryNanoTime;
             dataset.begin(ReadWrite.READ);
@@ -176,13 +175,13 @@ public class GeosparqlJenaTestSystem implements TestSystem {
             } catch (Exception ex) {
                 LOGGER.error("Exception: {}", ex.getMessage());
                 queryNanoTime = startNanoTime;
-                isCompleted = false;
+                results.clear();
             } finally {
                 dataset.end();
             }
 
             long resultsNanoTime = System.nanoTime();
-            this.queryResult = new QueryResult(startNanoTime, queryNanoTime, resultsNanoTime, results, isCompleted);
+            this.queryResult = new QueryResult(startNanoTime, queryNanoTime, resultsNanoTime, results);
             LOGGER.info("Query Evaluation Time - Start->Query: {}, Query->Results: {}, Start->Results: {}", queryResult.getStartQueryDuration(), queryResult.getQueryResultsDuration(), queryResult.getStartResultsDuration());
         }
     }

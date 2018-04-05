@@ -111,7 +111,7 @@ public class StrabonTestSystem implements TestSystem {
         long resultsNanoTime = System.nanoTime();
         LOGGER.info("Strabon Update: Completed");
 
-        return new QueryResult(startNanoTime, resultsNanoTime, true);
+        return new QueryResult(startNanoTime, resultsNanoTime);
     }
 
     @Override
@@ -191,7 +191,6 @@ public class StrabonTestSystem implements TestSystem {
 
             LOGGER.info("Query Evaluation: Started");
             List<HashMap<String, String>> results = new ArrayList<>();
-            boolean isCompleted = true;
             long startNanoTime = System.nanoTime();
             long queryNanoTime;
             try {
@@ -217,11 +216,11 @@ public class StrabonTestSystem implements TestSystem {
             } catch (MalformedQueryException | QueryEvaluationException | TupleQueryResultHandlerException | IOException ex) {
                 LOGGER.error("Exception: {}", ex.getMessage());
                 queryNanoTime = startNanoTime;
-                isCompleted = false;
+                results.clear();
             }
             long resultsNanoTime = System.nanoTime();
 
-            this.queryResult = new QueryResult(startNanoTime, queryNanoTime, resultsNanoTime, results, isCompleted);
+            this.queryResult = new QueryResult(startNanoTime, queryNanoTime, resultsNanoTime, results);
             LOGGER.info("Query Evaluation Time - Start->Query: {}, Query->Results: {}, Start->Results: {}", queryResult.getStartQueryDuration(), queryResult.getQueryResultsDuration(), queryResult.getStartResultsDuration());
         }
     }
