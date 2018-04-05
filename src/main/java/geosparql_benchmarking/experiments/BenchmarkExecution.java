@@ -18,7 +18,7 @@ public class BenchmarkExecution {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    public enum TEST_SYSTEM_IDENTIFIER {
+    public enum TestSystemIdentifier {
         GEOSPARQL_JENA, PARLIAMENT, STRABON
     }
 
@@ -31,14 +31,16 @@ public class BenchmarkExecution {
      * @param queryMap
      * @return
      */
-    public static final HashMap<TEST_SYSTEM_IDENTIFIER, List<IterationResult>> runAll(HashMap<TEST_SYSTEM_IDENTIFIER, File> testSystemFolders, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
+    public static final HashMap<TestSystemIdentifier, List<IterationResult>> runAll(HashMap<TestSystemIdentifier, File> testSystemFolders, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
 
-        HashMap<TEST_SYSTEM_IDENTIFIER, List<IterationResult>> testSystemIterationResults = new HashMap<>();
-        for (Entry<TEST_SYSTEM_IDENTIFIER, File> entry : testSystemFolders.entrySet()) {
-            TEST_SYSTEM_IDENTIFIER testSystemIdentifier = entry.getKey();
+        HashMap<TestSystemIdentifier, List<IterationResult>> testSystemIterationResults = new HashMap<>();
+        for (Entry<TestSystemIdentifier, File> entry : testSystemFolders.entrySet()) {
+            TestSystemIdentifier testSystemIdentifier = entry.getKey();
             File resultsFolder = entry.getValue();
+            LOGGER.info("----------System: {}, Folder: {} - Started----------", testSystemIdentifier, resultsFolder);
             List<IterationResult> iterationResults = run(testSystemIdentifier, resultsFolder, iterations, timeout, queryMap);
             testSystemIterationResults.put(testSystemIdentifier, iterationResults);
+            LOGGER.info("----------System: {}, Folder: {} - Completed----------", testSystemIdentifier, resultsFolder);
         }
 
         return testSystemIterationResults;
@@ -57,7 +59,7 @@ public class BenchmarkExecution {
      * @param queryMap
      * @return
      */
-    public static final List<IterationResult> run(TEST_SYSTEM_IDENTIFIER testSystemIdentifier, File resultsFolder, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
+    public static final List<IterationResult> run(TestSystemIdentifier testSystemIdentifier, File resultsFolder, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
 
         List<IterationResult> allIterationResults = new ArrayList<>(queryMap.size() * iterations);
         for (Entry<String, String> entry : queryMap.entrySet()) {
@@ -68,7 +70,7 @@ public class BenchmarkExecution {
             String testSystemName = testSystem.getName();
             try {
                 testSystem.initialize();
-
+                queryString = testSystem.translateQuery(queryString);
                 //Warm Up execution.
                 LOGGER.info("----------System: {}, Query: {}, Warmup - Started----------", testSystemName, queryName);
                 QueryResult queryResult = testSystem.runQueryWithTimeout(queryString, timeout);
@@ -110,7 +112,7 @@ public class BenchmarkExecution {
         return allIterationResults;
     }
 
-    public static final TestSystem getTestSystem(TEST_SYSTEM_IDENTIFIER testSystemIdentifier) {
+    public static final TestSystem getTestSystem(TestSystemIdentifier testSystemIdentifier) {
 
         switch (testSystemIdentifier) {
             case GEOSPARQL_JENA:
@@ -156,13 +158,54 @@ public class BenchmarkExecution {
         STRABON_RESULTS.mkdir();
     }
 
-    public static final HashMap<TEST_SYSTEM_IDENTIFIER, File> getTestSystemFolders() {
+    public static final HashMap<TestSystemIdentifier, File> getTestSystemFolders(String label) {
         createResultsFolders();
-        HashMap<TEST_SYSTEM_IDENTIFIER, File> testSystemFolders = new HashMap<>();
-        testSystemFolders.put(TEST_SYSTEM_IDENTIFIER.GEOSPARQL_JENA, GEOSPARQL_JENA_RESULTS);
-        testSystemFolders.put(TEST_SYSTEM_IDENTIFIER.PARLIAMENT, PARLIAMENT_RESULTS);
-        testSystemFolders.put(TEST_SYSTEM_IDENTIFIER.STRABON, STRABON_RESULTS);
+        File geosparqlResults;
+        File parliamentResults;
+        File strabonResults;
+
+        if (!label.isEmpty()) {
+            geosparqlResults = new File(GEOSPARQL_JENA_RESULTS, label);
+            parliamentResults = new File(PARLIAMENT_RESULTS, label);
+            strabonResults = new File(STRABON_RESULTS, label);
+
+            geosparqlResults.mkdir();
+            parliamentResults.mkdir();
+            strabonResults.mkdir();
+        } else {
+            geosparqlResults = GEOSPARQL_JENA_RESULTS;
+            parliamentResults = PARLIAMENT_RESULTS;
+            strabonResults = STRABON_RESULTS;
+        }
+
+        HashMap<TestSystemIdentifier, File> testSystemFolders = new HashMap<>();
+        testSystemFolders.put(TestSystemIdentifier.GEOSPARQL_JENA, geosparqlResults);
+        testSystemFolders.put(TestSystemIdentifier.PARLIAMENT, parliamentResults);
+        testSystemFolders.put(TestSystemIdentifier.STRABON, strabonResults);
         return testSystemFolders;
+    }
+
+    public static final File getTestSystemFolder(TestSystemIdentifier testSystemIdentifier, String label) {
+
+        File testSystemFolderResults;
+        switch (testSystemIdentifier) {
+            case GEOSPARQL_JENA:
+                testSystemFolderResults = GEOSPARQL_JENA_RESULTS;
+                break;
+            case PARLIAMENT:
+                testSystemFolderResults = PARLIAMENT_RESULTS;
+                break;
+            case STRABON:
+                testSystemFolderResults = STRABON_RESULTS;
+                break;
+            default:
+                LOGGER.error("Unrecognised Test System Identifier: {}", testSystemIdentifier);
+                return null;
+        }
+
+        File testSystemFolder = new File(testSystemFolderResults, label);
+        testSystemFolder.mkdir();
+        return testSystemFolder;
     }
 
 }
