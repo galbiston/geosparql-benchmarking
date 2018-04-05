@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -76,15 +77,15 @@ public class StrabonTestSystem implements TestSystem {
     }
 
     @Override
-    public QueryResult runQueryWithTimeout(String query, int timeoutSecs) {
+    public QueryResult runQueryWithTimeout(String query, Duration timeout) {
 
-        final ExecutorService executor = Executors.newFixedThreadPool(1);
-        Executor runnable = new Executor(query, strabon, timeoutSecs);
-        final Future<?> future = executor.submit(runnable);
+        ExecutorService executor = Executors.newFixedThreadPool(1);
+        QueryTask runnable = new QueryTask(query, strabon);
+        Future<?> future = executor.submit(runnable);
 
         try {
             LOGGER.debug("Strabon Future: Started");
-            future.get(timeoutSecs, TimeUnit.SECONDS);
+            future.get(timeout.getSeconds(), TimeUnit.SECONDS);
             LOGGER.debug("Strabon Future: Completed");
         } catch (InterruptedException | ExecutionException ex) {
             LOGGER.error("Exception: {}", ex.getMessage());
@@ -249,16 +250,16 @@ public class StrabonTestSystem implements TestSystem {
         return translatedQuery;
     }
 
-    static class Executor implements Runnable {
+    private class QueryTask implements Runnable {
 
         private final String query;
         private final Strabon strabon;
         private QueryResult queryResult;
 
-        public Executor(String query, Strabon strabon, int timeoutSecs) {
+        public QueryTask(String query, Strabon strabon) {
             this.query = query;
             this.strabon = strabon;
-            this.queryResult = new QueryResult(timeoutSecs + 1, timeoutSecs + 1, false);
+            this.queryResult = new QueryResult();
         }
 
         public QueryResult getQueryResult() {

@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -126,15 +127,15 @@ public class ParliamentTestSystem implements TestSystem {
     }
 
     @Override
-    public QueryResult runQueryWithTimeout(String query, int timeoutSecs) {
+    public QueryResult runQueryWithTimeout(String query, Duration timeout) {
 
-        final ExecutorService executor = Executors.newFixedThreadPool(1);
-        Executor runnable = new Executor(query, dataSource, timeoutSecs);
-        final Future<?> future = executor.submit(runnable);
+        ExecutorService executor = Executors.newFixedThreadPool(1);
+        QueryTask runnable = new QueryTask(query, dataSource);
+        Future<?> future = executor.submit(runnable);
 
         try {
             LOGGER.debug("Parliament Future: Started");
-            future.get(timeoutSecs, TimeUnit.SECONDS);
+            future.get(timeout.getSeconds(), TimeUnit.SECONDS);
             LOGGER.debug("Parliament Future: Completed");
         } catch (InterruptedException | ExecutionException ex) {
             LOGGER.error("Exception: {}", ex.getMessage());
@@ -250,16 +251,16 @@ public class ParliamentTestSystem implements TestSystem {
         return translatedQuery;
     }
 
-    static class Executor implements Runnable {
+    private class QueryTask implements Runnable {
 
         private final String queryString;
         private final DataSource dataSource;
         private QueryResult queryResult;
 
-        public Executor(String queryString, DataSource dataSource, int timeoutSecs) {
+        public QueryTask(String queryString, DataSource dataSource) {
             this.queryString = queryString;
             this.dataSource = dataSource;
-            this.queryResult = new QueryResult(timeoutSecs + 1, timeoutSecs + 1, false);
+            this.queryResult = new QueryResult();
         }
 
         public QueryResult getQueryResult() {

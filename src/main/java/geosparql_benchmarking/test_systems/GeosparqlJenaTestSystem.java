@@ -11,6 +11,7 @@ import geosparql_benchmarking.experiments.TestSystem;
 import implementation.GeoSPARQLModel;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -56,15 +57,15 @@ public class GeosparqlJenaTestSystem implements TestSystem {
     }
 
     @Override
-    public QueryResult runQueryWithTimeout(String query, int timeoutSecs) throws Exception {
+    public QueryResult runQueryWithTimeout(String query, Duration timeout) throws Exception {
 
-        final ExecutorService executor = Executors.newFixedThreadPool(1);
-        Executor runnable = new Executor(query, dataset, timeoutSecs);
-        final Future<?> future = executor.submit(runnable);
+        ExecutorService executor = Executors.newFixedThreadPool(1);
+        QueryTask runnable = new QueryTask(query, dataset);
+        Future<?> future = executor.submit(runnable);
 
         try {
             LOGGER.debug("GeoSPARQL Jena Future: Started");
-            future.get(timeoutSecs, TimeUnit.SECONDS);
+            future.get(timeout.getSeconds(), TimeUnit.SECONDS);
             LOGGER.debug("GeoSPARQL Jena Future: Completed");
         } catch (InterruptedException | ExecutionException ex) {
             LOGGER.error("Exception: {}", ex.getMessage());
@@ -134,16 +135,16 @@ public class GeosparqlJenaTestSystem implements TestSystem {
         return query;
     }
 
-    static class Executor implements Runnable {
+    private class QueryTask implements Runnable {
 
         private final String queryString;
         private final Dataset dataset;
         private QueryResult queryResult;
 
-        public Executor(String queryString, Dataset dataset, int timeoutSecs) {
+        public QueryTask(String queryString, Dataset dataset) {
             this.queryString = queryString;
             this.dataset = dataset;
-            this.queryResult = new QueryResult(timeoutSecs + 1, timeoutSecs + 1, false);
+            this.queryResult = new QueryResult();
         }
 
         public QueryResult getQueryResult() {
