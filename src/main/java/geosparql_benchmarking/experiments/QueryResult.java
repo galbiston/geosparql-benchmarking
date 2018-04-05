@@ -21,7 +21,7 @@ public class QueryResult {
     private final long resultsNanoTime;
     private final Duration startQueryDuration;
     private final Duration queryResultsDuration;
-    private final Duration totalElapsedDuration;
+    private final Duration startResultsDuration;
     private final List<HashMap<String, String>> results;
     private final boolean isCompleted;
 
@@ -41,7 +41,7 @@ public class QueryResult {
         this.resultsNanoTime = resultsNanoTime;
         this.startQueryDuration = Duration.ofNanos(queryNanoTime - startNanoTime);
         this.queryResultsDuration = Duration.ofNanos(resultsNanoTime - queryNanoTime);
-        this.totalElapsedDuration = Duration.ofNanos(resultsNanoTime - startNanoTime);
+        this.startResultsDuration = Duration.ofNanos(resultsNanoTime - startNanoTime);
         this.results = results;
         this.isCompleted = isCompleted;
     }
@@ -88,8 +88,8 @@ public class QueryResult {
         return queryResultsDuration;
     }
 
-    public Duration getTotalElapsedDuration() {
-        return totalElapsedDuration;
+    public Duration getStartResultsDuration() {
+        return startResultsDuration;
     }
 
     public List<HashMap<String, String>> getResults() {
@@ -102,7 +102,7 @@ public class QueryResult {
 
     @Override
     public String toString() {
-        return "QueryResult{" + "startNanoTime=" + startNanoTime + ", queryNanoTime=" + queryNanoTime + ", resultsNanoTime=" + resultsNanoTime + ", startQueryDuration=" + startQueryDuration + ", queryResultsDuration=" + queryResultsDuration + ", totalElapsedDuration=" + totalElapsedDuration + ", results=" + results + ", isCompleted=" + isCompleted + '}';
+        return "QueryResult{" + "startNanoTime=" + startNanoTime + ", queryNanoTime=" + queryNanoTime + ", resultsNanoTime=" + resultsNanoTime + ", startQueryDuration=" + startQueryDuration + ", queryResultsDuration=" + queryResultsDuration + ", startResultsDuration=" + startResultsDuration + ", results=" + results + ", isCompleted=" + isCompleted + '}';
     }
 
 }
