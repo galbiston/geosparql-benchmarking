@@ -65,8 +65,26 @@ public class Main {
         HashMap<String, String> queryMap = QueryLoader.loadNonTopologicalFunctionsQueries();
         //HashMap<BenchmarkExecution.TestSystemIdentifier, File> testSystemFolders = BenchmarkExecution.getTestSystemFolders();
         //BenchmarkExecution.runAll(testSystemFolders, iterations, timeout, queryMap);
+        //runGeoSparqlJena(iterations, timeout, queryMap);
+        runParliament(iterations, timeout, queryMap);
+        //runStrabon(iterations, timeout, queryMap);
+    }
+
+    private static void runGeoSparqlJena(Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
+        TestSystemIdentifier testSystemIdentifier = TestSystemIdentifier.GEOSPARQL_JENA;
+        File resultsFolder = BenchmarkExecution.GEOSPARQL_JENA_RESULTS;
+        BenchmarkExecution.run(testSystemIdentifier, resultsFolder, iterations, timeout, queryMap);
+    }
+
+    private static void runParliament(Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
         TestSystemIdentifier testSystemIdentifier = TestSystemIdentifier.PARLIAMENT;
         File resultsFolder = BenchmarkExecution.PARLIAMENT_RESULTS;
+        BenchmarkExecution.run(testSystemIdentifier, resultsFolder, iterations, timeout, queryMap);
+    }
+
+    private static void runStrabon(Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
+        TestSystemIdentifier testSystemIdentifier = TestSystemIdentifier.STRABON;
+        File resultsFolder = BenchmarkExecution.STRABON_RESULTS;
         BenchmarkExecution.run(testSystemIdentifier, resultsFolder, iterations, timeout, queryMap);
     }
 
