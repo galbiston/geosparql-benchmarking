@@ -90,10 +90,10 @@ public class StrabonTestSystem implements TestSystem {
             LOGGER.debug("Strabon Future: Completed");
         } catch (InterruptedException | ExecutionException ex) {
             LOGGER.error("Exception: {}", ex.getMessage());
-        } catch (TimeoutException e) {
-            LOGGER.info("Strabon Query Timeout: Restarting");
+        } catch (TimeoutException ex) {
+            LOGGER.error("Strabon Query Timeout: Restarting - {}", ex.getMessage());
             this.restart();
-            LOGGER.info("Strabon Timeout: Closing");
+            LOGGER.error("Strabon Timeout: Closing");
             this.close();
         } finally {
             LOGGER.debug("Strabon: Executor Shutdown");

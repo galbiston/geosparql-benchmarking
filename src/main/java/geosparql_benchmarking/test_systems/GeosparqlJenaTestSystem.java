@@ -70,7 +70,7 @@ public class GeosparqlJenaTestSystem implements TestSystem {
         } catch (InterruptedException | ExecutionException ex) {
             LOGGER.error("Exception: {}", ex.getMessage());
         } catch (TimeoutException ex) {
-            LOGGER.info("GeoSPARQL Jena Query Timeout: Restarting");
+            LOGGER.error("GeoSPARQL Jena Query Timeout: Restarting");
             this.restart();
         } finally {
             LOGGER.debug("GeoSPARQL Jena: Executor Shutdown");
@@ -158,7 +158,6 @@ public class GeosparqlJenaTestSystem implements TestSystem {
 
         public void runQuery() {
 
-            LOGGER.info("Query Evaluation: Started");
             List<HashMap<String, String>> results = new ArrayList<>();
             boolean isCompleted = true;
             long startNanoTime = System.nanoTime();

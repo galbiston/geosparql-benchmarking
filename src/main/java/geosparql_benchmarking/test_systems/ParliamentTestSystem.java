@@ -141,7 +141,7 @@ public class ParliamentTestSystem implements TestSystem {
         } catch (InterruptedException | ExecutionException ex) {
             LOGGER.error("Exception: {}", ex.getMessage());
         } catch (TimeoutException ex) {
-            LOGGER.info("Parliament Query Timeout: Restarting");
+            LOGGER.error("Strabon Query Timeout: Restarting - {}", ex.getMessage());
             this.restart();
         } finally {
             LOGGER.debug("Parliament: Executor shutdown");
