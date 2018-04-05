@@ -31,9 +31,9 @@ public class BenchmarkExecution {
     public static void runAll(HashMap<TEST_SYSTEM_IDENTIFIER, File> testSystemFolders, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
 
         for (Entry<TEST_SYSTEM_IDENTIFIER, File> entry : testSystemFolders.entrySet()) {
-            TEST_SYSTEM_IDENTIFIER testSystem = entry.getKey();
+            TEST_SYSTEM_IDENTIFIER testSystemIdentifier = entry.getKey();
             File resultsFolder = entry.getValue();
-            run(testSystem, resultsFolder, iterations, timeout, queryMap);
+            run(testSystemIdentifier, resultsFolder, iterations, timeout, queryMap);
         }
     }
 
@@ -55,24 +55,27 @@ public class BenchmarkExecution {
             String queryName = entry.getKey();
             String queryString = entry.getValue();
             TestSystem testSystem = getTestSystem(testSystemIdentifier);
+            String testSystemName = testSystem.getName();
             try {
                 testSystem.initialize();
 
                 //Warm Up execution.
+                LOGGER.info("----------System: {}, Query: {}, Warmup - Started----------", testSystemName, queryName);
                 QueryResult queryResult = testSystem.runQueryWithTimeout(queryString, timeout);
+                LOGGER.info("----------System: {}, Query: {}, Warmup - Completed----------", testSystemName, queryName);
 
                 if (queryResult.isCompleted()) {
                     //Benchmark executions.
                     for (int i = 0; i < iterations; i++) {
-
+                        LOGGER.info("----------System: {}, Query: {}, Iteration: {} - Started----------", testSystemName, queryName, i);
                         queryResult = testSystem.runQueryWithTimeout(queryString, timeout);
-
+                        LOGGER.info("----------System: {}, Query: {}, Iteration: {} - Completed----------", testSystemName, queryName, i);
                         if (!queryResult.isCompleted()) {
-                            LOGGER.error("System: {}, Query: {}, Iteration: {} - Did not complete. Skipping remaining iterations.", testSystem.getName(), queryName, i);
+                            LOGGER.error("System: {}, Query: {}, Iteration: {} - Did not complete. Skipping remaining iterations.", testSystemName, queryName, i);
                             break;
                         }
-                        //TODO - Handle result. Summary of all queries and iterations in single file labelled by Test System. Place results from each in query in a sub folder.
 
+                        //TODO - Handle result. Summary of all queries and iterations in single file labelled by Test System. Place results from each in query in a sub folder.
                     }
                 } else {
                     LOGGER.error("System: {}, Query: {} - Did not complete warm up. Skipping all iterations.", testSystem.getName(), queryName);
