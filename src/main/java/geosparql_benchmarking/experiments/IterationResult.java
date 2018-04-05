@@ -110,8 +110,9 @@ public class IterationResult {
     }
 
     public final String[] getResultHeader() {
-        List<String> header = new ArrayList<>(3 + queryResult.getResultsVariableCount());
+        List<String> header = new ArrayList<>(4 + queryResult.getResultsVariableCount());
         header.add("TestSystem");
+        header.add("QueryType");
         header.add("QueryName");
         header.add("Iteration");
         header.addAll(queryResult.getResultsVariableLabels());
