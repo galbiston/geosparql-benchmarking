@@ -4,9 +4,7 @@ import com.bbn.parliament.jena.graph.KbGraphFactory;
 import com.bbn.parliament.jena.graph.KbGraphStore;
 import com.hp.hpl.jena.graph.Node;
 import geosparql_benchmarking.experiments.BenchmarkExecution;
-import static geosparql_benchmarking.experiments.BenchmarkExecution.getTestSystemFolders;
 import geosparql_benchmarking.experiments.QueryLoader;
-import geosparql_benchmarking.experiments.TestSystem;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -54,27 +52,18 @@ public class Main {
         //1) Apache Jena Extension
         //2) Parliament
         //3) Strabon
-        //Create results directory structure.
-        //createResultsFolders();
-        //Build experiment arguements.
-        Duration runtime = Duration.ofMinutes(30);
-        Integer repetitions = 5;
-        Duration timeout = Duration.ofSeconds(3600);
-        HashMap<String, String> queryMap = QueryLoader.loadSpatialJoinsQueries();
-
         //Run the experiments using the arguements.
         //rdfsGeosparqlJenaTest();
         //exportGeosparqlJenaTest();
         //rdfsParliamentTest();
         //exportParliamentTest();
         //Benchmark
-        HashMap<TestSystem, File> testSystemFolders = getTestSystemFolders();
-        BenchmarkExecution.warmUp(testSystemFolders, timeout, queryMap);
+        Duration runtime = Duration.ofMinutes(30);
+        Integer repetitions = 10;
+        Duration timeout = Duration.ofSeconds(3600);
+        HashMap<BenchmarkExecution.TEST_SYSTEM_IDENTIFIER, File> testSystemFolders = BenchmarkExecution.getTestSystemFolders();
+        HashMap<String, String> queryMap = QueryLoader.loadSpatialJoinsQueries();
         BenchmarkExecution.runAll(testSystemFolders, repetitions, timeout, queryMap);
-
-        //RunGeosparqlJena.runBenchmark(GEOSPARQL_JENA_RESULTS, runtime, timeout, queryList);
-        //RunParliament.runBenchmark(PARLIAMENT_RESULTS, runtime, timeout, queryList);
-        //RunStrabon.runBenchmark(STRABON_RESULTS, runtime, timeout, queryList);
     }
     private static final File DATASET_FOLDER = new File("datasets");
 
