@@ -5,6 +5,7 @@
  */
 package geosparql_benchmarking.experiments;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,9 +19,9 @@ public class QueryResult {
     private final long startNanoTime;
     private final long queryNanoTime;
     private final long resultsNanoTime;
-    private final long startQueryNanoTime;
-    private final long queryResultsNanoTime;
-    private final long totalElapsedNanoTime;
+    private final Duration startQueryTime;
+    private final Duration queryResultsTime;
+    private final Duration totalElapsedTime;
     private final List<HashMap<String, String>> results;
     private final boolean isCompleted;
 
@@ -28,9 +29,9 @@ public class QueryResult {
         this.startNanoTime = startNanoTime;
         this.queryNanoTime = queryNanoTime;
         this.resultsNanoTime = resultsNanoTime;
-        this.startQueryNanoTime = queryNanoTime - startNanoTime;
-        this.queryResultsNanoTime = resultsNanoTime - queryNanoTime;
-        this.totalElapsedNanoTime = resultsNanoTime - startNanoTime;
+        this.startQueryTime = Duration.ofNanos(queryNanoTime - startNanoTime);
+        this.queryResultsTime = Duration.ofNanos(resultsNanoTime - queryNanoTime);
+        this.totalElapsedTime = Duration.ofNanos(resultsNanoTime - startNanoTime);
         this.results = results;
         this.isCompleted = isCompleted;
     }
@@ -55,16 +56,16 @@ public class QueryResult {
         return isCompleted;
     }
 
-    public long getStartQueryNanoTime() {
-        return startQueryNanoTime;
+    public Duration getStartQueryTime() {
+        return startQueryTime;
     }
 
-    public long getQueryResultsNanoTime() {
-        return queryResultsNanoTime;
+    public Duration getQueryResultsTime() {
+        return queryResultsTime;
     }
 
-    public long getTotalElapsedNanoTime() {
-        return totalElapsedNanoTime;
+    public Duration getTotalElapsedTime() {
+        return totalElapsedTime;
     }
 
     public List<HashMap<String, String>> getResults() {
@@ -77,7 +78,7 @@ public class QueryResult {
 
     @Override
     public String toString() {
-        return "QueryResult{" + "startNanoTime=" + startNanoTime + ", queryNanoTime=" + queryNanoTime + ", resultsNanoTime=" + resultsNanoTime + ", startQueryNanoTime=" + startQueryNanoTime + ", queryResultsNanoTime=" + queryResultsNanoTime + ", totalElapsedNanoTime=" + totalElapsedNanoTime + ", results=" + results + ", isCompleted=" + isCompleted + '}';
+        return "QueryResult{" + "startNanoTime=" + startNanoTime + ", queryNanoTime=" + queryNanoTime + ", resultsNanoTime=" + resultsNanoTime + ", startQueryTime=" + startQueryTime + ", queryResultsTime=" + queryResultsTime + ", totalElapsedTime=" + totalElapsedTime + ", results=" + results + ", isCompleted=" + isCompleted + '}';
     }
 
 }
