@@ -83,6 +83,12 @@ public class QueryLoader {
         return queryMap;
     }
 
+    /**
+     * These queries use Strabon only syntax that is not specified in the
+     * GeoSPARQL standard.
+     *
+     * @return
+     */
     public static HashMap<String, String> loadAggergationsQueries() {
 
         HashMap<String, String> queryMap = new HashMap<>();
