@@ -37,6 +37,12 @@ public class QueryLoader {
     private static final String GIVEN_LINESTRING_3 = QueryLoader.readFile(GIVEN_FOLDER + "/givenLineString3.txt");
     private static final String GIVEN_POLYGON = QueryLoader.readFile(GIVEN_FOLDER + "/givenPolygon.txt");
 
+    /**
+     * This set of queries does not include Query 6 as it uses Strabon only
+     * syntax that is not specified in the GeoSPARQL standard.
+     *
+     * @return
+     */
     public static HashMap<String, String> loadNonTopologicalFunctionsQueries() {
 
         HashMap<String, String> queryMap = new HashMap<>();
@@ -45,10 +51,28 @@ public class QueryLoader {
         queryMap.put("NonTopological Functions - Query3", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query3.spl"));
         queryMap.put("NonTopological Functions - Query4", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query4.spl"));
         queryMap.put("NonTopological Functions - Query5", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query5.spl"));
+        return queryMap;
+    }
+
+    /**
+     * Query 6 uses Strabon only syntax "strdf:area" that is not specified in
+     * the GeoSPARQL standard.
+     *
+     * @return
+     */
+    public static HashMap<String, String> loadNonTopologicalFunctionsQuery_6() {
+
+        HashMap<String, String> queryMap = new HashMap<>();
         queryMap.put("NonTopological Functions - Query6", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query6.spl"));
         return queryMap;
     }
 
+    /**
+     * These queries utilise specific WKT shapes which are loaded from resource
+     * files.
+     *
+     * @return
+     */
     public static HashMap<String, String> loadSpatialSelectionsQueries() {
 
         HashMap<String, String> queryMap = new HashMap<>();
@@ -84,8 +108,8 @@ public class QueryLoader {
     }
 
     /**
-     * These queries use Strabon only syntax that is not specified in the
-     * GeoSPARQL standard.
+     * These queries use Strabon only syntax "strdf:extent" and "strdf:union"
+     * that is not specified in the GeoSPARQL standard.
      *
      * @return
      */
