@@ -90,9 +90,9 @@ dependencies {
     ext.junitVersion = "4.12"
     testCompile "junit:junit:$junitVersion"
 
-    //ZT Process Exec
-    ext.ztProcessExecVersion = "1.10"
-    compile "org.zeroturnaround:zt-exec:$ztProcessExecVersion"
+    ext.openCSVVersion = "3.9"
+    compile "com.opencsv:opencsv:$openCSVVersion"
+
 }
 
 tasks.withType(JavaCompile) {
