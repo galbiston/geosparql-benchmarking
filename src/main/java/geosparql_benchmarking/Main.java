@@ -59,11 +59,11 @@ public class Main {
         //exportParliamentTest();
         //Benchmark
         Duration runtime = Duration.ofMinutes(30);
-        Integer repetitions = 10;
+        Integer iterations = 10;
         Duration timeout = Duration.ofSeconds(3600);
         HashMap<BenchmarkExecution.TEST_SYSTEM_IDENTIFIER, File> testSystemFolders = BenchmarkExecution.getTestSystemFolders();
         HashMap<String, String> queryMap = QueryLoader.loadSpatialJoinsQueries();
-        BenchmarkExecution.runAll(testSystemFolders, repetitions, timeout, queryMap);
+        BenchmarkExecution.runAll(testSystemFolders, iterations, timeout, queryMap);
     }
     private static final File DATASET_FOLDER = new File("datasets");
 
