@@ -5,14 +5,14 @@ import com.bbn.parliament.jena.graph.KbGraphStore;
 import com.hp.hpl.jena.graph.Node;
 import geosparql_benchmarking.experiments.BenchmarkExecution;
 import static geosparql_benchmarking.experiments.BenchmarkExecution.getTestSystemFolders;
+import geosparql_benchmarking.experiments.QueryLoader;
 import geosparql_benchmarking.experiments.TestSystem;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
+import java.time.Duration;
 import java.util.HashMap;
-import java.util.List;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -57,10 +57,10 @@ public class Main {
         //Create results directory structure.
         //createResultsFolders();
         //Build experiment arguements.
-        Integer runtime = 120;
+        Duration runtime = Duration.ofMinutes(30);
         Integer repetitions = 5;
-        Integer timeout = 3600;
-        List<String> queryList = getQueryList();
+        Duration timeout = Duration.ofSeconds(3600);
+        HashMap<String, String> queryMap = QueryLoader.loadSpatialJoinsQueries();
 
         //Run the experiments using the arguements.
         //rdfsGeosparqlJenaTest();
@@ -69,20 +69,14 @@ public class Main {
         //exportParliamentTest();
         //Benchmark
         HashMap<TestSystem, File> testSystemFolders = getTestSystemFolders();
-        BenchmarkExecution.warmUp(testSystemFolders, timeout, queryList);
-        BenchmarkExecution.runAll(testSystemFolders, repetitions, timeout, queryList);
+        BenchmarkExecution.warmUp(testSystemFolders, timeout, queryMap);
+        BenchmarkExecution.runAll(testSystemFolders, repetitions, timeout, queryMap);
 
         //RunGeosparqlJena.runBenchmark(GEOSPARQL_JENA_RESULTS, runtime, timeout, queryList);
         //RunParliament.runBenchmark(PARLIAMENT_RESULTS, runtime, timeout, queryList);
         //RunStrabon.runBenchmark(STRABON_RESULTS, runtime, timeout, queryList);
     }
     private static final File DATASET_FOLDER = new File("datasets");
-
-    private static List<String> getQueryList() {
-        List<String> queryList = new ArrayList<>();
-        queryList.add("MicroNonTopological");
-        return queryList;
-    }
 
     private static HashMap<String, File> getDatasets() {
         HashMap<String, File> datasetMap = new HashMap<>();

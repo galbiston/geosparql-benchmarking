@@ -1,6 +1,7 @@
 package geosparql_benchmarking.experiments;
 
 import java.io.IOException;
+import java.time.Duration;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQueryResultHandlerException;
@@ -9,7 +10,7 @@ public interface TestSystem {
 
     public String getName();
 
-    public QueryResult runQueryWithTimeout(String query, int timeoutSecs) throws Exception;
+    public QueryResult runQueryWithTimeout(String query, Duration timeout) throws Exception;
 
     public QueryResult runUpdate(String query) throws MalformedQueryException, QueryEvaluationException, TupleQueryResultHandlerException, IOException;
 
