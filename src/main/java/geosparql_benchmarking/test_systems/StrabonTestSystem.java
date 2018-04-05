@@ -125,7 +125,8 @@ public class StrabonTestSystem implements TestSystem {
         try {
             strabon.close();
             strabon = null;
-        } catch (Exception e) {
+        } catch (Exception ex) {
+            LOGGER.error("Exception closing Strabon: {}", ex.getMessage());
         }
 
         System.gc();
