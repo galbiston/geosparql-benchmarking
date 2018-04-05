@@ -7,7 +7,9 @@ import geosparql_benchmarking.test_systems.StrabonTestSystem;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,14 +29,19 @@ public class BenchmarkExecution {
      * @param iterations
      * @param timeout
      * @param queryMap
+     * @return
      */
-    public static void runAll(HashMap<TEST_SYSTEM_IDENTIFIER, File> testSystemFolders, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
+    public static HashMap<TEST_SYSTEM_IDENTIFIER, List<IterationResult>> runAll(HashMap<TEST_SYSTEM_IDENTIFIER, File> testSystemFolders, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
 
+        HashMap<TEST_SYSTEM_IDENTIFIER, List<IterationResult>> testSystemIterationResults = new HashMap<>();
         for (Entry<TEST_SYSTEM_IDENTIFIER, File> entry : testSystemFolders.entrySet()) {
             TEST_SYSTEM_IDENTIFIER testSystemIdentifier = entry.getKey();
             File resultsFolder = entry.getValue();
-            run(testSystemIdentifier, resultsFolder, iterations, timeout, queryMap);
+            List<IterationResult> iterationResults = run(testSystemIdentifier, resultsFolder, iterations, timeout, queryMap);
+            testSystemIterationResults.put(testSystemIdentifier, iterationResults);
         }
+
+        return testSystemIterationResults;
     }
 
     /**
@@ -48,9 +55,11 @@ public class BenchmarkExecution {
      * @param iterations
      * @param timeout
      * @param queryMap
+     * @return
      */
-    public static void run(TEST_SYSTEM_IDENTIFIER testSystemIdentifier, File resultsFolder, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
+    public static List<IterationResult> run(TEST_SYSTEM_IDENTIFIER testSystemIdentifier, File resultsFolder, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
 
+        List<IterationResult> iterationResults = new ArrayList<>(queryMap.size());
         for (Entry<String, String> entry : queryMap.entrySet()) {
             String queryName = entry.getKey();
             String queryString = entry.getValue();
@@ -70,12 +79,14 @@ public class BenchmarkExecution {
                         LOGGER.info("----------System: {}, Query: {}, Iteration: {} - Started----------", testSystemName, queryName, i);
                         queryResult = testSystem.runQueryWithTimeout(queryString, timeout);
                         LOGGER.info("----------System: {}, Query: {}, Iteration: {} - Completed----------", testSystemName, queryName, i);
-                        if (!queryResult.isCompleted()) {
+                        if (queryResult.isCompleted()) {
+                            IterationResult iterationResult = new IterationResult(testSystemName, queryName, queryString, i, queryResult);
+                            iterationResults.add(iterationResult);
+                        } else {
                             LOGGER.error("System: {}, Query: {}, Iteration: {} - Did not complete. Skipping remaining iterations.", testSystemName, queryName, i);
                             break;
                         }
 
-                        //TODO - Handle result. Summary of all queries and iterations in single file labelled by Test System. Place results from each in query in a sub folder.
                     }
                 } else {
                     LOGGER.error("System: {}, Query: {} - Did not complete warm up. Skipping all iterations.", testSystem.getName(), queryName);
@@ -86,7 +97,10 @@ public class BenchmarkExecution {
                 testSystem.clearCaches();
                 testSystem.close();
             }
+
+            //TODO - Handle result. Summary of all queries and iterations in single file labelled by Test System. Place results from each in query in a sub folder.
         }
+        return iterationResults;
     }
 
     public static final TestSystem getTestSystem(TEST_SYSTEM_IDENTIFIER testSystemIdentifier) {
