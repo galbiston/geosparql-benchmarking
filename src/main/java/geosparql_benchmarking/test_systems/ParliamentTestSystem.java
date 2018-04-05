@@ -39,6 +39,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.invoke.MethodHandles;
 import java.net.MalformedURLException;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ParliamentTestSystem implements TestSystem {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ParliamentTestSystem.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     DataSource dataSource = null;
     KbGraphStore graphStore = null;
@@ -270,7 +271,7 @@ public class ParliamentTestSystem implements TestSystem {
 
         public void runQuery() {
 
-            LOGGER.info("Evaluating query");
+            LOGGER.info("Query Evaluation: Started");
             List<HashMap<String, String>> results = new ArrayList<>();
             boolean isCompleted = true;
             long startNanoTime = System.nanoTime();
@@ -304,7 +305,7 @@ public class ParliamentTestSystem implements TestSystem {
                     results.add(result);
                 }
             } catch (Exception ex) {
-                LOGGER.error("Execption: {}", ex.getMessage());
+                LOGGER.error("Exception: {}", ex.getMessage());
                 queryNanoTime = startNanoTime;
                 isCompleted = false;
             } finally {
@@ -313,8 +314,8 @@ public class ParliamentTestSystem implements TestSystem {
                 }
             }
             long resultsNanoTime = System.nanoTime();
-            LOGGER.info("Elapsed Time - Query: {}, Results: {}", queryNanoTime - startNanoTime, resultsNanoTime - queryNanoTime);
             this.queryResult = new QueryResult(startNanoTime, queryNanoTime, resultsNanoTime, results, isCompleted);
+            LOGGER.info("Query Evaluation Time - Start->Query: {}, Query->Results: {}, Start->Results: {}", queryResult.getStartQueryDuration(), queryResult.getQueryResultsDuration(), queryResult.getStartResultsDuration());
         }
     }
 

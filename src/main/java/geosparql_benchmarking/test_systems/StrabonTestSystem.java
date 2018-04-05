@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.invoke.MethodHandles;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,7 +44,7 @@ import org.slf4j.LoggerFactory;
  */
 public class StrabonTestSystem implements TestSystem {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StrabonTestSystem.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private Strabon strabon = null;
 
@@ -274,7 +275,7 @@ public class StrabonTestSystem implements TestSystem {
 
         public void runQuery() {
 
-            LOGGER.info("Evaluating query");
+            LOGGER.info("Query Evaluation: Started");
             List<HashMap<String, String>> results = new ArrayList<>();
             boolean isCompleted = true;
             long startNanoTime = System.nanoTime();
@@ -300,15 +301,14 @@ public class StrabonTestSystem implements TestSystem {
                 }
 
             } catch (MalformedQueryException | QueryEvaluationException | TupleQueryResultHandlerException | IOException ex) {
-                LOGGER.error("Execption: {}", ex.getMessage());
+                LOGGER.error("Exception: {}", ex.getMessage());
                 queryNanoTime = startNanoTime;
                 isCompleted = false;
             }
             long resultsNanoTime = System.nanoTime();
 
-            LOGGER.info("Query evaluated");
-            LOGGER.info("Elapsed Time - Query: {}, Results: {}", queryNanoTime - startNanoTime, resultsNanoTime - queryNanoTime);
             this.queryResult = new QueryResult(startNanoTime, queryNanoTime, resultsNanoTime, results, isCompleted);
+            LOGGER.info("Query Evaluation Time - Start->Query: {}, Query->Results: {}, Start->Results: {}", queryResult.getStartQueryDuration(), queryResult.getQueryResultsDuration(), queryResult.getStartResultsDuration());
         }
     }
 

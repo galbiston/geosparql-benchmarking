@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
 
 public class GeosparqlJenaTestSystem implements TestSystem {
 
-    final static Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private Dataset dataset = null;
     private final File datasetFolder;
@@ -158,7 +158,7 @@ public class GeosparqlJenaTestSystem implements TestSystem {
 
         public void runQuery() {
 
-            LOGGER.info("Evaluating query");
+            LOGGER.info("Query Evaluation: Started");
             List<HashMap<String, String>> results = new ArrayList<>();
             boolean isCompleted = true;
             long startNanoTime = System.nanoTime();
@@ -194,7 +194,7 @@ public class GeosparqlJenaTestSystem implements TestSystem {
                 }
 
             } catch (Exception ex) {
-                LOGGER.error("Execption: {}", ex.getMessage());
+                LOGGER.error("Exception: {}", ex.getMessage());
                 queryNanoTime = startNanoTime;
                 isCompleted = false;
             } finally {
@@ -202,8 +202,8 @@ public class GeosparqlJenaTestSystem implements TestSystem {
             }
 
             long resultsNanoTime = System.nanoTime();
-            LOGGER.info("Elapsed Time - Query: {}, Results: {}", queryNanoTime - startNanoTime, resultsNanoTime - queryNanoTime);
             this.queryResult = new QueryResult(startNanoTime, queryNanoTime, resultsNanoTime, results, isCompleted);
+            LOGGER.info("Query Evaluation Time - Start->Query: {}, Query->Results: {}, Start->Results: {}", queryResult.getStartQueryDuration(), queryResult.getQueryResultsDuration(), queryResult.getStartResultsDuration());
         }
     }
 
