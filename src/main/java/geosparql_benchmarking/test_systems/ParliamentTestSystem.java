@@ -81,11 +81,6 @@ public class ParliamentTestSystem implements TestSystem {
      */
     @Override
     public void initialize() {
-        if (!java.lang.System.getProperty("java.library.path").contains("parliament-dependencies")) {
-            LOGGER.warn("Do not forget to add the folder Geographica/runtime/src/main/resources/parliament-dependencies/linux-32 or 64 to the variable java.library.path.");
-            LOGGER.warn("You will possible get some exceptions...");
-        }
-
         LOGGER.info("Initializing Parliament...");
         // create spatial index factory and configure for GeoSPARQL. This is used
         // by the GraphStore whenever a new named graph is created.
