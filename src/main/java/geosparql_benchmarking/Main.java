@@ -61,12 +61,12 @@ public class Main {
         Duration runtime = Duration.ofMinutes(30);
         Integer iterations = 1; //10;
         Duration timeout = Duration.ofSeconds(3600);
-        String queryTypeLabel = "NonTopologicalFunctions";
+
         HashMap<String, String> queryMap = QueryLoader.loadNonTopologicalFunctionsQueries();
-        //HashMap<BenchmarkExecution.TestSystemIdentifier, File> testSystemFolders = BenchmarkExecution.getTestSystemFolders(queryTypeLabel);
+        //HashMap<BenchmarkExecution.TestSystemIdentifier, File> testSystemFolders = BenchmarkExecution.getTestSystemFolders();
         //BenchmarkExecution.runAll(testSystemFolders, iterations, timeout, queryMap);
-        TestSystemIdentifier testSystemIdentifier = TestSystemIdentifier.GEOSPARQL_JENA;
-        File resultsFolder = BenchmarkExecution.GEOSPARQL_JENA_RESULTS;
+        TestSystemIdentifier testSystemIdentifier = TestSystemIdentifier.PARLIAMENT;
+        File resultsFolder = BenchmarkExecution.PARLIAMENT_RESULTS;
         BenchmarkExecution.run(testSystemIdentifier, resultsFolder, iterations, timeout, queryMap);
     }
 

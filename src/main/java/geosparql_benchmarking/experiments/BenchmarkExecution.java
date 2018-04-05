@@ -161,30 +161,13 @@ public class BenchmarkExecution {
         STRABON_RESULTS.mkdir();
     }
 
-    public static final HashMap<TestSystemIdentifier, File> getTestSystemFolders(String label) {
+    public static final HashMap<TestSystemIdentifier, File> getTestSystemFolders() {
         createResultsFolders();
-        File geosparqlResults;
-        File parliamentResults;
-        File strabonResults;
-
-        if (!label.isEmpty()) {
-            geosparqlResults = new File(GEOSPARQL_JENA_RESULTS, label);
-            parliamentResults = new File(PARLIAMENT_RESULTS, label);
-            strabonResults = new File(STRABON_RESULTS, label);
-
-            geosparqlResults.mkdir();
-            parliamentResults.mkdir();
-            strabonResults.mkdir();
-        } else {
-            geosparqlResults = GEOSPARQL_JENA_RESULTS;
-            parliamentResults = PARLIAMENT_RESULTS;
-            strabonResults = STRABON_RESULTS;
-        }
 
         HashMap<TestSystemIdentifier, File> testSystemFolders = new HashMap<>();
-        testSystemFolders.put(TestSystemIdentifier.GEOSPARQL_JENA, geosparqlResults);
-        testSystemFolders.put(TestSystemIdentifier.PARLIAMENT, parliamentResults);
-        testSystemFolders.put(TestSystemIdentifier.STRABON, strabonResults);
+        testSystemFolders.put(TestSystemIdentifier.GEOSPARQL_JENA, GEOSPARQL_JENA_RESULTS);
+        testSystemFolders.put(TestSystemIdentifier.PARLIAMENT, PARLIAMENT_RESULTS);
+        testSystemFolders.put(TestSystemIdentifier.STRABON, STRABON_RESULTS);
         return testSystemFolders;
     }
 
