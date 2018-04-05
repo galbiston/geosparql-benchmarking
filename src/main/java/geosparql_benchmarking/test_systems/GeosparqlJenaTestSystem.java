@@ -67,11 +67,8 @@ public class GeosparqlJenaTestSystem implements TestSystem {
             LOGGER.debug("GeoSPARQL Jena Future: Started");
             future.get(timeout.getSeconds(), TimeUnit.SECONDS);
             LOGGER.debug("GeoSPARQL Jena Future: Completed");
-        } catch (InterruptedException | ExecutionException ex) {
+        } catch (TimeoutException | InterruptedException | ExecutionException ex) {
             LOGGER.error("Exception: {}", ex.getMessage());
-        } catch (TimeoutException ex) {
-            LOGGER.error("GeoSPARQL Jena Query Timeout: Restarting");
-            this.restart();
         } finally {
             LOGGER.debug("GeoSPARQL Jena: Executor Shutdown");
             executor.shutdown();

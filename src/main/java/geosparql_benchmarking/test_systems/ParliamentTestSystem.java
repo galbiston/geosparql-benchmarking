@@ -138,11 +138,8 @@ public class ParliamentTestSystem implements TestSystem {
             LOGGER.debug("Parliament Future: Started");
             future.get(timeout.getSeconds(), TimeUnit.SECONDS);
             LOGGER.debug("Parliament Future: Completed");
-        } catch (InterruptedException | ExecutionException ex) {
+        } catch (TimeoutException | InterruptedException | ExecutionException ex) {
             LOGGER.error("Exception: {}", ex.getMessage());
-        } catch (TimeoutException ex) {
-            LOGGER.error("Strabon Query Timeout: Restarting - {}", ex.getMessage());
-            this.restart();
         } finally {
             LOGGER.debug("Parliament: Executor shutdown");
             executor.shutdown();

@@ -88,13 +88,8 @@ public class StrabonTestSystem implements TestSystem {
             LOGGER.debug("Strabon Future: Started");
             future.get(timeout.getSeconds(), TimeUnit.SECONDS);
             LOGGER.debug("Strabon Future: Completed");
-        } catch (InterruptedException | ExecutionException ex) {
+        } catch (TimeoutException | InterruptedException | ExecutionException ex) {
             LOGGER.error("Exception: {}", ex.getMessage());
-        } catch (TimeoutException ex) {
-            LOGGER.error("Strabon Query Timeout: Restarting - {}", ex.getMessage());
-            this.restart();
-            LOGGER.error("Strabon Timeout: Closing");
-            this.close();
         } finally {
             LOGGER.debug("Strabon: Executor Shutdown");
             executor.shutdown();
