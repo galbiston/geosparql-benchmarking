@@ -53,18 +53,22 @@ public class BenchmarkExecution {
      * before being closed.
      *
      * @param testSystemIdentifier
-     * @param resultsFolder
+     * @param systemResultsFolder
      * @param iterations
      * @param timeout
      * @param queryMap
      * @return
      */
-    public static final List<IterationResult> run(TestSystemIdentifier testSystemIdentifier, File resultsFolder, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
+    public static final List<IterationResult> run(TestSystemIdentifier testSystemIdentifier, File systemResultsFolder, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
 
         List<IterationResult> allIterationResults = new ArrayList<>(queryMap.size() * iterations);
         for (Entry<String, String> entry : queryMap.entrySet()) {
             List<IterationResult> iterationResults = new ArrayList<>(iterations);
-            String queryName = entry.getKey();
+            String[] queryLabel = entry.getKey().split("#");
+            String queryType = queryLabel[0];
+            String queryName = queryLabel[1];
+            File resultsFolder = new File(systemResultsFolder, queryType);
+            resultsFolder.mkdir();
             String queryString = entry.getValue();
             TestSystem testSystem = getTestSystem(testSystemIdentifier);
             String testSystemName = testSystem.getName();
@@ -72,21 +76,21 @@ public class BenchmarkExecution {
                 testSystem.initialize();
                 queryString = testSystem.translateQuery(queryString);
                 //Warm Up execution.
-                LOGGER.info("----------System: {}, Query: {}, Warmup - Started----------", testSystemName, queryName);
+                LOGGER.info("----------System: {}, Type: {}, Query: {}, Warmup - Started----------", testSystemName, queryType, queryName);
                 QueryResult queryResult = testSystem.runQueryWithTimeout(queryString, timeout);
-                LOGGER.info("----------System: {}, Query: {}, Warmup - Completed----------", testSystemName, queryName);
+                LOGGER.info("----------System: {}, Type: {}, Query: {}, Warmup - Completed----------", testSystemName, queryType, queryName);
 
                 if (queryResult.isCompleted()) {
                     //Benchmark executions.
                     for (int i = 0; i < iterations; i++) {
-                        LOGGER.info("----------System: {}, Query: {}, Iteration: {} - Started----------", testSystemName, queryName, i);
+                        LOGGER.info("----------System: {}, Type: {}, Query: {}, Iteration: {} - Started----------", testSystemName, queryType, queryName, i);
                         queryResult = testSystem.runQueryWithTimeout(queryString, timeout);
-                        LOGGER.info("----------System: {}, Query: {}, Iteration: {} - Completed----------", testSystemName, queryName, i);
+                        LOGGER.info("----------System: {}, Type: {}, Query: {}, Iteration: {} - Completed----------", testSystemName, queryType, queryName, i);
                         if (queryResult.isCompleted()) {
-                            IterationResult iterationResult = new IterationResult(testSystemName, queryName, queryString, i, queryResult);
+                            IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, i, queryResult);
                             iterationResults.add(iterationResult);
                         } else {
-                            LOGGER.error("System: {}, Query: {}, Iteration: {} - Did not complete. Skipping remaining iterations.", testSystemName, queryName, i);
+                            LOGGER.error("System: {}, Type: {}, Query: {}, Iteration: {} - Did not complete. Skipping remaining iterations.", testSystemName, queryType, queryName, i);
                             break;
                         }
 
@@ -107,7 +111,7 @@ public class BenchmarkExecution {
         }
 
         //Write summary for all queries and iterations performed to a single file.
-        IterationResult.writeSummaryFile(resultsFolder, allIterationResults);
+        IterationResult.writeSummaryFile(systemResultsFolder, allIterationResults);
 
         return allIterationResults;
     }

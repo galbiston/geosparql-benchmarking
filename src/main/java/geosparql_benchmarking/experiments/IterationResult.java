@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,13 +26,15 @@ public class IterationResult {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final String testSystemName;
+    private final String queryType;
     private final String queryName;
     private final String queryString;
     private final String iteration;
     private final QueryResult queryResult;
 
-    public IterationResult(String testSystemName, String queryName, String queryString, Integer iteration, QueryResult queryResult) {
+    public IterationResult(String testSystemName, String queryType, String queryName, String queryString, Integer iteration, QueryResult queryResult) {
         this.testSystemName = testSystemName;
+        this.queryType = queryType;
         this.queryName = queryName;
         this.queryString = queryString;
         this.iteration = iteration.toString();
@@ -40,6 +43,10 @@ public class IterationResult {
 
     public String getTestSystemName() {
         return testSystemName;
+    }
+
+    public String getQueryType() {
+        return queryType;
     }
 
     public String getQueryName() {
@@ -59,19 +66,20 @@ public class IterationResult {
     }
 
     public String getResultFileLabel() {
-        return testSystemName + "-" + queryName;
+        return testSystemName + "-" + queryType + "-" + queryName;
     }
 
     @Override
     public String toString() {
-        return "IterationResult{" + "testSystemName=" + testSystemName + ", queryName=" + queryName + ", queryString=" + queryString + ", iteration=" + iteration + ", queryResult=" + queryResult + '}';
+        return "IterationResult{" + "testSystemName=" + testSystemName + ", queryType=" + queryType + ", queryName=" + queryName + ", queryString=" + queryString + ", iteration=" + iteration + ", queryResult=" + queryResult + '}';
     }
 
-    public static final String[] SUMMARY_HEADER = {"TestSystem", "QueryName", "Iteration", "Completed", "ResultsCount", "StartQueryDuration", "QueryResultsDuration", "StartResultsDuration"};
+    public static final String[] SUMMARY_HEADER = {"TestSystem", "QueryType", "QueryName", "Iteration", "Completed", "ResultsCount", "StartQueryDuration", "QueryResultsDuration", "StartResultsDuration"};
 
     public String[] writeSummary() {
         List<String> line = new ArrayList<>(SUMMARY_HEADER.length);
         line.add(testSystemName);
+        line.add(queryType);
         line.add(queryName);
         line.add(iteration);
         line.add(queryResult.isCompleted().toString());
@@ -82,9 +90,10 @@ public class IterationResult {
         return line.toArray(new String[line.size()]);
     }
 
-    public static final void writeSummaryFile(File resultsFolder, List<IterationResult> allIterationResults) {
+    public static final void writeSummaryFile(File systemResultsFolder, List<IterationResult> allIterationResults) {
 
-        File summaryFile = new File(resultsFolder, "summary.csv");
+        String filename = "summary-" + LocalDateTime.now() + ".csv";
+        File summaryFile = new File(systemResultsFolder, filename);
         try (CSVWriter writer = new CSVWriter(new FileWriter(summaryFile))) {
             writer.writeNext(SUMMARY_HEADER);
             for (IterationResult iterationResult : allIterationResults) {
@@ -112,8 +121,9 @@ public class IterationResult {
         List<String> resultsLabels = queryResult.getResultsVariableLabels();
         for (HashMap<String, String> result : queryResult.getResults()) {
 
-            List<String> line = new ArrayList<>(3 + resultsLabels.size());
+            List<String> line = new ArrayList<>(4 + resultsLabels.size());
             line.add(testSystemName);
+            line.add(queryType);
             line.add(queryName);
             line.add(iteration);
             for (String label : resultsLabels) {
@@ -121,7 +131,7 @@ public class IterationResult {
                     String value = result.get(label);
                     line.add(value);
                 } else {
-                    LOGGER.error("System: {}, Query: {}, Iteration: {} - Query Result does not contain expected label {}. Only different iterations of the same query should be used to write results file.", testSystemName, queryName, iteration, label);
+                    LOGGER.error("System: {}, Type: {}, Query: {}, Iteration: {} - Query Result does not contain expected label {}. Only different iterations of the same query should be used to write results file.", testSystemName, queryType, queryName, iteration, label);
                 }
             }
 
@@ -134,7 +144,8 @@ public class IterationResult {
 
         if (!iterationResults.isEmpty()) {
             IterationResult firstIterationResult = iterationResults.get(0);
-            File resultsFile = new File(resultsFolder, firstIterationResult.getResultFileLabel() + "-results.csv");
+            String filename = firstIterationResult.getResultFileLabel() + "-results-" + LocalDateTime.now() + " .csv";
+            File resultsFile = new File(resultsFolder, filename);
             try (CSVWriter writer = new CSVWriter(new FileWriter(resultsFile))) {
                 writer.writeNext(firstIterationResult.getResultHeader());
                 for (IterationResult iterationResult : iterationResults) {
