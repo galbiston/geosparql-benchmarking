@@ -4,6 +4,7 @@ import com.bbn.parliament.jena.graph.KbGraphFactory;
 import com.bbn.parliament.jena.graph.KbGraphStore;
 import com.hp.hpl.jena.graph.Node;
 import geosparql_benchmarking.experiments.BenchmarkExecution;
+import geosparql_benchmarking.experiments.BenchmarkExecution.TestSystemIdentifier;
 import geosparql_benchmarking.experiments.QueryLoader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,12 +36,11 @@ public class Main {
      */
     public static void main(String[] args) throws MalformedURLException {
 
-        HashMap<String, File> datasetMap = getDatasets();
-        Boolean inferenceEnabled = true;
+        //HashMap<String, File> datasetMap = getDatasets();
+        //Boolean inferenceEnabled = true;
         //GeosparqlJenaTestSystem.loadDataset(GEOSPARQL_JENA_TDB_FOLDER, datasetMap, inferenceEnabled);
         //ParliamentTestSystem.loadDataset(datasetMap);
         //StrabonTestSystem.loadDataset(datasetMap, inferenceEnabled);
-
         //Run GeoSPARQL Compliance Testing
         //1) Serialisation - WKT, GML, mixed
         //2) RDFS Entailment
@@ -59,12 +59,17 @@ public class Main {
         //exportParliamentTest();
         //Benchmark
         Duration runtime = Duration.ofMinutes(30);
-        Integer iterations = 10;
+        Integer iterations = 1; //10;
         Duration timeout = Duration.ofSeconds(3600);
-        HashMap<BenchmarkExecution.TEST_SYSTEM_IDENTIFIER, File> testSystemFolders = BenchmarkExecution.getTestSystemFolders();
-        HashMap<String, String> queryMap = QueryLoader.loadSpatialJoinsQueries();
-        BenchmarkExecution.runAll(testSystemFolders, iterations, timeout, queryMap);
+        String queryTypeLabel = "NonTopologicalFunctions";
+        HashMap<String, String> queryMap = QueryLoader.loadNonTopologicalFunctionsQueries();
+        //HashMap<BenchmarkExecution.TestSystemIdentifier, File> testSystemFolders = BenchmarkExecution.getTestSystemFolders(queryTypeLabel);
+        //BenchmarkExecution.runAll(testSystemFolders, iterations, timeout, queryMap);
+        TestSystemIdentifier testSystemIdentifier = TestSystemIdentifier.GEOSPARQL_JENA;
+        File resultsFolder = BenchmarkExecution.GEOSPARQL_JENA_RESULTS;
+        BenchmarkExecution.run(testSystemIdentifier, resultsFolder, iterations, timeout, queryMap);
     }
+
     private static final File DATASET_FOLDER = new File("datasets");
 
     private static HashMap<String, File> getDatasets() {
