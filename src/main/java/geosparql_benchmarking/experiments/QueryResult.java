@@ -23,7 +23,9 @@ public class QueryResult {
     private final Duration queryResultsDuration;
     private final Duration startResultsDuration;
     private final List<HashMap<String, String>> results;
-    private final boolean isCompleted;
+    private final Boolean isCompleted;
+    private final Integer resultsVariableCount;
+    private final List<String> resultsVariableLabels;
 
     /**
      * Provides a QueryResult that stores the three time checks, results and
@@ -35,7 +37,7 @@ public class QueryResult {
      * @param results
      * @param isCompleted
      */
-    public QueryResult(long startNanoTime, long queryNanoTime, long resultsNanoTime, List<HashMap<String, String>> results, boolean isCompleted) {
+    public QueryResult(long startNanoTime, long queryNanoTime, long resultsNanoTime, List<HashMap<String, String>> results, Boolean isCompleted) {
         this.startNanoTime = startNanoTime;
         this.queryNanoTime = queryNanoTime;
         this.resultsNanoTime = resultsNanoTime;
@@ -44,6 +46,15 @@ public class QueryResult {
         this.startResultsDuration = Duration.ofNanos(resultsNanoTime - startNanoTime);
         this.results = results;
         this.isCompleted = isCompleted;
+
+        if (!results.isEmpty()) {
+            HashMap<String, String> result = results.get(0);
+            this.resultsVariableCount = result.size();
+            this.resultsVariableLabels = new ArrayList<>(result.keySet());
+        } else {
+            this.resultsVariableCount = 0;
+            this.resultsVariableLabels = new ArrayList<>();
+        }
     }
 
     /**
@@ -76,7 +87,7 @@ public class QueryResult {
         return resultsNanoTime;
     }
 
-    public boolean isCompleted() {
+    public Boolean isCompleted() {
         return isCompleted;
     }
 
@@ -96,13 +107,21 @@ public class QueryResult {
         return results;
     }
 
-    public int getCount() {
+    public Integer getResultsCount() {
         return results.size();
+    }
+
+    public Integer getResultsVariableCount() {
+        return resultsVariableCount;
+    }
+
+    public List<String> getResultsVariableLabels() {
+        return resultsVariableLabels;
     }
 
     @Override
     public String toString() {
-        return "QueryResult{" + "startNanoTime=" + startNanoTime + ", queryNanoTime=" + queryNanoTime + ", resultsNanoTime=" + resultsNanoTime + ", startQueryDuration=" + startQueryDuration + ", queryResultsDuration=" + queryResultsDuration + ", startResultsDuration=" + startResultsDuration + ", results=" + results + ", isCompleted=" + isCompleted + '}';
+        return "QueryResult{" + "startNanoTime=" + startNanoTime + ", queryNanoTime=" + queryNanoTime + ", resultsNanoTime=" + resultsNanoTime + ", startQueryDuration=" + startQueryDuration + ", queryResultsDuration=" + queryResultsDuration + ", startResultsDuration=" + startResultsDuration + ", results=" + results + ", isCompleted=" + isCompleted + ", resultsVariableCount=" + resultsVariableCount + ", resultsVariableLabels=" + resultsVariableLabels + '}';
     }
 
 }
