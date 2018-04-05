@@ -82,7 +82,7 @@ public class BenchmarkExecution {
 
                 if (queryResult.isCompleted()) {
                     //Benchmark executions.
-                    for (int i = 0; i < iterations; i++) {
+                    for (int i = 1; i <= iterations; i++) {
                         LOGGER.info("----------System: {}, Type: {}, Query: {}, Iteration: {} - Started----------", testSystemName, queryType, queryName, i);
                         queryResult = testSystem.runQueryWithTimeout(queryString, timeout);
                         LOGGER.info("----------System: {}, Type: {}, Query: {}, Iteration: {} - Completed----------", testSystemName, queryType, queryName, i);
@@ -93,7 +93,6 @@ public class BenchmarkExecution {
                             LOGGER.error("System: {}, Type: {}, Query: {}, Iteration: {} - Did not complete. Skipping remaining iterations.", testSystemName, queryType, queryName, i);
                             break;
                         }
-
                     }
                 } else {
                     LOGGER.error("System: {}, Query: {} - Did not complete warm up. Skipping all iterations.", testSystem.getName(), queryName);
