@@ -40,7 +40,7 @@ public class StrabonTestSystem implements TestSystem {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    private Strabon strabon = null;
+    private Strabon strabon;
 
     String db;
     String user;
@@ -48,27 +48,19 @@ public class StrabonTestSystem implements TestSystem {
     Integer port;
     String host;
 
-    public StrabonTestSystem(String db, String user, String passwd, Integer port, String host) {
+    public StrabonTestSystem(String db, String user, String passwd, Integer port, String host) throws Exception {
         this.db = db;
         this.user = user;
         this.passwd = passwd;
         this.port = port;
         this.host = host;
+
+        strabon = new Strabon(db, user, passwd, port, host, true);
     }
 
     @Override
     public String getName() {
         return "Strabon";
-    }
-
-    @Override
-    public void initialize() {
-
-        try {
-            strabon = new Strabon(db, user, passwd, port, host, true);
-        } catch (Exception ex) {
-            LOGGER.error("Strabon: Failed to initialize - {}", ex.getMessage());
-        }
     }
 
     @Override

@@ -48,11 +48,13 @@ public class GeosparqlJenaTestSystem implements TestSystem {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    private Dataset dataset = null;
-    private final File datasetFolder;
+    private Dataset dataset;
+
+    static {
+        GeoSPARQLModel.loadFunctions();
+    }
 
     public GeosparqlJenaTestSystem(File datasetFolder) {
-        this.datasetFolder = datasetFolder;
         this.dataset = TDBFactory.createDataset(datasetFolder.getAbsolutePath());
     }
 
@@ -97,11 +99,6 @@ public class GeosparqlJenaTestSystem implements TestSystem {
     @Override
     public String getName() {
         return "GeoSparqlJena";
-    }
-
-    @Override
-    public void initialize() {
-        GeoSPARQLModel.loadFunctions();
     }
 
     @Override

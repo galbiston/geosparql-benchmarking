@@ -69,10 +69,9 @@ public class BenchmarkExecution {
             File resultsFolder = new File(systemResultsFolder, queryType);
             resultsFolder.mkdir();
             String queryString = entry.getValue();
-            TestSystem testSystem = getTestSystem(testSystemIdentifier);
-            String testSystemName = testSystem.getName();
-            try {
-                testSystem.initialize();
+
+            try (TestSystem testSystem = getTestSystem(testSystemIdentifier)) {
+                String testSystemName = testSystem.getName();
                 queryString = testSystem.translateQuery(queryString);
                 //Warm Up execution.
                 LOGGER.info("----------System: {}, Type: {}, Query: {}, Warmup - Started----------", testSystemName, queryType, queryName);
@@ -98,8 +97,6 @@ public class BenchmarkExecution {
                 }
             } catch (Exception ex) {
                 LOGGER.error("Exception: {}", ex.getMessage());
-            } finally {
-                testSystem.close();
             }
 
             //Write results for all iterations for each query to own file.
@@ -113,7 +110,7 @@ public class BenchmarkExecution {
         return allIterationResults;
     }
 
-    public static final TestSystem getTestSystem(TestSystemIdentifier testSystemIdentifier) {
+    public static final TestSystem getTestSystem(TestSystemIdentifier testSystemIdentifier) throws Exception {
 
         switch (testSystemIdentifier) {
             case GEOSPARQL_JENA:
@@ -127,11 +124,10 @@ public class BenchmarkExecution {
     }
 
     public static final GeosparqlJenaTestSystem getGeosparqlJena() {
-        GeosparqlJenaTestSystem geosparql = new GeosparqlJenaTestSystem(GEOSPARQL_JENA_TDB_FOLDER);
-        return geosparql;
+        return new GeosparqlJenaTestSystem(GEOSPARQL_JENA_TDB_FOLDER);
     }
 
-    public static final StrabonTestSystem getStrabon() {
+    public static final StrabonTestSystem getStrabon() throws Exception {
         String db = "endpoint";
         String user = "postgres"; //String user = "postgres";
         String password = "postgres"; //String passwd = "postgres";
