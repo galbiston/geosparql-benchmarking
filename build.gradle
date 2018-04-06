@@ -24,55 +24,18 @@ repositories {
         url "http://maven.geo-solutions.it"
     }
 
-    /*
-    maven{
-    url "http://maven.strabon.di.uoa.gr/content/repositories/snapshots"
-    }
-     */
-    //  mavenLocal()
     mavenCentral()
-
-
 
 }
 
 dependencies {
 
-
-
     //Jar Libraries
     compile fileTree(dir: 'libs/strabon', include: '*.jar')
-    compile fileTree(dir: 'libs/parliament', include: '*.jar')
 
     //GeoSPARQL Extension
     ext.geosparqlVersion = "0.9.6"
     compile "org.ntu:GeoSPARQL:$geosparqlVersion"
-
-    //Apache Jena for Parliament
-    compile group: 'com.hp.hpl.jena', name: 'jena', version: '2.6.4'
-    compile group: 'com.hp.hpl.jena', name: 'arq', version: '2.8.8'
-    compile group: 'com.hp.hpl.jena', name: 'iri', version: '0.8'
-    //compile group: 'org.apache.jena', name: 'jena-arq', version: '2.9.4'
-    //compile group: 'org.apache.jena', name: 'jena', version: '2.7.4'
-    //compile group: 'org.apache.jena', name: 'jena-iri', version: '0.9.4'
-
-
-
-
-    //GeoTools for Parliament
-    compile group: 'org.geotools', name: 'gt-xml', version: '19.0'
-
-    //BerkeleyDB Jave Edition for Parliament
-    compile 'com.sleepycat:je:5.0.73'
-
-    //Geographica Benchmarking - not used due to broken dependency to OpenRDF Sesame - now RDF4J.
-    //ext.geographicaVersion = "1.0-SNAPSHOT"
-    //compile "gr.uoa.di.rdf:runtime:$geographicaVersion"
-
-    //OpenRDF Sesame
-    //ext.openRDFVersion = "4.1.2"
-    //compile "org.openrdf.sesame:sesame-runtime:$openRDFVersion"
-    //compile group: 'org.openrdf.sesame', name: 'sesame-sail-rdbms', version: '2.9.0'
 
     //Postgresql
     //compile group: 'org.postgresql', name: 'postgresql', version: '42.2.2'
@@ -90,6 +53,7 @@ dependencies {
     ext.junitVersion = "4.12"
     testCompile "junit:junit:$junitVersion"
 
+    //OpenCSV
     ext.openCSVVersion = "3.9"
     compile "com.opencsv:opencsv:$openCSVVersion"
 

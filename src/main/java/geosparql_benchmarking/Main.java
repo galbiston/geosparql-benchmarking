@@ -1,15 +1,12 @@
 package geosparql_benchmarking;
 
-import com.bbn.parliament.jena.graph.KbGraphFactory;
-import com.bbn.parliament.jena.graph.KbGraphStore;
-import com.hp.hpl.jena.graph.Node;
 import geosparql_benchmarking.experiments.BenchmarkExecution;
 import geosparql_benchmarking.experiments.BenchmarkExecution.TestSystemIdentifier;
 import geosparql_benchmarking.experiments.QueryLoader;
+import geosparql_benchmarking.test_systems.GeosparqlJenaTestSystem;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.time.Duration;
 import java.util.HashMap;
 import org.apache.jena.query.Dataset;
@@ -32,31 +29,14 @@ public class Main {
 
     /**
      * @param args the command line arguments
-     * @throws java.net.MalformedURLException
      */
-    public static void main(String[] args) throws MalformedURLException {
+    public static void main(String[] args) {
 
-        //HashMap<String, File> datasetMap = getDatasets();
-        //Boolean inferenceEnabled = true;
-        //GeosparqlJenaTestSystem.loadDataset(GEOSPARQL_JENA_TDB_FOLDER, datasetMap, inferenceEnabled);
-        //ParliamentTestSystem.loadDataset(datasetMap);
+        HashMap<String, File> datasetMap = getDatasets();
+        Boolean inferenceEnabled = true;
+        GeosparqlJenaTestSystem.loadDataset(GEOSPARQL_JENA_TDB_FOLDER, datasetMap, inferenceEnabled);
         //StrabonTestSystem.loadDataset(datasetMap, inferenceEnabled);
-        //Run GeoSPARQL Compliance Testing
-        //1) Serialisation - WKT, GML, mixed
-        //2) RDFS Entailment
-        //3) Function coverage
-        //4) Property retrieval and generation
-        //5) Units of measure in function - conversion
-        //6) Coordinate reference system - conversion
-        //Run Geographica Benchmarks
-        //1) Apache Jena Extension
-        //2) Parliament
-        //3) Strabon
-        //Run the experiments using the arguements.
-        //rdfsGeosparqlJenaTest();
-        //exportGeosparqlJenaTest();
-        //rdfsParliamentTest();
-        //exportParliamentTest();
+
         //Benchmark
         BenchmarkExecution.createResultsFolders();
         Duration runtime = Duration.ofMinutes(30);
@@ -66,20 +46,13 @@ public class Main {
         HashMap<String, String> queryMap = QueryLoader.loadNonTopologicalFunctionsQueries();
         //HashMap<BenchmarkExecution.TestSystemIdentifier, File> testSystemFolders = BenchmarkExecution.getTestSystemFolders();
         //BenchmarkExecution.runAll(testSystemFolders, iterations, timeout, queryMap);
-        //runGeoSparqlJena(iterations, timeout, queryMap);
-        runParliament(iterations, timeout, queryMap);
+        runGeoSparqlJena(iterations, timeout, queryMap);
         //runStrabon(iterations, timeout, queryMap);
     }
 
     private static void runGeoSparqlJena(Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
         TestSystemIdentifier testSystemIdentifier = TestSystemIdentifier.GEOSPARQL_JENA;
         File resultsFolder = BenchmarkExecution.GEOSPARQL_JENA_RESULTS;
-        BenchmarkExecution.run(testSystemIdentifier, resultsFolder, iterations, timeout, queryMap);
-    }
-
-    private static void runParliament(Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
-        TestSystemIdentifier testSystemIdentifier = TestSystemIdentifier.PARLIAMENT;
-        File resultsFolder = BenchmarkExecution.PARLIAMENT_RESULTS;
         BenchmarkExecution.run(testSystemIdentifier, resultsFolder, iterations, timeout, queryMap);
     }
 
@@ -157,44 +130,6 @@ public class Main {
         } catch (IOException ex) {
             LOGGER.error("IOException: {}", ex.getMessage());
         }
-    }
-
-    private static void rdfsParliamentTest() {
-
-        KbGraphStore graphStore = new KbGraphStore(KbGraphFactory.createDefaultGraph());
-        graphStore.initialize();
-        com.hp.hpl.jena.query.DataSource dataSource = com.hp.hpl.jena.query.DatasetFactory.create(graphStore);
-        com.hp.hpl.jena.rdf.model.Model unionModel = com.hp.hpl.jena.rdf.model.ModelFactory.createModelForGraph(graphStore.getMasterGraph());
-        String property = "<http://www.opengis.net/ont/geosparql#asWKT>";
-        //String property = "<http://www.opengis.net/ont/sf#>";
-        //String property = "<http://linkedgeodata.org/ontology/asWKT>";
-        String queryString = "SELECT ?sub ?obj WHERE{ GRAPH <" + GraphURI.LGD_URI + "> { ?sub " + property + " ?obj}}LIMIT 1";
-        //String queryString = "SELECT ?sub ?obj WHERE{ ?sub " + property +  " ?obj}LIMIT 1";
-
-        try {
-            com.hp.hpl.jena.query.QueryExecution qe = com.hp.hpl.jena.query.QueryExecutionFactory.create(queryString, dataSource);
-            com.hp.hpl.jena.query.ResultSet rs = qe.execSelect();
-            com.hp.hpl.jena.query.ResultSetFormatter.outputAsCSV(rs);
-            qe.close();
-        } catch (Exception ex) {
-            LOGGER.error("IOException: {}", ex.getMessage());
-        }
-        graphStore.close();
-    }
-
-    private static void exportParliamentTest() {
-
-        KbGraphStore graphStore = new KbGraphStore(KbGraphFactory.createDefaultGraph());
-        graphStore.initialize();
-        Node graphNode = Node.createURI(GraphURI.LGD_URI);
-        com.hp.hpl.jena.rdf.model.Model model = com.hp.hpl.jena.rdf.model.ModelFactory.createModelForGraph(graphStore.getGraph(graphNode));
-
-        try (FileOutputStream out = new FileOutputStream(new File("lgd-parliament.ttl"))) {
-            model.write(out, "TTL");
-        } catch (IOException ex) {
-            LOGGER.error("IOException: {}", ex.getMessage());
-        }
-        graphStore.close();
     }
 
 }

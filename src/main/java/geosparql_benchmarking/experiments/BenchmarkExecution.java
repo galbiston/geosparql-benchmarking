@@ -2,7 +2,6 @@ package geosparql_benchmarking.experiments;
 
 import static geosparql_benchmarking.Main.GEOSPARQL_JENA_TDB_FOLDER;
 import geosparql_benchmarking.test_systems.GeosparqlJenaTestSystem;
-import geosparql_benchmarking.test_systems.ParliamentTestSystem;
 import geosparql_benchmarking.test_systems.StrabonTestSystem;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
@@ -19,7 +18,7 @@ public class BenchmarkExecution {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     public enum TestSystemIdentifier {
-        GEOSPARQL_JENA, PARLIAMENT, STRABON
+        GEOSPARQL_JENA, STRABON
     }
 
     /**
@@ -119,8 +118,6 @@ public class BenchmarkExecution {
         switch (testSystemIdentifier) {
             case GEOSPARQL_JENA:
                 return getGeosparqlJena();
-            case PARLIAMENT:
-                return getParliament();
             case STRABON:
                 return getStrabon();
             default:
@@ -132,10 +129,6 @@ public class BenchmarkExecution {
     public static final GeosparqlJenaTestSystem getGeosparqlJena() {
         GeosparqlJenaTestSystem geosparql = new GeosparqlJenaTestSystem(GEOSPARQL_JENA_TDB_FOLDER);
         return geosparql;
-    }
-
-    public static final ParliamentTestSystem getParliament() {
-        return new ParliamentTestSystem();
     }
 
     public static final StrabonTestSystem getStrabon() {
@@ -150,13 +143,11 @@ public class BenchmarkExecution {
 
     public static final File RESULTS_FOLDER = new File("results");
     public static final File GEOSPARQL_JENA_RESULTS = new File(RESULTS_FOLDER, "geosparql_jena");
-    public static final File PARLIAMENT_RESULTS = new File(RESULTS_FOLDER, "parliament");
     public static final File STRABON_RESULTS = new File(RESULTS_FOLDER, "strabon");
 
     public static final void createResultsFolders() {
         RESULTS_FOLDER.mkdir();
         GEOSPARQL_JENA_RESULTS.mkdir();
-        PARLIAMENT_RESULTS.mkdir();
         STRABON_RESULTS.mkdir();
     }
 
@@ -165,7 +156,6 @@ public class BenchmarkExecution {
 
         HashMap<TestSystemIdentifier, File> testSystemFolders = new HashMap<>();
         testSystemFolders.put(TestSystemIdentifier.GEOSPARQL_JENA, GEOSPARQL_JENA_RESULTS);
-        testSystemFolders.put(TestSystemIdentifier.PARLIAMENT, PARLIAMENT_RESULTS);
         testSystemFolders.put(TestSystemIdentifier.STRABON, STRABON_RESULTS);
         return testSystemFolders;
     }
@@ -176,9 +166,6 @@ public class BenchmarkExecution {
         switch (testSystemIdentifier) {
             case GEOSPARQL_JENA:
                 testSystemFolderResults = GEOSPARQL_JENA_RESULTS;
-                break;
-            case PARLIAMENT:
-                testSystemFolderResults = PARLIAMENT_RESULTS;
                 break;
             case STRABON:
                 testSystemFolderResults = STRABON_RESULTS;
