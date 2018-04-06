@@ -38,6 +38,21 @@ public class QueryLoader {
     private static final String GIVEN_POLYGON = QueryLoader.readFile(GIVEN_FOLDER + "/givenPolygon.txt");
 
     /**
+     * Load set of all queries except those with Strabon only syntax (Query 6,
+     * 28 and 29).
+     *
+     * @return
+     */
+    public static HashMap<String, String> loadMainQuerySet() {
+
+        HashMap<String, String> queryMap = new HashMap<>();
+        queryMap.putAll(loadNonTopologicalFunctionsQueries());
+        queryMap.putAll(loadSpatialSelectionsQueries());
+        queryMap.putAll(loadSpatialJoinsQueries());
+        return queryMap;
+    }
+
+    /**
      * This set of queries does not include Query 6 as it uses Strabon only
      * syntax that is not specified in the GeoSPARQL standard.
      *
@@ -113,7 +128,7 @@ public class QueryLoader {
      *
      * @return
      */
-    public static HashMap<String, String> loadAggergationsQueries() {
+    public static HashMap<String, String> loadAggregationsQueries() {
 
         HashMap<String, String> queryMap = new HashMap<>();
         queryMap.put("Aggregations#Query28", readFile(AGGREGATIONS + "/Query28.spl"));

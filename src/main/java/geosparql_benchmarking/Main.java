@@ -42,11 +42,12 @@ public class Main {
         Integer iterations = 1; //10;
         Duration timeout = Duration.ofSeconds(3600);
 
-        HashMap<String, String> queryMap = QueryLoader.loadNonTopologicalFunctionsQueries();
+        //HashMap<String, String> queryMap = QueryLoader.loadNonTopologicalFunctionsQueries();
         //HashMap<BenchmarkExecution.TestSystemIdentifier, File> testSystemFolders = BenchmarkExecution.getTestSystemFolders();
         //BenchmarkExecution.runAll(testSystemFolders, iterations, timeout, queryMap);
-        //runGeoSparqlJena(iterations, timeout, queryMap);
-        runStrabon(iterations, timeout, queryMap);
+        HashMap<String, String> queryMap = QueryLoader.loadMainQuerySet();
+        runGeoSparqlJena(iterations, timeout, queryMap);
+        //runStrabon(iterations, timeout, queryMap);
     }
 
     private static void runGeoSparqlJena(Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
