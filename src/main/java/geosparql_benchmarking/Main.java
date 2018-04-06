@@ -45,7 +45,8 @@ public class Main {
         //HashMap<String, String> queryMap = QueryLoader.loadNonTopologicalFunctionsQueries();
         //HashMap<BenchmarkExecution.TestSystemIdentifier, File> testSystemFolders = BenchmarkExecution.getTestSystemFolders();
         //BenchmarkExecution.runAll(testSystemFolders, iterations, timeout, queryMap);
-        HashMap<String, String> queryMap = QueryLoader.loadMainQuerySet();
+        //HashMap<String, String> queryMap = QueryLoader.loadMainQuerySet();
+        HashMap<String, String> queryMap = QueryLoader.loadSpatialSelectionsQuery_14();
         runGeoSparqlJena(iterations, timeout, queryMap);
         //runStrabon(iterations, timeout, queryMap);
     }

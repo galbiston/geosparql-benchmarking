@@ -37,6 +37,13 @@ public class QueryLoader {
     private static final String GIVEN_LINESTRING_3 = QueryLoader.readFile(GIVEN_FOLDER + "/givenLineString3.txt");
     private static final String GIVEN_POLYGON = QueryLoader.readFile(GIVEN_FOLDER + "/givenPolygon.txt");
 
+    public static HashMap<String, String> loadSpatialSelectionsQuery_14() {
+
+        HashMap<String, String> queryMap = new HashMap<>();
+        queryMap.put("SpatialSelections#Query14", readFile(SPATIAL_SELECTIONS + "/Query14.spl").replace("GIVEN_POINT_IN_WKT", GIVEN_POINT).replace("GIVEN_RADIUS", GIVEN_RADIUS));
+        return queryMap;
+    }
+
     /**
      * Load set of all queries except those with Strabon only syntax (Query 6,
      * 28 and 29).
