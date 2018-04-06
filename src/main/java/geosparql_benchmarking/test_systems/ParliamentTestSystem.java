@@ -1,10 +1,4 @@
 /**
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- *
- * Copyright (C) 2013, Pyravlos Team
- *
  */
 package geosparql_benchmarking.test_systems;
 
@@ -16,8 +10,10 @@ import com.bbn.parliament.jena.graph.index.IndexManager;
 import com.bbn.parliament.jena.graph.index.spatial.Constants;
 import com.bbn.parliament.jena.graph.index.spatial.SpatialIndex;
 import com.bbn.parliament.jena.graph.index.spatial.SpatialIndexFactory;
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.DataSource;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.DatasetFactory;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
@@ -33,6 +29,8 @@ import com.hp.hpl.jena.update.UpdateExecutionFactory;
 import com.hp.hpl.jena.update.UpdateFactory;
 import com.hp.hpl.jena.update.UpdateProcessor;
 import com.hp.hpl.jena.update.UpdateRequest;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.vocabulary.RDF;
 import geosparql_benchmarking.experiments.QueryResult;
 import geosparql_benchmarking.experiments.TestSystem;
 import java.io.File;
@@ -55,15 +53,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author George Garbis <ggarbis@di.uoa.gr>
- * @author Kostis Kyzirakos <kkyzir@di.uoa.gr>
  *
  */
 public class ParliamentTestSystem implements TestSystem {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    DataSource dataSource = null;
+    Dataset dataSource = null;
     KbGraphStore graphStore = null;
 
     public ParliamentTestSystem() {
@@ -75,48 +71,37 @@ public class ParliamentTestSystem implements TestSystem {
     }
 
     /**
-     * This is based on the Geographica code for Parliament initialising
-     * (reduced down the number of redundant data members). It would seem to be
-     * problematic as the spatial indexing is not used (or working).
+     * The spatial indexing only works with "jena-arq:2.9.4" depenendency and
+     * GeoSPARQL Jena is excluded from the project. This is due to package name
+     * issues in "jena-arq:2.9.4" and Parliament not being updated with the Jena
+     * API.
      */
     @Override
     public void initialize() {
         LOGGER.info("Parliament Initialisation: Started");
-        // create spatial index factory and configure for GeoSPARQL. This is used
-        // by the GraphStore whenever a new named graph is created.
-        SpatialIndexFactory factory = new SpatialIndexFactory();
-        Properties properties = new Properties();
-        properties.setProperty(Constants.GEOMETRY_INDEX_TYPE, Constants.GEOMETRY_INDEX_RTREE);
-        properties.setProperty(Constants.GEOSPARQL_ENABLED, Boolean.TRUE.toString());
-        factory.configure(properties);
 
-        // register factory
-        IndexFactoryRegistry.getInstance().register(factory);
-
-        // create a Parliament graph and graph store
+        //Parliament graph store that contains all graphs. Requires default graph for constructor.
         KbGraph graph = KbGraphFactory.createDefaultGraph();
         graphStore = new KbGraphStore(graph);
         graphStore.initialize();
 
-        // DO NOT RE-INDEX THE GRAPH!!!!!
-        boolean firstTime = false;
-        if (firstTime) {
-            // create spatial index from factory
-            SpatialIndex index = factory.createIndex(graph, null);
-
-            // register index with IndexManager
-            IndexManager.getInstance().register(graph, null, factory, index);
-
-            // the following tells the graph store that the graph is now an
-            // indexing graph. This is necessary so that the next time Parliament
-            // loads, the index is read in automatically.
-            graphStore.setIndexingEnabled(KbGraphStore.DEFAULT_GRAPH_NODE, true);
-        }
-
-        // create a new datasource (that will be used later on to append named graphs)
+        //Datasource tused for queries.
         dataSource = DatasetFactory.create(graphStore);
 
         LOGGER.info("Parliament Initialisation: Completed");
+    }
+
+    private boolean isIndexingEnabled(Node graphName, KbGraphStore graphStore) {
+
+        Graph masterGraph = graphStore.getMasterGraph();
+        ExtendedIterator<Triple> it = masterGraph.find(graphName, RDF.Nodes.type, Node.createURI(KbGraphStore.INDEXED_GRAPH));
+        try {
+            return it.hasNext();
+        } finally {
+            if (null != it) {
+                it.close();
+            }
+        }
     }
 
     @Override
@@ -175,25 +160,17 @@ public class ParliamentTestSystem implements TestSystem {
 
     @Override
     public String translateQuery(String query) {
-        String translatedQuery = query;
-
-        //These should no longer be required as Parliament has aligned with GeoSPARQL 1.0 namespaces.
-        //translatedQuery = translatedQuery.replace("PREFIX geof: <http://www.opengis.net/def/function/geosparql/>", "PREFIX geof: <http://www.opengis.net/ont/sf#>");
-        //translatedQuery = translatedQuery.replace("PREFIX geof: <http://www.opengis.net/def/function/geosparql/>", "PREFIX geof: <http://www.opengis.net/def/geosparql/function/>");
-        //translatedQuery = translatedQuery.replace("PREFIX geo: <http://www.opengis.net/ont/geosparql#>", "PREFIX geo: <http://www.opengis.net/ont/sf#>");
-        /*translatedQuery = translatedQuery.replace("http://www.opengis.net/ont/geosparql#wktLiteral", "http://www.opengis.net/ont/sf#wktLiteral");
-        translatedQuery = translatedQuery.replace("geo:wktLiteral", "<http://www.opengis.net/ont/sf#wktLiteral>");
-         */
-        return translatedQuery;
+        //Query translation shold not be required as Parliament has aligned with GeoSPARQL 1.0 namespaces.
+        return query;
     }
 
     private class QueryTask implements Runnable {
 
         private final String queryString;
-        private final DataSource dataSource;
+        private final Dataset dataSource;
         private QueryResult queryResult;
 
-        public QueryTask(String queryString, DataSource dataSource) {
+        public QueryTask(String queryString, Dataset dataSource) {
             this.queryString = queryString;
             this.dataSource = dataSource;
             this.queryResult = new QueryResult();
@@ -261,29 +238,27 @@ public class ParliamentTestSystem implements TestSystem {
         LOGGER.info("Parliament Loading: Started");
         LOGGER.info("Parliament inferencing is controlled in the ParliamentConfig.txt file.");
 
-        // create spatial index factory and configure for GeoSPARQL. This is used
-        // by the GraphStore whenever a new named graph is created.
+        //Create spatial index factory and configure for GeoSPARQL.
         SpatialIndexFactory factory = new SpatialIndexFactory();
         Properties properties = new Properties();
         properties.setProperty(Constants.GEOMETRY_INDEX_TYPE, Constants.GEOMETRY_INDEX_RTREE);
         properties.setProperty(Constants.GEOSPARQL_ENABLED, Boolean.TRUE.toString());
         factory.configure(properties);
 
-        // register factory
+        //Register spatial index factory. Enable indexing for all graphs. Enabling individual graphs in the graph store does not work.
         IndexFactoryRegistry.getInstance().register(factory);
+        IndexFactoryRegistry.getInstance().setIndexingEnabledByDefault(true);
 
-        // create a Parliament graph and graph store - default empty
+        //Parliament graph store that contains all graphs. Requires default graph for constructor.
         KbGraph graph = KbGraphFactory.createDefaultGraph();
         KbGraphStore graphStore = new KbGraphStore(graph);
         try {
             graphStore.initialize();
-            // create spatial index from factory
-            /*
-        SpatialIndex index = factory.createIndex(graph, null);
-        // register index with IndexManager
-        IndexManager.getInstance().register(graph, null, factory, index);
-        graphStore.setIndexingEnabled(KbGraphStore.DEFAULT_GRAPH_NODE, true);
-             */
+            //Create spatial index from factory
+            SpatialIndex index = factory.createIndex(graph, null);
+            //Register named graph and index with IndexManager.
+            IndexManager.getInstance().register(graph, null, factory, index);
+
             //Named graphs for each file loaded.
             for (Map.Entry<String, File> entry : datasetMap.entrySet()) {
                 String graphName = entry.getKey();
@@ -294,17 +269,11 @@ public class ParliamentTestSystem implements TestSystem {
                 Model namedModel = ModelFactory.createModelForGraph(namedGraph);
                 namedModel.read(sourceRDFFile.toURI().toURL().toString(), "N-TRIPLE");
                 graphStore.addGraph(graphNode, namedGraph);
-                /*
-            index = factory.createIndex(namedGraph, graphNode);
 
-            // register index with IndexManager
-            IndexManager.getInstance().register(namedGraph, graphNode, factory, index);
+                index = factory.createIndex(namedGraph, graphNode);
+                //Register named graph and index with IndexManager.
+                IndexManager.getInstance().register(namedGraph, graphNode, factory, index);
 
-            // the following tells the graph store that the graph is now an
-            // indexing graph. This is necessary so that the next time Parliament
-            // loads, the index is read in automatically.
-            graphStore.setIndexingEnabled(graphNode, true);
-                 */
                 LOGGER.info("Loading: {} into {}: Completed", sourceRDFFile, graphName);
             }
         } catch (MalformedURLException ex) {
