@@ -3,7 +3,6 @@ package geosparql_benchmarking;
 import geosparql_benchmarking.experiments.BenchmarkExecution;
 import geosparql_benchmarking.experiments.BenchmarkExecution.TestSystemIdentifier;
 import geosparql_benchmarking.experiments.QueryLoader;
-import geosparql_benchmarking.test_systems.GeosparqlJenaTestSystem;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -34,7 +33,7 @@ public class Main {
 
         HashMap<String, File> datasetMap = getDatasets();
         Boolean inferenceEnabled = true;
-        GeosparqlJenaTestSystem.loadDataset(GEOSPARQL_JENA_TDB_FOLDER, datasetMap, inferenceEnabled);
+        //GeosparqlJenaTestSystem.loadDataset(GEOSPARQL_JENA_TDB_FOLDER, datasetMap, inferenceEnabled);
         //StrabonTestSystem.loadDataset(datasetMap, inferenceEnabled);
 
         //Benchmark
@@ -46,8 +45,8 @@ public class Main {
         HashMap<String, String> queryMap = QueryLoader.loadNonTopologicalFunctionsQueries();
         //HashMap<BenchmarkExecution.TestSystemIdentifier, File> testSystemFolders = BenchmarkExecution.getTestSystemFolders();
         //BenchmarkExecution.runAll(testSystemFolders, iterations, timeout, queryMap);
-        runGeoSparqlJena(iterations, timeout, queryMap);
-        //runStrabon(iterations, timeout, queryMap);
+        //runGeoSparqlJena(iterations, timeout, queryMap);
+        runStrabon(iterations, timeout, queryMap);
     }
 
     private static void runGeoSparqlJena(Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
