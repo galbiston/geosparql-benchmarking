@@ -52,6 +52,10 @@ public class GeosparqlJenaTestSystem implements TestSystem {
         this.dataset = TDBFactory.createDataset(datasetFolder.getAbsolutePath());
     }
 
+    public GeosparqlJenaTestSystem(Dataset dataset) {
+        this.dataset = dataset;
+    }
+
     @Override
     public QueryResult runQueryWithTimeout(String query, Duration timeout) throws Exception {
 

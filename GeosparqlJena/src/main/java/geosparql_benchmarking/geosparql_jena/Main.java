@@ -45,7 +45,13 @@ public class Main {
         //HashMap<String, String> queryMap = QueryLoader.loadNonTopologicalFunctionsQueries();
         //HashMap<String, String> queryMap = QueryLoader.loadMainQuerySet();
         HashMap<String, String> queryMap = QueryLoader.loadSpatialSelectionsQuery_14();
-        BenchmarkExecution.run(new GeosparqlJenaTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, "geosparql_jena"), iterations, timeout, queryMap);
+        BenchmarkExecution.run(new GeosparqlJenaTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, "geosparql_jena_tdb"), iterations, timeout, queryMap);
+        //runJenaMem(datasetMap, inferenceEnabled, iterations, timeout, queryMap);
+    }
+
+    public static void runJenaMem(HashMap<String, File> datasetMap, Boolean inferenceEnabled, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
+        Dataset dataset = GeosparqlJenaMemTestSystemFactory.loadDataset(datasetMap, inferenceEnabled);
+        BenchmarkExecution.run(new GeosparqlJenaMemTestSystemFactory(dataset, "geosparql_jena_mem"), iterations, timeout, queryMap);
     }
 
     private static void rdfsGeosparqlJenaTest() {
