@@ -1,60 +1,20 @@
-apply plugin: 'java'
+import org.gradle.api.artifacts.*
 
-sourceCompatibility = '1.8'
-[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+apply plugin: 'base' // To add "clean" task to the root project.
 
-// NetBeans will automatically add "run" and "debug" tasks relying on the
-// "mainClass" property. You may however define the property prior executing
-// tasks by passing a "-PmainClass=<QUALIFIED_CLASS_NAME>" argument.
-//
-// Note however, that you may define your own "run" and "debug" task if you
-// prefer. In this case NetBeans will not add these tasks but you may rely on
-// your own implementation.
-if (!hasProperty('mainClass')) {
-    ext.mainClass = 'geosparql_benchmarking.Main'
+subprojects {
+    apply from: rootProject.file('common.gradle')
 }
 
-repositories {
+task mergedJavadoc(type: Javadoc, description: 'Creates Javadoc from all the projects.') {
+    title = 'All modules'
+    destinationDir = new File(project.buildDir, 'merged-javadoc')
 
-    maven {
-        url "http://download.osgeo.org/webdav/geotools/"
+    // Note: The closures below are executed lazily.
+    source {
+       subprojects*.sourceSets*.main*.allSource
     }
-
-    maven{
-        url "http://maven.geo-solutions.it"
+    classpath.from {
+        subprojects*.configurations*.compile*.copyRecursive({ !(it instanceof ProjectDependency); })*.resolve()
     }
-
-    mavenCentral()
-
-}
-
-dependencies {
-
-    //Jar Libraries
-    compile fileTree(dir: 'libs/strabon', include: '*.jar')
-
-    //GeoSPARQL Extension
-    ext.geosparqlVersion = "0.9.6"
-    compile "org.ntu:GeoSPARQL:$geosparqlVersion"
-
-    //Postgresql
-    //compile group: 'org.postgresql', name: 'postgresql', version: '42.2.2'
-    compile group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
-
-    //SLF4J - Logback Classic
-    ext.logbackVersion = "1.2.3"
-    compile "ch.qos.logback:logback-classic:$logbackVersion"
-
-    //JUnit
-    ext.junitVersion = "4.12"
-    testCompile "junit:junit:$junitVersion"
-
-    //OpenCSV
-    ext.openCSVVersion = "3.9"
-    compile "com.opencsv:opencsv:$openCSVVersion"
-
-}
-
-tasks.withType(JavaCompile) {
-    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 }

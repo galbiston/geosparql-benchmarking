@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package geosparql_benchmarking.test_systems;
+package geosparql_benchmarking.geosparql_jena;
 
-import geosparql_benchmarking.experiments.BenchmarkExecution;
 import geosparql_benchmarking.experiments.QueryResult;
 import geosparql_benchmarking.experiments.TestSystem;
 import implementation.GeoSPARQLModel;
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -30,13 +28,9 @@ import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.ResultSet;
-import org.apache.jena.rdf.model.InfModel;
 import org.apache.jena.rdf.model.Literal;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.tdb.TDBFactory;
 import org.apache.jena.update.UpdateAction;
 import org.apache.jena.update.UpdateFactory;
@@ -94,11 +88,6 @@ public class GeosparqlJenaTestSystem implements TestSystem {
         LOGGER.info("GeoSPARQL Jena Update: Completed");
 
         return new QueryResult(startNanoTime, resultsNanoTime);
-    }
-
-    @Override
-    public String getName() {
-        return "GeoSparqlJena";
     }
 
     @Override
@@ -181,40 +170,6 @@ public class GeosparqlJenaTestSystem implements TestSystem {
             this.queryResult = new QueryResult(startNanoTime, queryNanoTime, resultsNanoTime, results);
             LOGGER.info("Query Evaluation Time - Start->Query: {}, Query->Results: {}, Start->Results: {}", queryResult.getStartQueryDuration(), queryResult.getQueryResultsDuration(), queryResult.getStartResultsDuration());
         }
-    }
-
-    public static void loadDataset(File datasetFolder, HashMap<String, File> datasetMap, Boolean inferenceEnabled) {
-        LOGGER.info("Geosparql Jena Loading: Started");
-        Dataset dataset = TDBFactory.createDataset(datasetFolder.getAbsolutePath());
-        Model geosparqlSchema = RDFDataMgr.loadModel(BenchmarkExecution.class.getClassLoader().getResource("geosparql_vocab_all.rdf").toString());
-
-        for (Map.Entry<String, File> entry : datasetMap.entrySet()) {
-            try {
-                dataset.begin(ReadWrite.WRITE);
-                String sourceRDFFile = entry.getValue().getAbsolutePath();
-                String graph = entry.getKey();
-                LOGGER.info("Loading: {} into {}: Started", sourceRDFFile, graph);
-                Model dataModel = RDFDataMgr.loadModel(sourceRDFFile);
-                if (inferenceEnabled) {
-                    InfModel infModel = ModelFactory.createRDFSModel(geosparqlSchema, dataModel);
-                    infModel.prepare();
-                    dataset.addNamedModel(graph, infModel);
-                } else {
-                    dataset.addNamedModel(graph, dataModel);
-                }
-                LOGGER.info("Loading: {} into {}: Completed", sourceRDFFile, graph);
-                dataset.commit();
-
-            } catch (RuntimeException ex) {
-                LOGGER.error("TDB Load Error: {}", ex.getMessage());
-            } finally {
-                dataset.end();
-            }
-        }
-        dataset.close();
-        TDBFactory.release(dataset);
-
-        LOGGER.info("Geosparql Jena Loading: Completed");
     }
 
 }

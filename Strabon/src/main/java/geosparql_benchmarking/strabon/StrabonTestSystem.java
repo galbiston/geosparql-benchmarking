@@ -1,13 +1,12 @@
 /**
  *
  */
-package geosparql_benchmarking.test_systems;
+package geosparql_benchmarking.strabon;
 
 import eu.earthobservatory.runtime.postgis.Strabon;
 import eu.earthobservatory.utils.Format;
 import geosparql_benchmarking.experiments.QueryResult;
 import geosparql_benchmarking.experiments.TestSystem;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -16,7 +15,6 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -44,23 +42,18 @@ public class StrabonTestSystem implements TestSystem {
 
     String db;
     String user;
-    String passwd;
+    String password;
     Integer port;
     String host;
 
-    public StrabonTestSystem(String db, String user, String passwd, Integer port, String host) throws Exception {
+    public StrabonTestSystem(String db, String user, String password, Integer port, String host) throws Exception {
         this.db = db;
         this.user = user;
-        this.passwd = passwd;
+        this.password = password;
         this.port = port;
         this.host = host;
 
-        strabon = new Strabon(db, user, passwd, port, host, true);
-    }
-
-    @Override
-    public String getName() {
-        return "Strabon";
+        strabon = new Strabon(db, user, password, port, host, true);
     }
 
     @Override
@@ -211,37 +204,4 @@ public class StrabonTestSystem implements TestSystem {
         }
     }
 
-    public static void loadDataset(HashMap<String, File> datasetMap, Boolean inferenceEnabled) {
-        LOGGER.info("Strabon Loading: Started");
-        Strabon strabon = null;
-        try {
-            String db = "endpoint";
-            String user = "postgres"; //String user = "postgres";
-            String passwd = "postgres"; //String passwd = "postgres";
-            Integer port = 5432;
-            String host = "localhost"; //"localhost"; //"127.0.0.1"
-            Boolean checkForLockTable = true;
-            strabon = new Strabon(db, user, passwd, port, host, checkForLockTable);
-
-            String baseURI = null;
-            String format = "NTRIPLES";
-
-            for (Map.Entry<String, File> entry : datasetMap.entrySet()) {
-                String src = entry.getValue().toURI().toURL().toString();
-                String graph = entry.getKey();
-                LOGGER.info("Loading: {} into {}: Started", src, graph);
-                strabon.storeInRepo(src, baseURI, graph, format, inferenceEnabled);
-                LOGGER.info("Loading: {} into {}: Completed", src, graph);
-            }
-
-        } catch (Exception ex) {
-            LOGGER.error("Load Strabon exception: {}", ex);
-        } finally {
-            if (strabon != null) {
-                strabon.close();
-            }
-        }
-        LOGGER.info("Strabon Loading: Completed");
-
-    }
 }
