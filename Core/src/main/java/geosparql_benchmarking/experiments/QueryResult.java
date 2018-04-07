@@ -27,7 +27,17 @@ public class QueryResult {
     private final Integer resultsVariableCount;
     private final List<String> resultsVariableLabels;
 
-    private QueryResult(long startNanoTime, long queryNanoTime, long resultsNanoTime, List<HashMap<String, String>> results, Boolean isCompleted) {
+    /**
+     * Provides a QueryResult that stores the three time checks, results and
+     * whether the query completed successfully.
+     *
+     * @param startNanoTime
+     * @param queryNanoTime
+     * @param resultsNanoTime
+     * @param results
+     * @param isCompleted
+     */
+    public QueryResult(long startNanoTime, long queryNanoTime, long resultsNanoTime, List<HashMap<String, String>> results, Boolean isCompleted) {
         this.startNanoTime = startNanoTime;
         this.queryNanoTime = queryNanoTime;
         this.resultsNanoTime = resultsNanoTime;
@@ -45,19 +55,6 @@ public class QueryResult {
             this.resultsVariableCount = 0;
             this.resultsVariableLabels = new ArrayList<>();
         }
-    }
-
-    /**
-     * Provides a QueryResult that stores the three time checks, results and
-     * whether the query completed successfully.
-     *
-     * @param startNanoTime
-     * @param queryNanoTime
-     * @param resultsNanoTime
-     * @param results
-     */
-    public QueryResult(long startNanoTime, long queryNanoTime, long resultsNanoTime, List<HashMap<String, String>> results) {
-        this(startNanoTime, queryNanoTime, resultsNanoTime, results, !results.isEmpty());
     }
 
     /**

@@ -188,6 +188,7 @@ public class ParliamentTestSystem implements TestSystem {
         public void runQuery() {
 
             LOGGER.info("Query Evaluation: Started");
+            Boolean isComplete = true;
             List<HashMap<String, String>> results = new ArrayList<>();
             long startNanoTime = System.nanoTime();
             long queryNanoTime;
@@ -223,13 +224,14 @@ public class ParliamentTestSystem implements TestSystem {
                 LOGGER.error("Exception: {}", ex.getMessage());
                 queryNanoTime = startNanoTime;
                 results.clear();
+                isComplete = false;
             } finally {
                 if (qexec != null) {
                     qexec.close();
                 }
             }
             long resultsNanoTime = System.nanoTime();
-            this.queryResult = new QueryResult(startNanoTime, queryNanoTime, resultsNanoTime, results);
+            this.queryResult = new QueryResult(startNanoTime, queryNanoTime, resultsNanoTime, results, isComplete);
             LOGGER.info("Query Evaluation Time - Start->Query: {}, Query->Results: {}, Start->Results: {}", queryResult.getStartQueryDuration(), queryResult.getQueryResultsDuration(), queryResult.getStartResultsDuration());
         }
     }
