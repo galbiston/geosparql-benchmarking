@@ -45,12 +45,13 @@ public class GeosparqlJenaTestSystem implements TestSystem {
     private Dataset dataset;
 
     public GeosparqlJenaTestSystem(File datasetFolder) {
-        GeoSPARQLSupport.loadFunctions(datasetFolder);
-        this.dataset = TDBFactory.createDataset(datasetFolder.getAbsolutePath());
+        this(TDBFactory.createDataset(datasetFolder.getAbsolutePath()));
     }
 
     public GeosparqlJenaTestSystem(Dataset dataset) {
         this.dataset = dataset;
+        GeoSPARQLSupport.loadFunctions();
+        GeoSPARQLSupport.clearAllIndexesAndRegistries();
     }
 
     @Override
