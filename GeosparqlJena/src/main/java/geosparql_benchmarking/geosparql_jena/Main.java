@@ -42,9 +42,9 @@ public class Main {
         Integer iterations = 1; //10;
         Duration timeout = Duration.ofSeconds(3600);
 
+        //HashMap<String, String> queryMap = QueryLoader.loadSpatialSelectionsQuery_14();
         //HashMap<String, String> queryMap = QueryLoader.loadNonTopologicalFunctionsQueries();
-        //HashMap<String, String> queryMap = QueryLoader.loadMainQuerySet();
-        HashMap<String, String> queryMap = QueryLoader.loadSpatialSelectionsQuery_14();
+        HashMap<String, String> queryMap = QueryLoader.loadMainQuerySet();
         BenchmarkExecution.run(new GeosparqlJenaTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, "geosparql_jena_tdb"), iterations, timeout, queryMap);
         //runJenaMem(datasetMap, inferenceEnabled, iterations, timeout, queryMap);
     }
