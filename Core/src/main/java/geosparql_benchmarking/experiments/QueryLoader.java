@@ -6,8 +6,9 @@
 package geosparql_benchmarking.experiments;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.stream.Collectors;
@@ -23,13 +24,13 @@ public class QueryLoader {
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryLoader.class);
 
     //Query Resource Folders
-    private static final String NON_TOPOLOGICAL_FUNCTIONS = "micro_benchmark_queries/non_topological_functions";
-    private static final String SPATIAL_JOINS = "micro_benchmark_queries/spatial_joins";
-    private static final String SPATIAL_SELECTIONS = "micro_benchmark_queries/spatial_selections";
-    private static final String AGGREGATIONS = "micro_benchmark_queries/aggregations";
+    private static final String NON_TOPOLOGICAL_FUNCTIONS = "../Core/benchmarking_files/micro_benchmark_queries/non_topological_functions";
+    private static final String SPATIAL_JOINS = "../Core/benchmarking_files/micro_benchmark_queries/spatial_joins";
+    private static final String SPATIAL_SELECTIONS = "../Core/benchmarking_files/micro_benchmark_queries/spatial_selections";
+    private static final String AGGREGATIONS = "../Core/benchmarking_files/micro_benchmark_queries/aggregations";
 
     //Given Shapes Files
-    private static final String GIVEN_FOLDER = "given_files";
+    private static final String GIVEN_FOLDER = "../Core/benchmarking_files/given_files";
     private static final String GIVEN_POINT = QueryLoader.readFile(GIVEN_FOLDER + "/givenPoint.txt");
     private static final String GIVEN_RADIUS = QueryLoader.readFile(GIVEN_FOLDER + "/givenRadius.txt");
     private static final String GIVEN_LINESTRING_1 = QueryLoader.readFile(GIVEN_FOLDER + "/givenLineString1.txt");
@@ -143,14 +144,13 @@ public class QueryLoader {
         return queryMap;
     }
 
-    public static String readFile(String filename) {
+    public static String readFile(String filepath) {
 
-        InputStream input = QueryLoader.class.getClassLoader().getResourceAsStream(filename);
-
-        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(input))) {
+        File file = new File(filepath);
+        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
             return buffer.lines().collect(Collectors.joining(System.lineSeparator()));
         } catch (NullPointerException | IOException ex) {
-            LOGGER.error("Could not open query file: {}#{}", filename, ex.getMessage());
+            LOGGER.error("Could not open query file: {}#{}", file, ex.getMessage());
             return null;
         }
     }
