@@ -7,7 +7,7 @@ package geosparql_benchmarking.geosparql_jena;
 
 import geosparql_benchmarking.experiments.QueryResult;
 import geosparql_benchmarking.experiments.TestSystem;
-import implementation.GeoSPARQLModel;
+import implementation.GeoSPARQLSupport;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
@@ -44,11 +44,8 @@ public class GeosparqlJenaTestSystem implements TestSystem {
 
     private Dataset dataset;
 
-    static {
-        GeoSPARQLModel.loadFunctions();
-    }
-
     public GeosparqlJenaTestSystem(File datasetFolder) {
+        GeoSPARQLSupport.loadFunctions(datasetFolder);
         this.dataset = TDBFactory.createDataset(datasetFolder.getAbsolutePath());
     }
 
