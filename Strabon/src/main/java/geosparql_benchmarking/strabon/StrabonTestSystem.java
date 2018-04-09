@@ -53,7 +53,23 @@ public class StrabonTestSystem implements TestSystem {
         this.port = port;
         this.host = host;
 
+        restartPostgresService();
+
         strabon = new Strabon(db, user, password, port, host, true);
+    }
+
+    //Restart service and clear caches where possible.
+    private void restartPostgresService() {
+        String osName = System.getProperty("os.name").toLowerCase();
+
+        if (osName.contains("win")) {
+            //Stop and start the service only.
+
+        } else if (osName.contains("mac")) {
+            //???
+        } else if (osName.contains("nix") || osName.contains("nux") || osName.contains("aux")) {
+            //Stop, drop caches and start the service.
+        }
     }
 
     @Override
