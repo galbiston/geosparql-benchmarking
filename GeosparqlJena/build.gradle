@@ -20,5 +20,9 @@ dependencies {
     
     //GeoSPARQL Extension
     ext.geosparqlVersion = "0.9.6"
-    implementation "org.ntu:GeoSPARQL:$geosparqlVersion"    
+    implementation "org.ntu:GeoSPARQL:$geosparqlVersion"
+    
+    //SLF4J Logback
+    compile "ch.qos.logback:logback-classic:$logbackVersion"
+    
 }

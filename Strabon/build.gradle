@@ -25,6 +25,12 @@ dependencies {
     //compile group: 'org.postgresql', name: 'postgresql', version: '42.2.2'
     compile group: 'org.postgresql', name: 'postgresql', version: '42.1.4'   
     
+    //Zero Turnaround Executable
     compile group: 'org.zeroturnaround', name: 'zt-exec', version: '1.10'   
 
+    //SLF4J Log4j
+    //compile "org.slf4j:slf4j-log4j12:$slf4jVersion"
+    compile "org.slf4j:log4j12-over-slf4j:$slf4jVersion"
+    //SLF4J Logback
+    compile "ch.qos.logback:logback-classic:$logbackVersion"
 }

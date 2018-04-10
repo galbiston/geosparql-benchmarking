@@ -17,4 +17,7 @@ dependencies {
     ext.openCSVVersion = "3.9"
     implementation "com.opencsv:opencsv:$openCSVVersion"
 
+    //SLF4J
+    implementation "org.slf4j:slf4j-api:$slf4jVersion"
+   
 }

@@ -31,4 +31,7 @@ dependencies {
 
     //BerkeleyDB Jave Edition for Parliament
     compile 'com.sleepycat:je:5.0.73'
+    
+    //SLF4J Logback
+    compile "ch.qos.logback:logback-classic:$logbackVersion"
 }

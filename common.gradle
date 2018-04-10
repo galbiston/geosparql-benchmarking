@@ -24,10 +24,12 @@ repositories {
 }
 
 dependencies {
-	//SLF4J - Logback Classic
+    //SLF4J - Logback Classic
     ext.logbackVersion = "1.2.3"
-    compile "ch.qos.logback:logback-classic:$logbackVersion"
-
+    
+    //SLF4J
+    ext.slf4jVersion = "1.7.25"
+    
     //JUnit
     ext.junitVersion = "4.12"
     testCompile "junit:junit:$junitVersion"
