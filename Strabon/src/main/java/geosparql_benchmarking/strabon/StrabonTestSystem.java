@@ -56,7 +56,6 @@ public class StrabonTestSystem implements TestSystem {
         this.host = host;
 
         restartPostgresService(port);
-
         strabon = new Strabon(db, user, password, port, host, true);
     }
 
@@ -91,7 +90,7 @@ public class StrabonTestSystem implements TestSystem {
     /*
     //Default service name according to: https://www.postgresql.org/docs/10/static/app-pg-ctl.html
     private static final String POSTGRESQL_SERVICE = "PostgreSQL";
-    
+
     String osName = System.getProperty("os.name").toLowerCase();
 
             if (osName.contains("win")) {

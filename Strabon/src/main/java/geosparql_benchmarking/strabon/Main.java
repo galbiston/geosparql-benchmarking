@@ -33,16 +33,15 @@ public class Main {
         String baseURI = null;
         String format = "NTRIPLES";
 
-        StrabonTestSystemFactory.loadDataset(datasetMap, baseURI, format, inferenceEnabled, testSystemFactory);
-
+        //StrabonTestSystemFactory.loadDataset(datasetMap, baseURI, format, inferenceEnabled, testSystemFactory);
         //Benchmark
         Duration runtime = Duration.ofMinutes(30);
         Integer iterations = 1; //10;
         Duration timeout = Duration.ofSeconds(3600);
 
+        HashMap<String, String> queryMap = QueryLoader.loadSpatialSelectionsQuery_14();
         //HashMap<String, String> queryMap = QueryLoader.loadNonTopologicalFunctionsQueries();
         //HashMap<String, String> queryMap = QueryLoader.loadMainQuerySet();
-        HashMap<String, String> queryMap = QueryLoader.loadSpatialSelectionsQuery_14();
         BenchmarkExecution.run(testSystemFactory, iterations, timeout, queryMap);
     }
 
