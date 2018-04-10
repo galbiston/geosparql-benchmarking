@@ -21,6 +21,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.apache.commons.lang.StringUtils;
 import org.openrdf.model.Value;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
@@ -30,8 +31,6 @@ import org.openrdf.query.TupleQueryResult;
 import org.openrdf.query.TupleQueryResultHandlerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zeroturnaround.exec.ProcessExecutor;
-import org.zeroturnaround.exec.stream.slf4j.Slf4jStream;
 
 /**
  *
@@ -55,34 +54,64 @@ public class StrabonTestSystem implements TestSystem {
         this.port = port;
         this.host = host;
 
-        restartPostgresService(port);
+        restartPostgresService(host, port);
         strabon = new Strabon(db, user, password, port, host, true);
     }
 
     //Restart PostgreSQL and clear caches where possible.
-    private void restartPostgresService(Integer port) {
+    //Postgres PGDATA needs to be set for PostreSQL/version/data and PostgreSQL/version/bin needs to be added to the PATH variable.
+    //Windows requires the PostrgreSQL service to be stopped if running: net stop POSTGRESQL_SERVICE
+    //POSTRGRESQL_SERVICE can be found in Task Manager:Services - e.g. postgresql-x64-10
+    //Commands run directly in PowerShell need '&' and a space at the start.
+    private static final String POSTGRES_BIN_PATH = "\"C:\\Program Files\\PostgreSQL\\10\\bin\\";
+    private static final String PG_ISREADY_PATH = POSTGRES_BIN_PATH + "pg_isready\"";
+    private static final String PG_CTL_PATH = POSTGRES_BIN_PATH + "pg_ctl\"";
+    private static final String POSTGRES_DATA_PATH = "\"C:\\Program Files\\PostgreSQL\\10\\data\\\"";
+
+    private void restartPostgresService(String host, Integer port) {
 
         try {
-            //Stop Postgresql
-            new ProcessExecutor().command("pg_ctl", "stop", "-s", "-w", "-m", "fast").redirectOutput(Slf4jStream.ofCaller().asInfo()).execute();
 
+            String[] postgresReady = {PG_ISREADY_PATH, "-h", host, "-p", port.toString()};
+            Process pr = Runtime.getRuntime().exec(postgresReady);
+            int readyResult = pr.waitFor();
+            System.out.println(StringUtils.join(postgresReady, " "));
+            LOGGER.info("Postgres {}", pr.exitValue());
+            if (readyResult == 0) {
+                //Stop Postgresql
+                String[] postgresStop = {PG_CTL_PATH, "stop", "-s", "-w", "-m", "fast"};
+                pr = Runtime.getRuntime().exec(postgresStop);
+                int stopResult = pr.waitFor();
+                System.out.println(StringUtils.join(postgresStop, " "));
+                if (stopResult > 0) {
+                    LOGGER.error("PostgreSQL failed to stop: Exit Value - {}", stopResult);
+                } else {
+                    LOGGER.info("Postgres stopped");
+                }
+            }
             String osName = System.getProperty("os.name").toLowerCase();
 
             if (osName.contains("nix") | osName.contains("nux") | osName.contains("aux")) {
                 //Stop, drop caches and start the service. No documentation found to clear other OS caches.
-                new ProcessExecutor()
-                        .command("/bin/sh", "-c", "sync && echo 3 > /proc/sys/vm/drop_caches")
-                        .redirectOutput(Slf4jStream.ofCaller().asInfo())
-                        .timeout(5, TimeUnit.SECONDS).execute();
+                String[] dropCaches = {"/bin/sh", "-c", "sync && echo 3 > /proc/sys/vm/drop_caches"};
+                pr = Runtime.getRuntime().exec(dropCaches);
+                int cacheDropResult = pr.waitFor();
+                if (cacheDropResult > 0) {
+                    LOGGER.error("Dropping caches failed: Exit Value - {}", pr.exitValue());
+                }
             }
 
             //Start Postgresql
-            int startExitValue = new ProcessExecutor().command("pg_ctl", "-w", "-o", "\"-p" + port + "\"", "start").redirectOutput(Slf4jStream.ofCaller().asInfo()).execute().getExitValue();
-            if (startExitValue != 0) {
-                LOGGER.warn("PostgreSQL may not have started correctly.");
+            String[] postgresStart = {PG_CTL_PATH, "start", "-w", "-o", "\"-h " + host + "\"", "-o", "\"-p " + port + "\"", "-D", POSTGRES_DATA_PATH};
+            System.out.println(StringUtils.join(postgresStart, " "));
+            pr = Runtime.getRuntime().exec(postgresStart);
+            int startResult = pr.waitFor();
+            if (startResult > 0) {
+                LOGGER.error("PostgreSQL failed to start: Exit Value - {}", startResult);
+            } else {
+                LOGGER.info("Postgres started");
             }
-
-        } catch (IOException | InterruptedException | TimeoutException ex) {
+        } catch (IOException | InterruptedException ex) {
             LOGGER.error("Strabon Cache Clearing: {}", ex.getMessage());
         }
     }
@@ -93,25 +122,33 @@ public class StrabonTestSystem implements TestSystem {
 
     String osName = System.getProperty("os.name").toLowerCase();
 
-            if (osName.contains("win")) {
+    if (osName.contains (
+        "win")) {
                 //Stop and start the service only.
                 new ProcessExecutor().command("net", "stop", POSTGRESQL_SERVICE)
-                        .command("net", "start", POSTGRESQL_SERVICE)
-                        .redirectOutput(Slf4jStream.ofCaller().asInfo())
-                        .timeout(5, TimeUnit.SECONDS).execute();
+                .command("net", "start", POSTGRESQL_SERVICE)
+                .redirectOutput(Slf4jStream.ofCaller().asInfo())
+                .timeout(5, TimeUnit.SECONDS).execute();
 
-            } else if (osName.contains("nix") | osName.contains("nux") | osName.contains("aux") | osName.contains("mac")) {
+    }
+
+    else if (osName.contains (
+        "nix") | osName.contains("nux") | osName.contains("aux") | osName.contains("mac")) {
                 //Stop, drop caches and start the service. No documentation found to clear the OS caches.
 
                 new ProcessExecutor().command("/bin/sh", "-c", "service postgresql stop")
-                        .command("/bin/sh", "-c", "sync && echo 3 > /proc/sys/vm/drop_caches")
-                        .command("/bin/sh", "-c", "service postgresql start")
-                        .redirectOutput(Slf4jStream.ofCaller().asInfo())
-                        .timeout(5, TimeUnit.SECONDS).execute();
+                .command("/bin/sh", "-c", "sync && echo 3 > /proc/sys/vm/drop_caches")
+                .command("/bin/sh", "-c", "service postgresql start")
+                .redirectOutput(Slf4jStream.ofCaller().asInfo())
+                .timeout(5, TimeUnit.SECONDS).execute();
 
-            } else {
+    }
+
+
+        else {
                 LOGGER.error("Unrecognised OS name for Strabon Cache Clearing: {}", osName);
-            }
+    }
+
      */
     @Override
     public QueryResult runQueryWithTimeout(String query, Duration timeout) {

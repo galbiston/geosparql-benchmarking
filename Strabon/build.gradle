@@ -22,11 +22,7 @@ dependencies {
     compile fileTree(dir: 'libs/strabon', include: '*.jar')
 
     //Postgresql
-    //compile group: 'org.postgresql', name: 'postgresql', version: '42.2.2'
-    compile group: 'org.postgresql', name: 'postgresql', version: '42.1.4'
-
-    //Zero Turnaround Executable
-    compile group: 'org.zeroturnaround', name: 'zt-exec', version: '1.10'
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.1'
 
     //SLF4J Log4j
     //compile "org.slf4j:slf4j-log4j12:$slf4jVersion"

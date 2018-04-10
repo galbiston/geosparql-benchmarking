@@ -34,15 +34,17 @@ public class Main {
         String format = "NTRIPLES";
 
         //StrabonTestSystemFactory.loadDataset(datasetMap, baseURI, format, inferenceEnabled, testSystemFactory);
+        //Back up made: https://www.postgresql.org/docs/10/static/backup-dump.html
         //Benchmark
         Duration runtime = Duration.ofMinutes(30);
         Integer iterations = 1; //10;
         Duration timeout = Duration.ofSeconds(3600);
 
-        HashMap<String, String> queryMap = QueryLoader.loadSpatialSelectionsQuery_14();
-        //HashMap<String, String> queryMap = QueryLoader.loadNonTopologicalFunctionsQueries();
+        //HashMap<String, String> queryMap = QueryLoader.loadSpatialSelectionsQuery_14();
+        HashMap<String, String> queryMap = QueryLoader.loadNonTopologicalFunctionsQueries();
         //HashMap<String, String> queryMap = QueryLoader.loadMainQuerySet();
         BenchmarkExecution.run(testSystemFactory, iterations, timeout, queryMap);
+
     }
 
 }
