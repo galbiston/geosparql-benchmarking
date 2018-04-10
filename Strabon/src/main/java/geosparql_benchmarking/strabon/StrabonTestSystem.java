@@ -55,44 +55,65 @@ public class StrabonTestSystem implements TestSystem {
         this.port = port;
         this.host = host;
 
-        restartPostgresService();
+        restartPostgresService(host);
 
         strabon = new Strabon(db, user, password, port, host, true);
     }
 
-    private static final String POSTGRESQL_SERVICE = "postgresql-10.3";
+//Default service name according to: https://www.postgresql.org/docs/10/static/app-pg-ctl.html
+    private static final String POSTGRESQL_SERVICE = "PostgreSQL";
 
-    //Restart service and clear caches where possible.
-    //This has not been tested thoroughly and is based on the Geographica StrabonSUT but adapted for alternative Operating Systems.
-    private void restartPostgresService() {
-        String osName = System.getProperty("os.name").toLowerCase();
+    //Restart PostgreSQL and clear caches where possible.
+    private void restartPostgresService(String host) {
 
-        if (osName.contains("win")) {
-            //Stop and start the service only.
-            try {
-                new ProcessExecutor().command("net", "stop", "postgresql")
+        try {
+            //Stop Postgresql
+            new ProcessExecutor().command("pg_ctl", "stop", "-s", "-w", "-m", "fast").redirectOutput(Slf4jStream.ofCaller().asInfo()).execute();
+
+            String osName = System.getProperty("os.name").toLowerCase();
+
+            if (osName.contains("nix") | osName.contains("nux") | osName.contains("aux")) {
+                //Stop, drop caches and start the service. No documentation found to clear other OS caches.
+                new ProcessExecutor()
+                        .command("/bin/sh", "-c", "sync && echo 3 > /proc/sys/vm/drop_caches")
+                        .redirectOutput(Slf4jStream.ofCaller().asInfo())
+                        .timeout(5, TimeUnit.SECONDS).execute();
+            }
+
+            //Start Postgresql
+            int startExitValue = new ProcessExecutor().command("pg_ctl", "-w", "-o", "\"-p" + host + "\"", "start").redirectOutput(Slf4jStream.ofCaller().asInfo()).execute().getExitValue();
+            if (startExitValue != 0) {
+                LOGGER.warn("PostgreSQL may not have started correctly.");
+            }
+
+        } catch (IOException | InterruptedException | TimeoutException ex) {
+            LOGGER.error("Strabon Cache Clearing: {}", ex.getMessage());
+        }
+    }
+
+    /*
+    String osName = System.getProperty("os.name").toLowerCase();
+
+            if (osName.contains("win")) {
+                //Stop and start the service only.
+                new ProcessExecutor().command("net", "stop", POSTGRESQL_SERVICE)
                         .command("net", "start", POSTGRESQL_SERVICE)
                         .redirectOutput(Slf4jStream.ofCaller().asInfo())
                         .timeout(5, TimeUnit.SECONDS).execute();
-            } catch (IOException | InterruptedException | TimeoutException ex) {
-                LOGGER.error("Strabon Cache Clearing: {}", ex.getMessage());
-            }
-        } else if (osName.contains("nix") | osName.contains("nux") | osName.contains("aux") | osName.contains("mac")) {
-            //Stop, drop caches and start the service. No documentation found to clear the OS caches.
-            try {
+
+            } else if (osName.contains("nix") | osName.contains("nux") | osName.contains("aux") | osName.contains("mac")) {
+                //Stop, drop caches and start the service. No documentation found to clear the OS caches.
+
                 new ProcessExecutor().command("/bin/sh", "-c", "service postgresql stop")
                         .command("/bin/sh", "-c", "sync && echo 3 > /proc/sys/vm/drop_caches")
                         .command("/bin/sh", "-c", "service postgresql start")
                         .redirectOutput(Slf4jStream.ofCaller().asInfo())
                         .timeout(5, TimeUnit.SECONDS).execute();
-            } catch (IOException | InterruptedException | TimeoutException ex) {
-                LOGGER.error("Strabon Cache Clearing: {}", ex.getMessage());
-            }
-        } else {
-            LOGGER.error("Unrecognised OS name for Strabon Cache Clearing: {}", osName);
-        }
-    }
 
+            } else {
+                LOGGER.error("Unrecognised OS name for Strabon Cache Clearing: {}", osName);
+            }
+     */
     @Override
     public QueryResult runQueryWithTimeout(String query, Duration timeout) {
 
