@@ -55,16 +55,13 @@ public class StrabonTestSystem implements TestSystem {
         this.port = port;
         this.host = host;
 
-        restartPostgresService(host);
+        restartPostgresService(port);
 
         strabon = new Strabon(db, user, password, port, host, true);
     }
 
-//Default service name according to: https://www.postgresql.org/docs/10/static/app-pg-ctl.html
-    private static final String POSTGRESQL_SERVICE = "PostgreSQL";
-
     //Restart PostgreSQL and clear caches where possible.
-    private void restartPostgresService(String host) {
+    private void restartPostgresService(Integer port) {
 
         try {
             //Stop Postgresql
@@ -81,7 +78,7 @@ public class StrabonTestSystem implements TestSystem {
             }
 
             //Start Postgresql
-            int startExitValue = new ProcessExecutor().command("pg_ctl", "-w", "-o", "\"-p" + host + "\"", "start").redirectOutput(Slf4jStream.ofCaller().asInfo()).execute().getExitValue();
+            int startExitValue = new ProcessExecutor().command("pg_ctl", "-w", "-o", "\"-p" + port + "\"", "start").redirectOutput(Slf4jStream.ofCaller().asInfo()).execute().getExitValue();
             if (startExitValue != 0) {
                 LOGGER.warn("PostgreSQL may not have started correctly.");
             }
@@ -92,6 +89,9 @@ public class StrabonTestSystem implements TestSystem {
     }
 
     /*
+    //Default service name according to: https://www.postgresql.org/docs/10/static/app-pg-ctl.html
+    private static final String POSTGRESQL_SERVICE = "PostgreSQL";
+    
     String osName = System.getProperty("os.name").toLowerCase();
 
             if (osName.contains("win")) {
