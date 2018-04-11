@@ -6,7 +6,6 @@
 package geosparql_benchmarking.geosparql_jena;
 
 import geosparql_benchmarking.experiments.BenchmarkExecution;
-import static geosparql_benchmarking.experiments.BenchmarkExecution.RESULTS_FOLDER;
 import geosparql_benchmarking.experiments.DatasetLoadResult;
 import geosparql_benchmarking.experiments.DatasetLoadTimeResult;
 import geosparql_benchmarking.experiments.TestSystem;
@@ -41,7 +40,7 @@ public class GeosparqlJenaTDBTestSystemFactory implements TestSystemFactory {
 
     public GeosparqlJenaTDBTestSystemFactory(File datasetFolder, String resultsFolder) {
         this.datasetFolder = datasetFolder;
-        this.resultsFolder = new File(RESULTS_FOLDER, resultsFolder);
+        this.resultsFolder = new File(BenchmarkExecution.RESULTS_FOLDER, resultsFolder);
         this.resultsFolder.mkdir();
     }
 
