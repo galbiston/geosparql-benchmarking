@@ -7,11 +7,15 @@ package geosparql_benchmarking.strabon;
 
 import eu.earthobservatory.runtime.postgis.Strabon;
 import static geosparql_benchmarking.experiments.BenchmarkExecution.RESULTS_FOLDER;
+import geosparql_benchmarking.experiments.DatasetLoadResult;
+import geosparql_benchmarking.experiments.DatasetLoadTimeResult;
 import geosparql_benchmarking.experiments.TestSystem;
 import geosparql_benchmarking.experiments.TestSystemFactory;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +38,7 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
     private final String postgresDataPath;
     private final String postgresIsReadyPath;
     private final String postgresPG_CTLPath;
+    public static final String TEST_SYSTEM_NAME = "Strabon";
 
     public StrabonTestSystemFactory(String db, String user, String password, Integer port, String host, String resultsFolder, String postgresBinPath, String postgresDataPath) {
         this.db = db;
@@ -108,7 +113,7 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
 
     @Override
     public String getTestSystemName() {
-        return "Strabon";
+        return TEST_SYSTEM_NAME;
     }
 
     @Override
@@ -116,8 +121,11 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
         return resultsFolder;
     }
 
-    public static void loadDataset(HashMap<String, File> datasetMap, String baseURI, String format, Boolean inferenceEnabled, StrabonTestSystemFactory testSystemFactory) {
+    public static DatasetLoadResult loadDataset(HashMap<String, File> datasetMap, String baseURI, String format, Boolean inferenceEnabled, StrabonTestSystemFactory testSystemFactory) {
         LOGGER.info("Strabon Loading: Started");
+        List<DatasetLoadTimeResult> datasetLoadTimeResults = new ArrayList<>();
+        Boolean isCompleted = true;
+        long startNanoTime = System.nanoTime();
         Strabon strabon = null;
         try {
             String db = testSystemFactory.getDb();
@@ -129,22 +137,29 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
             strabon = new Strabon(db, user, password, port, host, checkForLockTable);
 
             for (Map.Entry<String, File> entry : datasetMap.entrySet()) {
+
                 String src = entry.getValue().toURI().toURL().toString();
-                String graph = entry.getKey();
-                LOGGER.info("Loading: {} into {}: Started", src, graph);
-                strabon.storeInRepo(src, baseURI, graph, format, inferenceEnabled);
-                LOGGER.info("Loading: {} into {}: Completed", src, graph);
+                String graphName = entry.getKey();
+                LOGGER.info("Loading: {} into {}: Started", src, graphName);
+                long datasetStartNanoTime = System.nanoTime();
+                strabon.storeInRepo(src, baseURI, graphName, format, inferenceEnabled);
+                long datasetEndNanoTime = System.nanoTime();
+                DatasetLoadTimeResult datasetLoadTimeResult = new DatasetLoadTimeResult(graphName, datasetStartNanoTime, datasetEndNanoTime);
+                datasetLoadTimeResults.add(datasetLoadTimeResult);
+                LOGGER.info("Loading: {} into {}: Completed", src, graphName);
             }
 
         } catch (Exception ex) {
             LOGGER.error("Load Strabon exception: {}", ex);
+            isCompleted = false;
         } finally {
             if (strabon != null) {
                 strabon.close();
             }
         }
+        long endNanoTime = System.nanoTime();
         LOGGER.info("Strabon Loading: Completed");
-
+        return new DatasetLoadResult(TEST_SYSTEM_NAME, isCompleted, startNanoTime, endNanoTime, datasetLoadTimeResults);
     }
 
 }

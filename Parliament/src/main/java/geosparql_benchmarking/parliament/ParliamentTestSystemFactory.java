@@ -14,13 +14,17 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import static geosparql_benchmarking.experiments.BenchmarkExecution.RESULTS_FOLDER;
+import geosparql_benchmarking.experiments.DatasetLoadResult;
+import geosparql_benchmarking.experiments.DatasetLoadTimeResult;
 import geosparql_benchmarking.experiments.TestSystem;
 import geosparql_benchmarking.experiments.TestSystemFactory;
 import static geosparql_benchmarking.parliament.ParliamentTestSystem.SPATIAL_INDEX_FACTORY;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +36,7 @@ import org.slf4j.LoggerFactory;
 public class ParliamentTestSystemFactory implements TestSystemFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
+    public static final String TEST_SYSTEM_NAME = "Parliament";
     private final File resultsFolder;
 
     public ParliamentTestSystemFactory(String resultsFolder) {
@@ -47,7 +51,7 @@ public class ParliamentTestSystemFactory implements TestSystemFactory {
 
     @Override
     public String getTestSystemName() {
-        return "Parliament";
+        return TEST_SYSTEM_NAME;
     }
 
     @Override
@@ -55,9 +59,12 @@ public class ParliamentTestSystemFactory implements TestSystemFactory {
         return resultsFolder;
     }
 
-    public static void loadDataset(HashMap<String, File> datasetMap) {
+    public static DatasetLoadResult loadDataset(HashMap<String, File> datasetMap) {
         LOGGER.info("Parliament Loading: Started");
         LOGGER.info("Parliament inferencing is controlled in the ParliamentConfig.txt file.");
+        List<DatasetLoadTimeResult> datasetLoadTimeResults = new ArrayList<>();
+        Boolean isCompleted = true;
+        long startNanoTime = System.nanoTime();
 
         IndexFactoryRegistry.getInstance().setIndexingEnabledByDefault(true);
         IndexManager indexManager = IndexManager.getInstance();
@@ -86,21 +93,28 @@ public class ParliamentTestSystemFactory implements TestSystemFactory {
 
                 //Register named graph and index with IndexManager.
                 LOGGER.info("Spatial Indexing - {} : Started", graphName);
+                long datasetStartNanoTime = System.nanoTime();
                 graphStore.setIndexingEnabled(graphNode, true);
                 indexManager.createAndRegister(namedGraph, graphNode, SPATIAL_INDEX_FACTORY);
                 //Force the building of the index for the graph.
                 indexManager.rebuild(namedGraph);
                 indexManager.flush(namedGraph);
                 indexManager.closeAll(namedGraph);
+                long datasetEndNanoTime = System.nanoTime();
+                DatasetLoadTimeResult datasetLoadTimeResult = new DatasetLoadTimeResult(graphName, datasetStartNanoTime, datasetEndNanoTime);
+                datasetLoadTimeResults.add(datasetLoadTimeResult);
                 LOGGER.info("Spatial Indexing - {} : Completed", graphName);
             }
         } catch (MalformedURLException ex) {
+            isCompleted = false;
             LOGGER.error("Exception: {}", ex.getMessage());
         } finally {
             graphStore.flush();
             graphStore.close();
         }
+        long endNanoTime = System.nanoTime();
         LOGGER.info("Parliament Loading: Completed");
+        return new DatasetLoadResult(TEST_SYSTEM_NAME, isCompleted, startNanoTime, endNanoTime, datasetLoadTimeResults);
     }
 
 }

@@ -7,11 +7,15 @@ package geosparql_benchmarking.geosparql_jena;
 
 import geosparql_benchmarking.experiments.BenchmarkExecution;
 import static geosparql_benchmarking.experiments.BenchmarkExecution.RESULTS_FOLDER;
+import geosparql_benchmarking.experiments.DatasetLoadResult;
+import geosparql_benchmarking.experiments.DatasetLoadTimeResult;
 import geosparql_benchmarking.experiments.TestSystem;
 import geosparql_benchmarking.experiments.TestSystemFactory;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
@@ -30,6 +34,7 @@ import org.slf4j.LoggerFactory;
 public class GeosparqlJenaMemTestSystemFactory implements TestSystemFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    public static final String TEST_SYSTEM_NAME = "GeoSparqlJenaMem";
 
     private final Dataset dataset;
     private final File resultsFolder;
@@ -48,7 +53,7 @@ public class GeosparqlJenaMemTestSystemFactory implements TestSystemFactory {
 
     @Override
     public String getTestSystemName() {
-        return "GeoSparqlJenaMem";
+        return TEST_SYSTEM_NAME;
     }
 
     @Override
@@ -56,8 +61,12 @@ public class GeosparqlJenaMemTestSystemFactory implements TestSystemFactory {
         return resultsFolder;
     }
 
-    public static void loadDataset(HashMap<String, File> datasetMap, Boolean inferenceEnabled, Dataset dataset) {
+    public static DatasetLoadResult loadDataset(HashMap<String, File> datasetMap, Boolean inferenceEnabled, Dataset dataset) {
         LOGGER.info("Geosparql Jena Memory Loading: Started");
+        List<DatasetLoadTimeResult> datasetLoadTimeResults = new ArrayList<>();
+        Boolean isCompleted = true;
+        long startNanoTime = System.nanoTime();
+
         dataset = DatasetFactory.create();
         Model geosparqlSchema = RDFDataMgr.loadModel(BenchmarkExecution.class.getClassLoader().getResource("geosparql_vocab_all.rdf").toString());
 
@@ -65,27 +74,33 @@ public class GeosparqlJenaMemTestSystemFactory implements TestSystemFactory {
             try {
                 dataset.begin(ReadWrite.WRITE);
                 String sourceRDFFile = entry.getValue().getAbsolutePath();
-                String graph = entry.getKey();
-                LOGGER.info("Loading: {} into {}: Started", sourceRDFFile, graph);
+                String graphName = entry.getKey();
+                LOGGER.info("Loading: {} into {}: Started", sourceRDFFile, graphName);
+                long datasetStartNanoTime = System.nanoTime();
                 Model dataModel = RDFDataMgr.loadModel(sourceRDFFile);
                 if (inferenceEnabled) {
                     InfModel infModel = ModelFactory.createRDFSModel(geosparqlSchema, dataModel);
                     infModel.prepare();
-                    dataset.addNamedModel(graph, infModel);
+                    dataset.addNamedModel(graphName, infModel);
                 } else {
-                    dataset.addNamedModel(graph, dataModel);
+                    dataset.addNamedModel(graphName, dataModel);
                 }
-                LOGGER.info("Loading: {} into {}: Completed", sourceRDFFile, graph);
                 dataset.commit();
 
+                long datasetEndNanoTime = System.nanoTime();
+                DatasetLoadTimeResult datasetLoadTimeResult = new DatasetLoadTimeResult(graphName, datasetStartNanoTime, datasetEndNanoTime);
+                datasetLoadTimeResults.add(datasetLoadTimeResult);
+                LOGGER.info("Loading: {} into {}: Completed", sourceRDFFile, graphName);
+
             } catch (RuntimeException ex) {
+                isCompleted = false;
                 LOGGER.error("Memory Load Error: {}", ex.getMessage());
             } finally {
                 dataset.end();
             }
         }
-
+        long endNanoTime = System.nanoTime();
         LOGGER.info("Geosparql Jena Memory Loading: Completed");
-
+        return new DatasetLoadResult(TEST_SYSTEM_NAME, isCompleted, startNanoTime, endNanoTime, datasetLoadTimeResults);
     }
 }
