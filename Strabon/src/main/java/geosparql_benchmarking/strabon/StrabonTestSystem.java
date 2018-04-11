@@ -8,8 +8,6 @@ import eu.earthobservatory.utils.Format;
 import geosparql_benchmarking.experiments.QueryResult;
 import geosparql_benchmarking.experiments.TestSystem;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -50,7 +48,23 @@ public class StrabonTestSystem implements TestSystem {
     private final String postgresPG_CTLPath;
     private final String postgresDataPath;
 
-
+    /**
+     * StrabonTestSystem must be closed once operations finished so that Strabon
+     * connections can be closed.<br>
+     * Otherwise execution thread will remain open.<br>
+     * All TestSystems implement AutoCloseable so try-with-resources pattern can
+     * be used.<br>
+     *
+     * @param db
+     * @param user
+     * @param password
+     * @param port
+     * @param host
+     * @param postgresIsReadyPath
+     * @param postgresPG_CTLPath
+     * @param postgresDataPath
+     * @throws Exception
+     */
     public StrabonTestSystem(String db, String user, String password, Integer port, String host, String postgresIsReadyPath, String postgresPG_CTLPath, String postgresDataPath) throws Exception {
         this.db = db;
         this.user = user;
@@ -276,24 +290,14 @@ public class StrabonTestSystem implements TestSystem {
     @Override
     public void close() {
 
-        LOGGER.info("Strabon Closing");
         try {
             strabon.close();
+            System.gc();
+            LOGGER.info("Strabon Closed");
         } catch (Exception ex) {
             LOGGER.error("Exception closing Strabon: {}", ex.getMessage());
         }
 
-        System.gc();
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            LOGGER.error("Cannot clear caches");
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
-            String stacktrace = sw.toString();
-            LOGGER.error(stacktrace);
-        }
-        LOGGER.info("Closed (caches not cleared)");
     }
 
     @Override
