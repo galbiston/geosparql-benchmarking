@@ -1,12 +1,18 @@
 package geosparql_benchmarking.strabon;
 
+import eu.earthobservatory.runtime.postgis.Strabon;
+import eu.earthobservatory.utils.Format;
 import geosparql_benchmarking.DatasetSources;
-import geosparql_benchmarking.experiments.BenchmarkExecution;
-import geosparql_benchmarking.experiments.QueryLoader;
+import geosparql_benchmarking.GraphURI;
 import java.io.File;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
 import java.util.HashMap;
+import org.openrdf.query.MalformedQueryException;
+import org.openrdf.query.QueryEvaluationException;
+import org.openrdf.query.TupleQuery;
+import org.openrdf.query.TupleQueryResultHandlerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,9 +50,33 @@ public class Main {
         Duration timeout = Duration.ofSeconds(3600);
 
         //HashMap<String, String> queryMap = QueryLoader.loadSpatialSelectionsQuery_14();
-        HashMap<String, String> queryMap = QueryLoader.loadNonTopologicalFunctionsQueries();
+        //HashMap<String, String> queryMap = QueryLoader.loadNonTopologicalFunctionsQueries();
         //HashMap<String, String> queryMap = QueryLoader.loadMainQuerySet();
-        BenchmarkExecution.run(testSystemFactory, iterations, timeout, queryMap);
+        //BenchmarkExecution.run(testSystemFactory, iterations, timeout, queryMap);
+        rdfsStrabonTest(testSystemFactory);
+
+    }
+
+    private static void rdfsStrabonTest(StrabonTestSystemFactory testSystemFactory) {
+
+        StrabonTestSystem strabonTestSystem = testSystemFactory.getStrabonTestSystem();
+        Strabon strabon = strabonTestSystem.getStrabon();
+
+        //String property = "<http://www.opengis.net/ont/geosparql#asWKT>";
+        String property = "<http://strdf.di.uoa.gr/ontology#WKT>";
+        //String property = "<http://linkedgeodata.org/ontology/asWKT>";
+        String queryString = "SELECT ?sub ?obj WHERE{ GRAPH <" + GraphURI.LGD_URI + "> { ?sub " + property + " ?obj}}LIMIT 1";
+        //String queryString = "SELECT ?sub ?obj WHERE{ ?sub " + property +  " ?obj}LIMIT 1";
+
+        try {
+
+            TupleQuery tupleQuery = (TupleQuery) strabon.query(queryString, Format.TUQU, strabon.getSailRepoConnection(), System.out);
+            //SPARQLResultsCSVWriter csvWriter = new SPARQLResultsCSVWriter(System.out);
+            //tupleQuery.evaluate(csvWriter);
+
+        } catch (MalformedQueryException | QueryEvaluationException | TupleQueryResultHandlerException | IOException ex) {
+            LOGGER.error("Exception: {}", ex.getMessage());
+        }
 
     }
 
