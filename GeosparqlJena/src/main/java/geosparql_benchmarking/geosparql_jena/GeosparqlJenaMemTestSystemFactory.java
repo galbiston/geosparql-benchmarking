@@ -34,15 +34,16 @@ public class GeosparqlJenaMemTestSystemFactory implements TestSystemFactory {
     private final Dataset dataset;
     private final File resultsFolder;
 
-    public GeosparqlJenaMemTestSystemFactory(Dataset dataset, String resultsFolder) {
-        this.dataset = dataset;
+    public GeosparqlJenaMemTestSystemFactory(HashMap<String, File> datasetMap, Boolean inferenceEnabled, String resultsFolder) {
+        this.dataset = GeosparqlJenaMemTestSystemFactory.loadDataset(datasetMap, inferenceEnabled);
         this.resultsFolder = new File(RESULTS_FOLDER, resultsFolder);
         this.resultsFolder.mkdir();
     }
 
     @Override
     public TestSystem getTestSystem() {
-        return new GeosparqlJenaTestSystem(dataset);
+        Dataset copyDataset = DatasetFactory.wrap(dataset.asDatasetGraph());
+        return new GeosparqlJenaTestSystem(copyDataset);
     }
 
     @Override
