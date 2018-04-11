@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
 import java.util.HashMap;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,17 +31,20 @@ public class Main {
 
         HashMap<String, File> datasetMap = DatasetSources.getFixedDatasets();
         //ParliamentTestSystemFactory.loadDataset(datasetMap);
-        //storeLoadDatasetResults(datasetMap, PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
+        storeLoadDatasetResults(datasetMap, PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
 
         runParliament(BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
     }
 
     public static void storeLoadDatasetResults(HashMap<String, File> datasetMap, File parliamentKnowledgeBaseFolder) {
         LOGGER.info("Parliament Knowledge Base is controlled in the ParliamentConfig.txt file.");
-        parliamentKnowledgeBaseFolder.delete();
-        DatasetLoadResult parliamentDatasetLoadResult = ParliamentTestSystemFactory.loadDataset(datasetMap);
-        DatasetLoadResult.writeResultsFile(new File(BenchmarkExecution.RESULTS_FOLDER, PARLIAMENT_RESULTS_FOLDER_NAME), parliamentDatasetLoadResult);
-
+        try {
+            FileUtils.deleteDirectory(parliamentKnowledgeBaseFolder);
+            DatasetLoadResult parliamentDatasetLoadResult = ParliamentTestSystemFactory.loadDataset(datasetMap);
+            DatasetLoadResult.writeResultsFile(new File(BenchmarkExecution.RESULTS_FOLDER, PARLIAMENT_RESULTS_FOLDER_NAME), parliamentDatasetLoadResult);
+        } catch (IOException ex) {
+            LOGGER.error("Parliament KB Folder deletion: {} - {}", parliamentKnowledgeBaseFolder.getAbsolutePath(), ex.getMessage());
+        }
     }
 
     public static void runParliament(Integer iterations, Duration timeout, HashMap<String, String> queryMap) {

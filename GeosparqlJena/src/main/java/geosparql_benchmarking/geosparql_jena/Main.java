@@ -1,6 +1,5 @@
 package geosparql_benchmarking.geosparql_jena;
 
-import geosparql_benchmarking.BenchmarkParameters;
 import geosparql_benchmarking.DatasetSources;
 import geosparql_benchmarking.GraphURI;
 import geosparql_benchmarking.experiments.BenchmarkExecution;
@@ -11,6 +10,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
 import java.util.HashMap;
+import org.apache.commons.io.FileUtils;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.QueryExecution;
@@ -41,22 +41,27 @@ public class Main {
         Boolean inferenceEnabled = true;
         Boolean includeMemoryTestSystem = true;
         //GeosparqlJenaTDBTestSystemFactory.loadDataset(GEOSPARQL_JENA_TDB_FOLDER, datasetMap, inferenceEnabled);
-        //storateLoadDatasetResults(datasetMap, inferenceEnabled, includeMemoryTestSystem);
-        runJenaTDB(GEOSPARQL_JENA_TDB_FOLDER, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
+        storeLoadDatasetResults(datasetMap, inferenceEnabled, includeMemoryTestSystem);
+        //runJenaTDB(GEOSPARQL_JENA_TDB_FOLDER, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
 
         //runJenaMem(datasetMap, inferenceEnabled, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
     }
 
     public static void storeLoadDatasetResults(HashMap<String, File> datasetMap, Boolean inferenceEnabled, Boolean includeMemoryTestSystem) {
-        GEOSPARQL_JENA_TDB_FOLDER.delete();
-        DatasetLoadResult tdbDatasetLoadResult = GeosparqlJenaTDBTestSystemFactory.loadDataset(GEOSPARQL_JENA_TDB_FOLDER, datasetMap, inferenceEnabled);
-        DatasetLoadResult.writeResultsFile(new File(BenchmarkExecution.RESULTS_FOLDER, GEOSPARL_JENA_TDB_RESULTS_FOLDER_NAME), tdbDatasetLoadResult);
+        try {
+            FileUtils.deleteDirectory(GEOSPARQL_JENA_TDB_FOLDER);
 
-        if (includeMemoryTestSystem) {
-            Dataset dataset = DatasetFactory.createTxnMem();
-            DatasetLoadResult memDatasetLoadResult = GeosparqlJenaMemTestSystemFactory.loadDataset(datasetMap, inferenceEnabled, dataset);
+            DatasetLoadResult tdbDatasetLoadResult = GeosparqlJenaTDBTestSystemFactory.loadDataset(GEOSPARQL_JENA_TDB_FOLDER, datasetMap, inferenceEnabled);
+            DatasetLoadResult.writeResultsFile(new File(BenchmarkExecution.RESULTS_FOLDER, GEOSPARL_JENA_TDB_RESULTS_FOLDER_NAME), tdbDatasetLoadResult);
 
-            DatasetLoadResult.writeResultsFile(new File(BenchmarkExecution.RESULTS_FOLDER, GEOSPARL_JENA_MEM_RESULTS_FOLDER_NAME), memDatasetLoadResult);
+            if (includeMemoryTestSystem) {
+                Dataset dataset = DatasetFactory.createTxnMem();
+                DatasetLoadResult memDatasetLoadResult = GeosparqlJenaMemTestSystemFactory.loadDataset(datasetMap, inferenceEnabled, dataset);
+
+                DatasetLoadResult.writeResultsFile(new File(BenchmarkExecution.RESULTS_FOLDER, GEOSPARL_JENA_MEM_RESULTS_FOLDER_NAME), memDatasetLoadResult);
+            }
+        } catch (IOException ex) {
+            LOGGER.error("TDB Folder deletion: {} - {}", GEOSPARQL_JENA_TDB_FOLDER.getAbsolutePath(), ex.getMessage());
         }
     }
 
