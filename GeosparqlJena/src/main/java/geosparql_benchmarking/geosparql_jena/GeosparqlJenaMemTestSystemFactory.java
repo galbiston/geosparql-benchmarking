@@ -67,7 +67,7 @@ public class GeosparqlJenaMemTestSystemFactory implements TestSystemFactory {
         long startNanoTime = System.nanoTime();
 
         dataset = DatasetFactory.create();
-        Model geosparqlSchema = RDFDataMgr.loadModel(BenchmarkExecution.class.getClassLoader().getResource("geosparql_vocab_all.rdf").toString());
+        Model geosparqlSchema = RDFDataMgr.loadModel(Main.GEOSPARQL_SCHEMA_FILE.getAbsolutePath());
 
         for (Map.Entry<String, File> entry : datasetMap.entrySet()) {
             try {

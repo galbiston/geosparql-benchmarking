@@ -31,6 +31,7 @@ public class Main {
     public static final File GEOSPARQL_JENA_TDB_FOLDER = new File("geosparql_jena_tdb");
     public static final String GEOSPARL_JENA_TDB_RESULTS_FOLDER_NAME = "geosparql_jena_tdb";
     public static final String GEOSPARL_JENA_MEM_RESULTS_FOLDER_NAME = "geosparql_jena_mem";
+    public static final File GEOSPARQL_SCHEMA_FILE = new File("geosparql_vocab_all.rdf");
 
     /**
      * @param args the command line arguments
