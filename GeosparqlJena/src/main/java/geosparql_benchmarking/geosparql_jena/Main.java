@@ -43,8 +43,8 @@ public class Main {
     }
 
     public static void runJenaTDB(File geosparqlJenaTDBFolder, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
-        BenchmarkExecution.runWarm(new GeosparqlJenaTestSystemFactory(geosparqlJenaTDBFolder, "geosparql_jena_tdb"), iterations, timeout, queryMap);
-        BenchmarkExecution.runCold(new GeosparqlJenaTestSystemFactory(geosparqlJenaTDBFolder, "geosparql_jena_tdb"), iterations, timeout, queryMap);
+        BenchmarkExecution.runWarm(new GeosparqlJenaTDBTestSystemFactory(geosparqlJenaTDBFolder, "geosparql_jena_tdb"), iterations, timeout, queryMap);
+        BenchmarkExecution.runCold(new GeosparqlJenaTDBTestSystemFactory(geosparqlJenaTDBFolder, "geosparql_jena_tdb"), iterations, timeout, queryMap);
     }
 
     public static void runJenaMem(HashMap<String, File> datasetMap, Boolean inferenceEnabled, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
