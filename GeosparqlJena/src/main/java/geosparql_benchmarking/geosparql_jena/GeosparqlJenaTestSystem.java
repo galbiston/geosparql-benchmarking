@@ -31,7 +31,7 @@ import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.tdb.TDBFactory;
+import org.apache.jena.tdb2.TDB2Factory;
 import org.apache.jena.update.UpdateAction;
 import org.apache.jena.update.UpdateFactory;
 import org.apache.jena.update.UpdateRequest;
@@ -45,7 +45,7 @@ public class GeosparqlJenaTestSystem implements TestSystem {
     private final Dataset dataset;
 
     public GeosparqlJenaTestSystem(File datasetFolder) {
-        this(TDBFactory.createDataset(datasetFolder.getAbsolutePath()));
+        this(TDB2Factory.connectDataset(datasetFolder.getAbsolutePath()));
     }
 
     public GeosparqlJenaTestSystem(Dataset dataset) {
@@ -94,12 +94,7 @@ public class GeosparqlJenaTestSystem implements TestSystem {
 
     @Override
     public void close() {
-        if (TDBFactory.isBackedByTDB(dataset)) {
-            dataset.close();
-            TDBFactory.release(dataset);
-        } else {
-            dataset.close();
-        }
+        dataset.close();
     }
 
     @Override
