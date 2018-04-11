@@ -3,7 +3,6 @@ package geosparql_benchmarking.parliament;
 import com.bbn.parliament.jena.graph.KbGraphFactory;
 import com.bbn.parliament.jena.graph.KbGraphStore;
 import com.hp.hpl.jena.graph.Node;
-import geosparql_benchmarking.BenchmarkParameters;
 import geosparql_benchmarking.DatasetSources;
 import geosparql_benchmarking.GraphURI;
 import geosparql_benchmarking.experiments.BenchmarkExecution;
@@ -33,7 +32,7 @@ public class Main {
         //ParliamentTestSystemFactory.loadDataset(datasetMap);
         storeLoadDatasetResults(datasetMap, PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
 
-        runParliament(BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
+        //runParliament(BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
     }
 
     public static void storeLoadDatasetResults(HashMap<String, File> datasetMap, File parliamentKnowledgeBaseFolder) {
