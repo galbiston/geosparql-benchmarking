@@ -34,6 +34,7 @@ public class GeosparqlJenaTDBTestSystemFactory implements TestSystemFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     public static final String TEST_SYSTEM_NAME = "GeoSparqlJenaTDB";
+    public static final File GEOSPARQL_SCHEMA_FILE = new File("geosparql_vocab_all.rdf");
 
     private final File datasetFolder;
     private final File resultsFolder;
@@ -66,7 +67,7 @@ public class GeosparqlJenaTDBTestSystemFactory implements TestSystemFactory {
         long startNanoTime = System.nanoTime();
 
         Dataset dataset = TDBFactory.createDataset(datasetFolder.getAbsolutePath());
-        Model geosparqlSchema = RDFDataMgr.loadModel(BenchmarkExecution.class.getClassLoader().getResource("geosparql_vocab_all.rdf").toString());
+        Model geosparqlSchema = RDFDataMgr.loadModel(GEOSPARQL_SCHEMA_FILE.getAbsolutePath());
 
         for (Map.Entry<String, File> entry : datasetMap.entrySet()) {
             try {
