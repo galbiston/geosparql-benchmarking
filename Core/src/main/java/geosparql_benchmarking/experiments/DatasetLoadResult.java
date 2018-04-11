@@ -104,7 +104,7 @@ public class DatasetLoadResult {
     }
 
     public static final void writeResultsFile(File datasetLoadResultsFolder, List<DatasetLoadResult> datasetLoadResults) {
-
+        datasetLoadResultsFolder.mkdir();
         String filename = "datasetload-" + LocalDateTime.now().format(FILE_DATE_TIME_FORMAT) + ".csv";
         File summaryFile = new File(datasetLoadResultsFolder, filename);
         try (CSVWriter writer = new CSVWriter(new FileWriter(summaryFile))) {
