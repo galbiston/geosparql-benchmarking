@@ -34,8 +34,8 @@ public class GeosparqlJenaMemTestSystemFactory implements TestSystemFactory {
     private final Dataset dataset;
     private final File resultsFolder;
 
-    public GeosparqlJenaMemTestSystemFactory(HashMap<String, File> datasetMap, Boolean inferenceEnabled, String resultsFolder) {
-        this.dataset = GeosparqlJenaMemTestSystemFactory.loadDataset(datasetMap, inferenceEnabled);
+    public GeosparqlJenaMemTestSystemFactory(Dataset dataset, String resultsFolder) {
+        this.dataset = dataset;
         this.resultsFolder = new File(RESULTS_FOLDER, resultsFolder);
         this.resultsFolder.mkdir();
     }
@@ -56,9 +56,9 @@ public class GeosparqlJenaMemTestSystemFactory implements TestSystemFactory {
         return resultsFolder;
     }
 
-    public static Dataset loadDataset(HashMap<String, File> datasetMap, Boolean inferenceEnabled) {
+    public static void loadDataset(HashMap<String, File> datasetMap, Boolean inferenceEnabled, Dataset dataset) {
         LOGGER.info("Geosparql Jena Memory Loading: Started");
-        Dataset dataset = DatasetFactory.create();
+        dataset = DatasetFactory.create();
         Model geosparqlSchema = RDFDataMgr.loadModel(BenchmarkExecution.class.getClassLoader().getResource("geosparql_vocab_all.rdf").toString());
 
         for (Map.Entry<String, File> entry : datasetMap.entrySet()) {
@@ -87,6 +87,5 @@ public class GeosparqlJenaMemTestSystemFactory implements TestSystemFactory {
 
         LOGGER.info("Geosparql Jena Memory Loading: Completed");
 
-        return dataset;
     }
 }

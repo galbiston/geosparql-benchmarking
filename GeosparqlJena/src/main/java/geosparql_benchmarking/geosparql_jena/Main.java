@@ -11,6 +11,7 @@ import java.lang.invoke.MethodHandles;
 import java.time.Duration;
 import java.util.HashMap;
 import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.ResultSet;
@@ -36,19 +37,22 @@ public class Main {
         HashMap<String, File> datasetMap = DatasetSources.getDatasets();
         Boolean inferenceEnabled = true;
         //GeosparqlJenaTestSystemFactory.loadDataset(GEOSPARQL_JENA_TDB_FOLDER, datasetMap, inferenceEnabled);
+        runJenaTDB(GEOSPARQL_JENA_TDB_FOLDER, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
 
-        runJenaTDB(datasetMap, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
-        runJenaMem(datasetMap, inferenceEnabled, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
+        //runJenaMem(datasetMap, inferenceEnabled, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
     }
 
-    public static void runJenaTDB(HashMap<String, File> datasetMap, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
-        BenchmarkExecution.runWarm(new GeosparqlJenaTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, "geosparql_jena_tdb"), iterations, timeout, queryMap);
-        BenchmarkExecution.runCold(new GeosparqlJenaTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, "geosparql_jena_tdb"), iterations, timeout, queryMap);
+    public static void runJenaTDB(File geosparqlJenaTDBFolder, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
+        BenchmarkExecution.runWarm(new GeosparqlJenaTestSystemFactory(geosparqlJenaTDBFolder, "geosparql_jena_tdb"), iterations, timeout, queryMap);
+        BenchmarkExecution.runCold(new GeosparqlJenaTestSystemFactory(geosparqlJenaTDBFolder, "geosparql_jena_tdb"), iterations, timeout, queryMap);
     }
 
     public static void runJenaMem(HashMap<String, File> datasetMap, Boolean inferenceEnabled, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
-        BenchmarkExecution.runWarm(new GeosparqlJenaMemTestSystemFactory(datasetMap, inferenceEnabled, "geosparql_jena_mem"), iterations, timeout, queryMap);
-        BenchmarkExecution.runCold(new GeosparqlJenaMemTestSystemFactory(datasetMap, inferenceEnabled, "geosparql_jena_mem"), iterations, timeout, queryMap);
+
+        Dataset dataset = DatasetFactory.createTxnMem();
+        GeosparqlJenaMemTestSystemFactory.loadDataset(datasetMap, inferenceEnabled, dataset);
+        BenchmarkExecution.runWarm(new GeosparqlJenaMemTestSystemFactory(dataset, "geosparql_jena_mem"), iterations, timeout, queryMap);
+        BenchmarkExecution.runCold(new GeosparqlJenaMemTestSystemFactory(dataset, "geosparql_jena_mem"), iterations, timeout, queryMap);
     }
 
     private static void rdfsGeosparqlJenaTest() {
