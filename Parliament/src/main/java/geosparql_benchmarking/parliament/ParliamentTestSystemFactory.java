@@ -20,12 +20,14 @@ import geosparql_benchmarking.experiments.TestSystem;
 import geosparql_benchmarking.experiments.TestSystemFactory;
 import static geosparql_benchmarking.parliament.ParliamentTestSystem.SPATIAL_INDEX_FACTORY;
 import java.io.File;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,10 +40,12 @@ public class ParliamentTestSystemFactory implements TestSystemFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     public static final String TEST_SYSTEM_NAME = "Parliament";
     private final File resultsFolder;
+    private final File parliamentKnowledgeBaseFolder;
 
-    public ParliamentTestSystemFactory(String resultsFolder) {
+    public ParliamentTestSystemFactory(String resultsFolder, File parliamentKnowledgeBaseFolder) {
         this.resultsFolder = new File(RESULTS_FOLDER, resultsFolder);
         this.resultsFolder.mkdir();
+        this.parliamentKnowledgeBaseFolder = parliamentKnowledgeBaseFolder;
     }
 
     @Override
@@ -59,7 +63,28 @@ public class ParliamentTestSystemFactory implements TestSystemFactory {
         return resultsFolder;
     }
 
+    @Override
+    public Boolean clearDataset() {
+        LOGGER.info("Parliament Knowledge Base is controlled in the ParliamentConfig.txt file.");
+        try {
+            FileUtils.deleteDirectory(parliamentKnowledgeBaseFolder);
+            return true;
+        } catch (IOException ex) {
+            LOGGER.error("Parliament KB Folder deletion: {} - {}", parliamentKnowledgeBaseFolder.getAbsolutePath(), ex.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public DatasetLoadResult loadDataset(HashMap<String, File> datasetMap, Integer iteration) {
+        return loadDatasetStatic(datasetMap, iteration);
+    }
+
     public static DatasetLoadResult loadDataset(HashMap<String, File> datasetMap) {
+        return loadDatasetStatic(datasetMap, 0);
+    }
+
+    private static DatasetLoadResult loadDatasetStatic(HashMap<String, File> datasetMap, Integer iteration) {
         LOGGER.info("Parliament Loading: Started");
         LOGGER.info("Parliament inferencing is controlled in the ParliamentConfig.txt file.");
         List<DatasetLoadTimeResult> datasetLoadTimeResults = new ArrayList<>();
@@ -114,7 +139,7 @@ public class ParliamentTestSystemFactory implements TestSystemFactory {
         }
         long endNanoTime = System.nanoTime();
         LOGGER.info("Parliament Loading: Completed");
-        return new DatasetLoadResult(TEST_SYSTEM_NAME, isCompleted, startNanoTime, endNanoTime, datasetLoadTimeResults);
+        return new DatasetLoadResult(TEST_SYSTEM_NAME, isCompleted, iteration, startNanoTime, endNanoTime, datasetLoadTimeResults);
     }
 
 }

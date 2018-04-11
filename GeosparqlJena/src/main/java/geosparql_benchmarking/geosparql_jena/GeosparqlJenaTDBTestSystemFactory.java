@@ -11,11 +11,13 @@ import geosparql_benchmarking.experiments.DatasetLoadTimeResult;
 import geosparql_benchmarking.experiments.TestSystem;
 import geosparql_benchmarking.experiments.TestSystemFactory;
 import java.io.File;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.io.FileUtils;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.rdf.model.InfModel;
@@ -37,11 +39,13 @@ public class GeosparqlJenaTDBTestSystemFactory implements TestSystemFactory {
 
     private final File datasetFolder;
     private final File resultsFolder;
+    private final Boolean inferenceEnabled;
 
-    public GeosparqlJenaTDBTestSystemFactory(File datasetFolder, String resultsFolder) {
+    public GeosparqlJenaTDBTestSystemFactory(File datasetFolder, String resultsFolder, Boolean inferenceEnabled) {
         this.datasetFolder = datasetFolder;
         this.resultsFolder = new File(BenchmarkExecution.RESULTS_FOLDER, resultsFolder);
         this.resultsFolder.mkdir();
+        this.inferenceEnabled = inferenceEnabled;
     }
 
     @Override
@@ -59,7 +63,27 @@ public class GeosparqlJenaTDBTestSystemFactory implements TestSystemFactory {
         return resultsFolder;
     }
 
+    @Override
+    public Boolean clearDataset() {
+        try {
+            FileUtils.deleteDirectory(datasetFolder);
+            return true;
+        } catch (IOException ex) {
+            LOGGER.error("TDB Folder deletion: {} - {}", datasetFolder.getAbsolutePath(), ex.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public DatasetLoadResult loadDataset(HashMap<String, File> datasetMap, Integer iteration) {
+        return loadDataset(datasetFolder, datasetMap, inferenceEnabled, iteration);
+    }
+
     public static DatasetLoadResult loadDataset(File datasetFolder, HashMap<String, File> datasetMap, Boolean inferenceEnabled) {
+        return loadDataset(datasetFolder, datasetMap, inferenceEnabled, 0);
+    }
+
+    private static DatasetLoadResult loadDataset(File datasetFolder, HashMap<String, File> datasetMap, Boolean inferenceEnabled, Integer iteration) {
         LOGGER.info("Geosparql Jena Loading: Started");
         List<DatasetLoadTimeResult> datasetLoadTimeResults = new ArrayList<>();
         Boolean isCompleted = true;
@@ -100,6 +124,6 @@ public class GeosparqlJenaTDBTestSystemFactory implements TestSystemFactory {
         TDBFactory.release(dataset);
         long endNanoTime = System.nanoTime();
         LOGGER.info("Geosparql Jena Loading: Completed");
-        return new DatasetLoadResult(TEST_SYSTEM_NAME, isCompleted, startNanoTime, endNanoTime, datasetLoadTimeResults);
+        return new DatasetLoadResult(TEST_SYSTEM_NAME, isCompleted, iteration, startNanoTime, endNanoTime, datasetLoadTimeResults);
     }
 }

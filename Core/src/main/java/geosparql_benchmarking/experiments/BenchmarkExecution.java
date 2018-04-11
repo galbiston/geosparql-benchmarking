@@ -153,4 +153,24 @@ public class BenchmarkExecution {
 
         return allIterationResults;
     }
+
+    public static final List<DatasetLoadResult> runDatasetLoad(TestSystemFactory testSystemFactory, Integer iterations, HashMap<String, File> datasetMap) {
+
+        List<DatasetLoadResult> datasetLoadResults = new ArrayList<>();
+        File resultsFolder = testSystemFactory.getResultsFolder();
+        for (int i = 1; i <= iterations; i++) {
+            LOGGER.info("----------Dataset Load Run- System: {}, Iteration: {} - Started----------", testSystemFactory.getTestSystemName(), i);
+            boolean isClear = testSystemFactory.clearDataset();
+            if (isClear) {
+                DatasetLoadResult datasetLoadResult = testSystemFactory.loadDataset(datasetMap, i);
+                datasetLoadResults.add(datasetLoadResult);
+            }
+            LOGGER.info("----------Dataset Load Run- System: {}, Iteration: {} - Completed----------", testSystemFactory.getTestSystemName(), i);
+        }
+
+        DatasetLoadResult.writeResultsFile(resultsFolder, datasetLoadResults);
+
+        return datasetLoadResults;
+    }
+
 }

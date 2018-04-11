@@ -29,17 +29,19 @@ public class DatasetLoadResult {
 
     private final String testSystemName;
     private final Boolean isCompleted;
+    private final Integer iteration;
     private final long startNanoTime;
     private final long endNanoTime;
     private final Duration startEndDuration;
     private final List<DatasetLoadTimeResult> datasetLoadTimeResults;
     private static Integer DATASET_COUNT = 0;
-    private static final String[] RESULT_DEFAULT_HEADER = {"TestSystem", "Completed", "StartEndDuration"};
+    private static final String[] RESULT_DEFAULT_HEADER = {"TestSystem", "Completed", "Iteration", "StartEndDuration"};
     private static String[] RESULTS_HEADER = RESULT_DEFAULT_HEADER;
 
-    public DatasetLoadResult(String testSystemName, Boolean isCompleted, long startNanoTime, long endNanoTime, List<DatasetLoadTimeResult> datasetLoadTimeResults) {
+    public DatasetLoadResult(String testSystemName, Boolean isCompleted, Integer iteration, long startNanoTime, long endNanoTime, List<DatasetLoadTimeResult> datasetLoadTimeResults) {
         this.testSystemName = testSystemName;
         this.isCompleted = isCompleted;
+        this.iteration = iteration;
         this.startNanoTime = startNanoTime;
         this.endNanoTime = endNanoTime;
         this.startEndDuration = Duration.ofNanos(endNanoTime - startNanoTime);
@@ -64,6 +66,10 @@ public class DatasetLoadResult {
         return isCompleted;
     }
 
+    public Integer getIteration() {
+        return iteration;
+    }
+
     public long getStartNanoTime() {
         return startNanoTime;
     }
@@ -82,13 +88,14 @@ public class DatasetLoadResult {
 
     @Override
     public String toString() {
-        return "DatasetLoadResult{" + "testSystemName=" + testSystemName + ", isCompleted=" + isCompleted + ", startNanoTime=" + startNanoTime + ", endNanoTime=" + endNanoTime + ", startEndDuration=" + startEndDuration + ", datasetLoadTimeResults=" + datasetLoadTimeResults + '}';
+        return "DatasetLoadResult{" + "testSystemName=" + testSystemName + ", isCompleted=" + isCompleted + ", iteration=" + iteration + ", startNanoTime=" + startNanoTime + ", endNanoTime=" + endNanoTime + ", startEndDuration=" + startEndDuration + ", datasetLoadTimeResults=" + datasetLoadTimeResults + '}';
     }
 
     public String[] writeResult() {
         List<String> line = new ArrayList<>(RESULT_DEFAULT_HEADER.length + DATASET_COUNT);
         line.add(testSystemName);
         line.add(isCompleted.toString());
+        line.add(iteration.toString());
         line.add(startEndDuration.toString());
 
         for (DatasetLoadTimeResult result : datasetLoadTimeResults) {

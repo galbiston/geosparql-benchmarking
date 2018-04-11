@@ -6,7 +6,7 @@
 package geosparql_benchmarking.strabon;
 
 import eu.earthobservatory.runtime.postgis.Strabon;
-import static geosparql_benchmarking.experiments.BenchmarkExecution.RESULTS_FOLDER;
+import geosparql_benchmarking.experiments.BenchmarkExecution;
 import geosparql_benchmarking.experiments.DatasetLoadResult;
 import geosparql_benchmarking.experiments.DatasetLoadTimeResult;
 import geosparql_benchmarking.experiments.TestSystem;
@@ -30,27 +30,36 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+    public static final String TEST_SYSTEM_NAME = "Strabon";
+
     private final String dbName;
     private final String user;
     private final String password;
     private final Integer port;
     private final String host;
     private final File resultsFolder;
+    private final Boolean inferenceEnabled;
+    private final String baseURI;
+    private final String format;
     private final String postgresBinPath;
     private final String postgresDataPath;
     private final String postgresIsReadyPath;
     private final String postgresPG_CTLPath;
     private final String postgresCreateDBPath;
     private final String postgresDropDBPath;
-    public static final String TEST_SYSTEM_NAME = "Strabon";
+    private final String databaseTemplate;
 
-    public StrabonTestSystemFactory(String dbName, String user, String password, Integer port, String host, String resultsFolder, String postgresBinPath, String postgresDataPath) {
+    public StrabonTestSystemFactory(String dbName, String user, String password, Integer port, String host, String resultsFolder, Boolean inferenceEnabled, String baseURI, String format, String postgresBinPath, String postgresDataPath, String databaseTemplate) {
         this.dbName = dbName;
         this.user = user;
         this.password = password;
         this.port = port;
         this.host = host;
-        this.resultsFolder = new File(RESULTS_FOLDER, resultsFolder);
+        this.inferenceEnabled = inferenceEnabled;
+        this.baseURI = baseURI;
+        this.format = format;
+
+        this.resultsFolder = new File(BenchmarkExecution.RESULTS_FOLDER, resultsFolder);
         this.resultsFolder.mkdir();
 
         //Check whether using the environment variable route.
@@ -67,6 +76,7 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
             this.postgresDropDBPath = postgresBinPath + "dropDB\"";
         }
         this.postgresDataPath = postgresDataPath;
+        this.databaseTemplate = databaseTemplate;
     }
 
     public String getDbName() {
@@ -87,6 +97,18 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
 
     public String getHost() {
         return host;
+    }
+
+    public Boolean getInferenceEnabled() {
+        return inferenceEnabled;
+    }
+
+    public String getBaseURI() {
+        return baseURI;
+    }
+
+    public String getFormat() {
+        return format;
     }
 
     public String getPostgresBinPath() {
@@ -113,6 +135,10 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
         return postgresDropDBPath;
     }
 
+    public String getDatabaseTemplate() {
+        return databaseTemplate;
+    }
+
     @Override
     public TestSystem getTestSystem() {
         return getStrabonTestSystem();
@@ -137,20 +163,45 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
         return resultsFolder;
     }
 
-    public static DatasetLoadResult loadDataset(HashMap<String, File> datasetMap, String baseURI, String format, Boolean inferenceEnabled, StrabonTestSystemFactory testSystemFactory) {
+    @Override
+    public Boolean clearDataset() {
+        try {
+            dropPostgresDatabase();
+            createPostgresDatabase(databaseTemplate);
+            return true;
+        } catch (IOException | InterruptedException ex) {
+            LOGGER.error("Exception: {}", ex.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public DatasetLoadResult loadDataset(HashMap<String, File> datasetMap, Integer iteration) {
+        return loadDataset(datasetMap, this, iteration);
+    }
+
+    public static DatasetLoadResult loadDataset(HashMap<String, File> datasetMap, StrabonTestSystemFactory testSystemFactory) {
+        return loadDataset(datasetMap, testSystemFactory, 0);
+    }
+
+    private static DatasetLoadResult loadDataset(HashMap<String, File> datasetMap, StrabonTestSystemFactory testSystemFactory, Integer iteration) {
         LOGGER.info("Strabon Loading: Started");
         List<DatasetLoadTimeResult> datasetLoadTimeResults = new ArrayList<>();
         Boolean isCompleted = true;
         long startNanoTime = System.nanoTime();
         Strabon strabon = null;
         try {
-            String dbName = testSystemFactory.getDbName();
-            String user = testSystemFactory.getUser(); //String user = "postgres";
-            String password = testSystemFactory.getPassword(); //String passwd = "postgres";
-            Integer port = testSystemFactory.getPort();
-            String host = testSystemFactory.getHost(); //"localhost"; //"127.0.0.1"
+            String dbName = testSystemFactory.dbName;
+            String user = testSystemFactory.user; //String user = "postgres";
+            String password = testSystemFactory.password; //String passwd = "postgres";
+            Integer port = testSystemFactory.port;
+            String host = testSystemFactory.host; //"localhost"; //"127.0.0.1"
             Boolean checkForLockTable = true;
             strabon = new Strabon(dbName, user, password, port, host, checkForLockTable);
+
+            Boolean inferenceEnabled = testSystemFactory.inferenceEnabled;
+            String baseURI = testSystemFactory.baseURI;
+            String format = testSystemFactory.format;
 
             for (Map.Entry<String, File> entry : datasetMap.entrySet()) {
 
@@ -175,7 +226,7 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
         }
         long endNanoTime = System.nanoTime();
         LOGGER.info("Strabon Loading: Completed");
-        return new DatasetLoadResult(TEST_SYSTEM_NAME, isCompleted, startNanoTime, endNanoTime, datasetLoadTimeResults);
+        return new DatasetLoadResult(TEST_SYSTEM_NAME, isCompleted, iteration, startNanoTime, endNanoTime, datasetLoadTimeResults);
     }
 
     public void createPostgresDatabase(String template) throws IOException, InterruptedException {

@@ -6,14 +6,12 @@ import com.hp.hpl.jena.graph.Node;
 import geosparql_benchmarking.DatasetSources;
 import geosparql_benchmarking.GraphURI;
 import geosparql_benchmarking.experiments.BenchmarkExecution;
-import geosparql_benchmarking.experiments.DatasetLoadResult;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
 import java.util.HashMap;
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,25 +31,19 @@ public class Main {
 
         HashMap<String, File> datasetMap = DatasetSources.getFixedDatasets();
         //ParliamentTestSystemFactory.loadDataset(datasetMap);
-        storeLoadDatasetResults(datasetMap, PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
-
-        //runParliament(BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
+        ParliamentTestSystemFactory testSystemFactory = new ParliamentTestSystemFactory(PARLIAMENT_RESULTS_FOLDER_NAME, PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
+        //runDatasetLoad(testSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
+        //runParliament(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
     }
 
-    public static void storeLoadDatasetResults(HashMap<String, File> datasetMap, File parliamentKnowledgeBaseFolder) {
-        LOGGER.info("Parliament Knowledge Base is controlled in the ParliamentConfig.txt file.");
-        try {
-            FileUtils.deleteDirectory(parliamentKnowledgeBaseFolder);
-            DatasetLoadResult parliamentDatasetLoadResult = ParliamentTestSystemFactory.loadDataset(datasetMap);
-            DatasetLoadResult.writeResultsFile(new File(BenchmarkExecution.RESULTS_FOLDER, PARLIAMENT_RESULTS_FOLDER_NAME), parliamentDatasetLoadResult);
-        } catch (IOException ex) {
-            LOGGER.error("Parliament KB Folder deletion: {} - {}", parliamentKnowledgeBaseFolder.getAbsolutePath(), ex.getMessage());
-        }
+    public static void runDatasetLoad(ParliamentTestSystemFactory testSystemFactory, Integer iterations, HashMap<String, File> datasetMap) {
+        BenchmarkExecution.runDatasetLoad(testSystemFactory, iterations, datasetMap);
     }
 
-    public static void runParliament(Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
-        BenchmarkExecution.runWarm(new ParliamentTestSystemFactory(PARLIAMENT_RESULTS_FOLDER_NAME), iterations, timeout, queryMap);
-        BenchmarkExecution.runCold(new ParliamentTestSystemFactory(PARLIAMENT_RESULTS_FOLDER_NAME), iterations, timeout, queryMap);
+    public static void runParliament(ParliamentTestSystemFactory testSystemFactory, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
+
+        BenchmarkExecution.runWarm(testSystemFactory, iterations, timeout, queryMap);
+        BenchmarkExecution.runCold(testSystemFactory, iterations, timeout, queryMap);
     }
 
     private static void rdfsParliamentTest() {

@@ -35,13 +35,15 @@ public class GeosparqlJenaMemTestSystemFactory implements TestSystemFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     public static final String TEST_SYSTEM_NAME = "GeoSparqlJenaMem";
 
-    private final Dataset dataset;
+    private Dataset dataset;
     private final File resultsFolder;
+    private final Boolean inferenceEnabled;
 
-    public GeosparqlJenaMemTestSystemFactory(Dataset dataset, String resultsFolder) {
+    public GeosparqlJenaMemTestSystemFactory(Dataset dataset, String resultsFolder, Boolean inferenceEnabled) {
         this.dataset = dataset;
         this.resultsFolder = new File(BenchmarkExecution.RESULTS_FOLDER, resultsFolder);
         this.resultsFolder.mkdir();
+        this.inferenceEnabled = inferenceEnabled;
     }
 
     @Override
@@ -60,7 +62,22 @@ public class GeosparqlJenaMemTestSystemFactory implements TestSystemFactory {
         return resultsFolder;
     }
 
+    @Override
+    public Boolean clearDataset() {
+        dataset = DatasetFactory.createTxnMem();
+        return true;
+    }
+
+    @Override
+    public DatasetLoadResult loadDataset(HashMap<String, File> datasetMap, Integer iteration) {
+        return loadDataset(datasetMap, inferenceEnabled, dataset, iteration);
+    }
+
     public static DatasetLoadResult loadDataset(HashMap<String, File> datasetMap, Boolean inferenceEnabled, Dataset dataset) {
+        return loadDataset(datasetMap, inferenceEnabled, dataset, 0);
+    }
+
+    private static DatasetLoadResult loadDataset(HashMap<String, File> datasetMap, Boolean inferenceEnabled, Dataset dataset, Integer iteration) {
         LOGGER.info("Geosparql Jena Memory Loading: Started");
         List<DatasetLoadTimeResult> datasetLoadTimeResults = new ArrayList<>();
         Boolean isCompleted = true;
@@ -100,6 +117,6 @@ public class GeosparqlJenaMemTestSystemFactory implements TestSystemFactory {
         }
         long endNanoTime = System.nanoTime();
         LOGGER.info("Geosparql Jena Memory Loading: Completed");
-        return new DatasetLoadResult(TEST_SYSTEM_NAME, isCompleted, startNanoTime, endNanoTime, datasetLoadTimeResults);
+        return new DatasetLoadResult(TEST_SYSTEM_NAME, isCompleted, iteration, startNanoTime, endNanoTime, datasetLoadTimeResults);
     }
 }

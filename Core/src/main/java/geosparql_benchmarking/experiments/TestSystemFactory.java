@@ -6,16 +6,21 @@
 package geosparql_benchmarking.experiments;
 
 import java.io.File;
+import java.util.HashMap;
 
 /**
  *
  * @author Gerg
  */
 public interface TestSystemFactory {
-    
+
     public TestSystem getTestSystem();
-    
+
     public String getTestSystemName();
-    
+
     public File getResultsFolder();
+
+    public DatasetLoadResult loadDataset(HashMap<String, File> datasetMap, Integer iteration);
+
+    public Boolean clearDataset();
 }
