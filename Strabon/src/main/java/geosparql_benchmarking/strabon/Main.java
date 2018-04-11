@@ -26,7 +26,10 @@ public class Main {
         String host = "localhost"; //"localhost"; //"127.0.0.1"
         String resultsFolder = "strabon";
 
-        StrabonTestSystemFactory testSystemFactory = new StrabonTestSystemFactory(db, user, passwd, port, host, resultsFolder);
+        String postgresBinPath = "\"C:\\Program Files\\PostgreSQL\\10\\bin\\";
+        String postgresDataPath = "\"C:\\Program Files\\PostgreSQL\\10\\data\\\"";
+
+        StrabonTestSystemFactory testSystemFactory = new StrabonTestSystemFactory(db, user, passwd, port, host, resultsFolder, postgresBinPath, postgresDataPath);
 
         HashMap<String, File> datasetMap = DatasetSources.getDatasets();
         Boolean inferenceEnabled = true;

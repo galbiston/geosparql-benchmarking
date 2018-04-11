@@ -39,81 +39,134 @@ public class StrabonTestSystem implements TestSystem {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    private Strabon strabon;
+    private final Strabon strabon;
 
-    String db;
-    String user;
-    String password;
-    Integer port;
-    String host;
+    private final String db;
+    private final String user;
+    private final String password;
+    private final Integer port;
+    private final String host;
+    private final String postgresIsReadyPath;
+    private final String postgresPG_CTLPath;
+    private final String postgresDataPath;
 
-    public StrabonTestSystem(String db, String user, String password, Integer port, String host) throws Exception {
+    public StrabonTestSystem(String db, String user, String password, Integer port, String host, String postgresIsReadyPath, String postgresPG_CTLPath, String postgresDataPath) throws Exception {
         this.db = db;
         this.user = user;
         this.password = password;
         this.port = port;
         this.host = host;
+        this.postgresDataPath = postgresDataPath;
+        this.postgresIsReadyPath = postgresIsReadyPath;
+        this.postgresPG_CTLPath = postgresPG_CTLPath;
 
-        restartPostgresService(host, port);
+        restartPostgresService();
         strabon = new Strabon(db, user, password, port, host, true);
     }
 
     //Restart PostgreSQL and clear caches where possible.
-    //Postgres PGDATA needs to be set for PostreSQL/version/data and PostgreSQL/version/bin needs to be added to the PATH variable.
-    //Windows requires the PostrgreSQL service to be stopped if running: net stop POSTGRESQL_SERVICE
+    //Postgres Environment variables: create PGDATA -> 'path/PostreSQL/version/data' and add to PATH -> 'path/PostgreSQL/version/bin'.
+    //Windows process did not recognise environment variables so absolute paths (with "" if path contains a space) is used.
+    //Windows requires the PostrgreSQL service to be stopped if running (default installation option): net stop POSTGRESQL_SERVICE
     //POSTRGRESQL_SERVICE can be found in Task Manager:Services - e.g. postgresql-x64-10
-    //Commands run directly in PowerShell need '&' and a space at the start.
-    private static final String POSTGRES_BIN_PATH = "\"C:\\Program Files\\PostgreSQL\\10\\bin\\";
-    private static final String PG_ISREADY_PATH = POSTGRES_BIN_PATH + "pg_isready\"";
-    private static final String PG_CTL_PATH = POSTGRES_BIN_PATH + "pg_ctl\"";
-    private static final String POSTGRES_DATA_PATH = "\"C:\\Program Files\\PostgreSQL\\10\\data\\\"";
-
-    private void restartPostgresService(String host, Integer port) {
+    //Postgres commands run directly in PowerShell for testing need '& ' at the start.
+    private void restartPostgresService() {
 
         try {
-
-            String[] postgresReady = {PG_ISREADY_PATH, "-h", host, "-p", port.toString()};
-            Process pr = Runtime.getRuntime().exec(postgresReady);
-            int readyResult = pr.waitFor();
-            System.out.println(StringUtils.join(postgresReady, " "));
-            LOGGER.info("Postgres {}", pr.exitValue());
-            if (readyResult == 0) {
-                //Stop Postgresql
-                String[] postgresStop = {PG_CTL_PATH, "stop", "-s", "-w", "-m", "fast"};
-                pr = Runtime.getRuntime().exec(postgresStop);
-                int stopResult = pr.waitFor();
-                System.out.println(StringUtils.join(postgresStop, " "));
-                if (stopResult > 0) {
-                    LOGGER.error("PostgreSQL failed to stop: Exit Value - {}", stopResult);
-                } else {
-                    LOGGER.info("Postgres stopped");
-                }
-            }
-            String osName = System.getProperty("os.name").toLowerCase();
-
-            if (osName.contains("nix") | osName.contains("nux") | osName.contains("aux")) {
-                //Stop, drop caches and start the service. No documentation found to clear other OS caches.
-                String[] dropCaches = {"/bin/sh", "-c", "sync && echo 3 > /proc/sys/vm/drop_caches"};
-                pr = Runtime.getRuntime().exec(dropCaches);
-                int cacheDropResult = pr.waitFor();
-                if (cacheDropResult > 0) {
-                    LOGGER.error("Dropping caches failed: Exit Value - {}", pr.exitValue());
-                }
-            }
-
-            //Start Postgresql
-            String[] postgresStart = {PG_CTL_PATH, "start", "-w", "-o", "\"-h " + host + "\"", "-o", "\"-p " + port + "\"", "-D", POSTGRES_DATA_PATH};
-            System.out.println(StringUtils.join(postgresStart, " "));
-            pr = Runtime.getRuntime().exec(postgresStart);
-            int startResult = pr.waitFor();
-            if (startResult > 0) {
-                LOGGER.error("PostgreSQL failed to start: Exit Value - {}", startResult);
-            } else {
-                LOGGER.info("Postgres started");
-            }
+            stopPostgres();
+            clearCache();
+            startPostgres();
         } catch (IOException | InterruptedException ex) {
-            LOGGER.error("Strabon Cache Clearing: {}", ex.getMessage());
+            LOGGER.error("Strabon Restart Error: {}", ex.getMessage());
         }
+    }
+
+    private void stopPostgres() throws IOException, InterruptedException {
+        String[] postgresReady = {postgresIsReadyPath, "-h", host, "-p", port.toString()};
+        Process pr = Runtime.getRuntime().exec(postgresReady);
+        int readyResult = pr.waitFor();
+        System.out.println(StringUtils.join(postgresReady, " "));
+        LOGGER.info("Postgres {}", pr.exitValue());
+        if (readyResult == 0) {
+            //Stop Postgresql
+            String[] postgresStop = {postgresPG_CTLPath, "stop", "-s", "-w", "-m", "fast"};
+            pr = Runtime.getRuntime().exec(postgresStop);
+            int stopResult = pr.waitFor();
+            System.out.println(StringUtils.join(postgresStop, " "));
+            if (stopResult > 0) {
+                LOGGER.error("PostgreSQL failed to stop: Exit Value - {}. Absolute path to PostgreSQL bin and data folders may be required.", stopResult);
+            } else {
+                LOGGER.info("Postgres stopped");
+            }
+        }
+    }
+
+    private void clearCache() throws IOException, InterruptedException {
+        String osName = System.getProperty("os.name").toLowerCase();
+
+        if (osName.contains("nix") | osName.contains("nux") | osName.contains("aux")) {
+            //No documentation found to clear other OS caches. Mention of a 'purge' command for OSX.
+            String[] dropCaches = {"/bin/sh", "-c", "sync && echo 3 > /proc/sys/vm/drop_caches"};
+            Process pr = Runtime.getRuntime().exec(dropCaches);
+            int cacheDropResult = pr.waitFor();
+            if (cacheDropResult > 0) {
+                LOGGER.error("Dropping caches failed: Exit Value - {}", pr.exitValue());
+            }
+        }
+    }
+
+    private void startPostgres() throws IOException, InterruptedException {
+        String[] postgresStart;
+        if (postgresDataPath.isEmpty()) {
+            postgresStart = new String[]{postgresPG_CTLPath, "start", "-w", "-o", "\"-h " + host + "\"", "-o", "\"-p " + port + "\""};
+        } else {
+            postgresStart = new String[]{postgresPG_CTLPath, "start", "-w", "-o", "\"-h " + host + "\"", "-o", "\"-p " + port + "\"", "-D", postgresDataPath};
+        }
+
+        System.out.println(StringUtils.join(postgresStart, " "));
+        Process pr = Runtime.getRuntime().exec(postgresStart);
+        int startResult = pr.waitFor();
+        if (startResult > 0) {
+            LOGGER.error("PostgreSQL failed to start: Exit Value - {}. Absolute path to PostgreSQL bin and data folders may be required.", startResult);
+        } else {
+            LOGGER.info("Postgres started");
+        }
+    }
+
+    public Strabon getStrabon() {
+        return strabon;
+    }
+
+    public String getDb() {
+        return db;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Integer getPort() {
+        return port;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public String getPostgresIsReadyPath() {
+        return postgresIsReadyPath;
+    }
+
+    public String getPostgresPG_CTLPath() {
+        return postgresPG_CTLPath;
+    }
+
+    public String getPostgresDataPath() {
+        return postgresDataPath;
     }
 
     /*
@@ -193,7 +246,6 @@ public class StrabonTestSystem implements TestSystem {
         LOGGER.info("Closing..");
         try {
             strabon.close();
-            strabon = null;
         } catch (Exception ex) {
             LOGGER.error("Exception closing Strabon: {}", ex.getMessage());
         }

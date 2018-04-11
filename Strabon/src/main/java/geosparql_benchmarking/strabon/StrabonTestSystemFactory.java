@@ -30,8 +30,12 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
     private final Integer port;
     private final String host;
     private final File resultsFolder;
+    private final String postgresBinPath;
+    private final String postgresDataPath;
+    private final String postgresIsReadyPath;
+    private final String postgresPG_CTLPath;
 
-    public StrabonTestSystemFactory(String db, String user, String password, Integer port, String host, String resultsFolder) {
+    public StrabonTestSystemFactory(String db, String user, String password, Integer port, String host, String resultsFolder, String postgresBinPath, String postgresDataPath) {
         this.db = db;
         this.user = user;
         this.password = password;
@@ -39,6 +43,17 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
         this.host = host;
         this.resultsFolder = new File(RESULTS_FOLDER, resultsFolder);
         this.resultsFolder.mkdir();
+
+        //Check whether using the environment variable route.
+        this.postgresBinPath = postgresBinPath;
+        if (postgresBinPath.isEmpty()) {
+            this.postgresIsReadyPath = "pg_isready";
+            this.postgresPG_CTLPath = "pg_ctl";
+        } else {
+            this.postgresIsReadyPath = postgresBinPath + "pg_isready\"";
+            this.postgresPG_CTLPath = postgresBinPath + "pg_ctl\"";
+        }
+        this.postgresDataPath = postgresDataPath;
     }
 
     public String getDb() {
@@ -61,10 +76,26 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
         return host;
     }
 
+    public String getPostgresBinPath() {
+        return postgresBinPath;
+    }
+
+    public String getPostgresDataPath() {
+        return postgresDataPath;
+    }
+
+    public String getPostgresIsReadyPath() {
+        return postgresIsReadyPath;
+    }
+
+    public String getPostgresPG_CTLPath() {
+        return postgresPG_CTLPath;
+    }
+
     @Override
     public TestSystem getTestSystem() {
         try {
-            return new StrabonTestSystem(db, user, password, port, host);
+            return new StrabonTestSystem(db, user, password, port, host, postgresIsReadyPath, postgresPG_CTLPath, postgresDataPath);
         } catch (Exception ex) {
             LOGGER.error("Strabon Exception: {}", ex.getMessage());
             throw new AssertionError("Strabon failed to initialise.");
