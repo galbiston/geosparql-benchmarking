@@ -39,7 +39,7 @@ public class StrabonTestSystem implements TestSystem {
 
     private final Strabon strabon;
 
-    private final String db;
+    private final String dbName;
     private final String user;
     private final String password;
     private final Integer port;
@@ -55,7 +55,7 @@ public class StrabonTestSystem implements TestSystem {
      * All TestSystems implement AutoCloseable so try-with-resources pattern can
      * be used.<br>
      *
-     * @param db
+     * @param dbName
      * @param user
      * @param password
      * @param port
@@ -65,8 +65,8 @@ public class StrabonTestSystem implements TestSystem {
      * @param postgresDataPath
      * @throws Exception
      */
-    public StrabonTestSystem(String db, String user, String password, Integer port, String host, String postgresIsReadyPath, String postgresPG_CTLPath, String postgresDataPath) throws Exception {
-        this.db = db;
+    public StrabonTestSystem(String dbName, String user, String password, Integer port, String host, String postgresIsReadyPath, String postgresPG_CTLPath, String postgresDataPath) throws Exception {
+        this.dbName = dbName;
         this.user = user;
         this.password = password;
         this.port = port;
@@ -76,7 +76,7 @@ public class StrabonTestSystem implements TestSystem {
         this.postgresPG_CTLPath = postgresPG_CTLPath;
 
         restartPostgresService();
-        strabon = new Strabon(db, user, password, port, host, true);
+        strabon = new Strabon(dbName, user, password, port, host, true);
     }
 
     //Restart PostgreSQL and clear caches where possible.
@@ -96,7 +96,7 @@ public class StrabonTestSystem implements TestSystem {
         }
     }
 
-    private void stopPostgres() throws IOException, InterruptedException {
+    public void stopPostgres() throws IOException, InterruptedException {
         int readyResult = checkPostgresReady();
         if (readyResult == 0) {
             //Stop Postgresql
@@ -115,7 +115,7 @@ public class StrabonTestSystem implements TestSystem {
         }
     }
 
-    private int checkPostgresReady() throws IOException, InterruptedException {
+    public int checkPostgresReady() throws IOException, InterruptedException {
         String[] postgresReady = {postgresIsReadyPath, "-h", host, "-p", port.toString()};
         Process pr = Runtime.getRuntime().exec(postgresReady);
         int readyResult = pr.waitFor();
@@ -145,7 +145,7 @@ public class StrabonTestSystem implements TestSystem {
         return readyResult;
     }
 
-    private void clearCache() throws IOException, InterruptedException {
+    protected void clearCache() throws IOException, InterruptedException {
         String osName = System.getProperty("os.name").toLowerCase();
 
         if (osName.contains("nix") | osName.contains("nux") | osName.contains("aux")) {
@@ -160,7 +160,7 @@ public class StrabonTestSystem implements TestSystem {
         }
     }
 
-    private void startPostgres() throws IOException, InterruptedException {
+    public void startPostgres() throws IOException, InterruptedException {
         String[] postgresStart;
         if (postgresDataPath.isEmpty()) {
             postgresStart = new String[]{postgresPG_CTLPath, "start", "-w", "-o", "\"-h " + host + "\"", "-o", "\"-p " + port + "\""};
@@ -184,8 +184,8 @@ public class StrabonTestSystem implements TestSystem {
         return strabon;
     }
 
-    public String getDb() {
-        return db;
+    public String getDbName() {
+        return dbName;
     }
 
     public String getUser() {
