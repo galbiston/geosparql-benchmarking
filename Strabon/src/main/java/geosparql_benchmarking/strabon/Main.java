@@ -9,9 +9,13 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.List;
+import org.openrdf.model.Value;
+import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQuery;
+import org.openrdf.query.TupleQueryResult;
 import org.openrdf.query.TupleQueryResultHandlerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +77,21 @@ public class Main {
             TupleQuery tupleQuery = (TupleQuery) strabon.query(queryString, Format.TUQU, strabon.getSailRepoConnection(), System.out);
             //SPARQLResultsCSVWriter csvWriter = new SPARQLResultsCSVWriter(System.out);
             //tupleQuery.evaluate(csvWriter);
+
+            TupleQueryResult tupleQueryResult = tupleQuery.evaluate();
+
+            while (tupleQueryResult.hasNext()) {
+
+                BindingSet bindingSet = tupleQueryResult.next();
+                List<String> bindingNames = tupleQueryResult.getBindingNames();
+                StringBuilder sb = new StringBuilder();
+                for (String binding : bindingNames) {
+                    Value value = bindingSet.getValue(binding);
+                    String valueStr = value.stringValue();
+                    sb.append(value).append("-").append(valueStr).append(". ");
+                }
+            }
+            tupleQueryResult.close();
 
         } catch (MalformedQueryException | QueryEvaluationException | TupleQueryResultHandlerException | IOException ex) {
             LOGGER.error("Exception: {}", ex.getMessage());
