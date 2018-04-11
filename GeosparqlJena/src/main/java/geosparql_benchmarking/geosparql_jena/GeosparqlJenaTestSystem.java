@@ -42,7 +42,7 @@ public class GeosparqlJenaTestSystem implements TestSystem {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    private Dataset dataset;
+    private final Dataset dataset;
 
     public GeosparqlJenaTestSystem(File datasetFolder) {
         this(TDBFactory.createDataset(datasetFolder.getAbsolutePath()));
@@ -94,8 +94,12 @@ public class GeosparqlJenaTestSystem implements TestSystem {
 
     @Override
     public void close() {
-        TDBFactory.release(dataset);
-        dataset = null;
+        if (TDBFactory.isBackedByTDB(dataset)) {
+            dataset.close();
+            TDBFactory.release(dataset);
+        } else {
+            dataset.close();
+        }
     }
 
     @Override
