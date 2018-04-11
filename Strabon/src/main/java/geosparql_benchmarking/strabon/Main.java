@@ -9,20 +9,18 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
 import java.util.HashMap;
-import java.util.List;
-import org.openrdf.model.Value;
-import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQuery;
-import org.openrdf.query.TupleQueryResult;
 import org.openrdf.query.TupleQueryResultHandlerException;
+import org.openrdf.query.resultio.text.csv.SPARQLResultsCSVWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Main {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    public static final Boolean DEBUG_MESSAGES = true;
 
     /**
      * @param args the command line arguments
@@ -63,21 +61,19 @@ public class Main {
 
     private static void rdfsStrabonTest(StrabonTestSystemFactory testSystemFactory) {
 
-        StrabonTestSystem strabonTestSystem = testSystemFactory.getStrabonTestSystem();
-        Strabon strabon = strabonTestSystem.getStrabon();
-
         //String property = "<http://www.opengis.net/ont/geosparql#asWKT>";
-        String property = "<http://strdf.di.uoa.gr/ontology#WKT>";
-        //String property = "<http://linkedgeodata.org/ontology/asWKT>";
+        //String property = "<http://strdf.di.uoa.gr/ontology#WKT>";
+        String property = "<http://linkedgeodata.org/ontology/asWKT>";
         String queryString = "SELECT ?sub ?obj WHERE{ GRAPH <" + GraphURI.LGD_URI + "> { ?sub " + property + " ?obj}}LIMIT 1";
         //String queryString = "SELECT ?sub ?obj WHERE{ ?sub " + property +  " ?obj}LIMIT 1";
 
-        try {
-
+        try (StrabonTestSystem strabonTestSystem = testSystemFactory.getStrabonTestSystem()) {
+            Strabon strabon = strabonTestSystem.getStrabon();
             TupleQuery tupleQuery = (TupleQuery) strabon.query(queryString, Format.TUQU, strabon.getSailRepoConnection(), System.out);
-            //SPARQLResultsCSVWriter csvWriter = new SPARQLResultsCSVWriter(System.out);
-            //tupleQuery.evaluate(csvWriter);
+            SPARQLResultsCSVWriter csvWriter = new SPARQLResultsCSVWriter(System.out);
+            tupleQuery.evaluate(csvWriter);
 
+            /*
             TupleQueryResult tupleQueryResult = tupleQuery.evaluate();
 
             while (tupleQueryResult.hasNext()) {
@@ -92,7 +88,7 @@ public class Main {
                 }
             }
             tupleQueryResult.close();
-
+             */
         } catch (MalformedQueryException | QueryEvaluationException | TupleQueryResultHandlerException | IOException ex) {
             LOGGER.error("Exception: {}", ex.getMessage());
         }
