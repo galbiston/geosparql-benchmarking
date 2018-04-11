@@ -52,7 +52,9 @@ public class BenchmarkExecution {
             resultsFolder.mkdir();
             String queryString = entry.getValue();
 
+            long initStartNanoTime = System.nanoTime();
             try (TestSystem testSystem = testSystemFactory.getTestSystem()) {
+                long initEndNanoTime = System.nanoTime();
                 queryString = testSystem.translateQuery(queryString);
                 //Warm Up execution.
                 LOGGER.info("----------Warmup Query - System: {}, Type: {}, Query: {}, Started----------", testSystemName, queryType, queryName);
@@ -66,7 +68,7 @@ public class BenchmarkExecution {
                         queryResult = testSystem.runQueryWithTimeout(queryString, timeout);
                         LOGGER.info("----------Query Iteration - System: {}, Type: {}, Query: {}, Iteration: {} - Completed----------", testSystemName, queryType, queryName, i);
                         if (queryResult.isCompleted()) {
-                            IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, i, queryResult);
+                            IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, i, queryResult, initStartNanoTime, initEndNanoTime);
                             iterationResults.add(iterationResult);
                         } else {
                             LOGGER.error("System: {}, Type: {}, Query: {}, Iteration: {} - Did not complete. Skipping remaining iterations.", testSystemName, queryType, queryName, i);
@@ -123,15 +125,16 @@ public class BenchmarkExecution {
 
             //Benchmark executions.
             for (int i = 1; i <= iterations; i++) {
-
+                long initStartNanoTime = System.nanoTime();
                 try (TestSystem testSystem = testSystemFactory.getTestSystem()) {
+                    long initEndNanoTime = System.nanoTime();
                     queryString = testSystem.translateQuery(queryString);
 
                     LOGGER.info("----------Cold Iteration - System: {}, Type: {}, Query: {}, Iteration: {} - Started----------", testSystemName, queryType, queryName, i);
                     QueryResult queryResult = testSystem.runQueryWithTimeout(queryString, timeout);
                     LOGGER.info("----------Cold Iteration - System: {}, Type: {}, Query: {}, Iteration: {} - Completed----------", testSystemName, queryType, queryName, i);
                     if (queryResult.isCompleted()) {
-                        IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, i, queryResult);
+                        IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, i, queryResult, initStartNanoTime, initEndNanoTime);
                         iterationResults.add(iterationResult);
                     } else {
                         LOGGER.error("System: {}, Type: {}, Query: {}, Iteration: {} - Did not complete. Skipping remaining iterations.", testSystemName, queryType, queryName, i);

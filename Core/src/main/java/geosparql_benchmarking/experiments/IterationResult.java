@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -33,8 +34,11 @@ public class IterationResult {
     private final String iteration;
     private final QueryResult queryResult;
     private final String nonEmptyResultsCount;
+    private final long initStartNanoTime;
+    private final long initEndNanoTime;
+    private final Duration initStartEndDuration;
 
-    public IterationResult(String testSystemName, String queryType, String queryName, String queryString, Integer iteration, QueryResult queryResult) {
+    public IterationResult(String testSystemName, String queryType, String queryName, String queryString, Integer iteration, QueryResult queryResult, long initStartNanoTime, long initEndNanoTime) {
         this.testSystemName = testSystemName;
         this.queryType = queryType;
         this.queryName = queryName;
@@ -49,6 +53,9 @@ public class IterationResult {
             }
         }
         this.nonEmptyResultsCount = nonEmptyCount.toString();
+        this.initStartNanoTime = initStartNanoTime;
+        this.initEndNanoTime = initEndNanoTime;
+        this.initStartEndDuration = Duration.ofNanos(initEndNanoTime - initStartNanoTime);
     }
 
     public String getTestSystemName() {
@@ -83,12 +90,24 @@ public class IterationResult {
         return testSystemName + "-" + queryType + "-" + queryName;
     }
 
-    @Override
-    public String toString() {
-        return "IterationResult{" + "testSystemName=" + testSystemName + ", queryType=" + queryType + ", queryName=" + queryName + ", queryString=" + queryString + ", iteration=" + iteration + ", queryResult=" + queryResult + ", nonEmptyResults=" + nonEmptyResultsCount + '}';
+    public long getInitStartNanoTime() {
+        return initStartNanoTime;
     }
 
-    public static final String[] SUMMARY_HEADER = {"TestSystem", "QueryType", "QueryName", "Iteration", "Completed", "ResultsCount", "NonEmptyResultsCount", "StartQueryDuration", "QueryResultsDuration", "StartResultsDuration"};
+    public long getInitEndNanoTime() {
+        return initEndNanoTime;
+    }
+
+    public Duration getInitStartEndDuration() {
+        return initStartEndDuration;
+    }
+
+    @Override
+    public String toString() {
+        return "IterationResult{" + "testSystemName=" + testSystemName + ", queryType=" + queryType + ", queryName=" + queryName + ", queryString=" + queryString + ", iteration=" + iteration + ", queryResult=" + queryResult + ", nonEmptyResultsCount=" + nonEmptyResultsCount + ", initStartNanoTime=" + initStartNanoTime + ", initEndNanoTime=" + initEndNanoTime + ", initStartEndDuration=" + initStartEndDuration + '}';
+    }
+
+    public static final String[] SUMMARY_HEADER = {"TestSystem", "QueryType", "QueryName", "Iteration", "Completed", "ResultsCount", "NonEmptyResultsCount", "InitStartEndDuration", "StartQueryDuration", "QueryResultsDuration", "StartResultsDuration"};
 
     public String[] writeSummary() {
         List<String> line = new ArrayList<>(SUMMARY_HEADER.length);
@@ -99,6 +118,7 @@ public class IterationResult {
         line.add(queryResult.isCompleted().toString());
         line.add(queryResult.getResultsCount().toString());
         line.add(nonEmptyResultsCount);
+        line.add(initStartEndDuration.toString());
         line.add(queryResult.getStartQueryDuration().toString());
         line.add(queryResult.getQueryResultsDuration().toString());
         line.add(queryResult.getStartResultsDuration().toString());
