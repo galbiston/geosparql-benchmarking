@@ -7,6 +7,7 @@ import geosparql_benchmarking.BenchmarkParameters;
 import geosparql_benchmarking.DatasetSources;
 import geosparql_benchmarking.GraphURI;
 import geosparql_benchmarking.experiments.BenchmarkExecution;
+import geosparql_benchmarking.experiments.DatasetLoadResult;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -19,6 +20,8 @@ import org.slf4j.LoggerFactory;
 public class Main {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    public static final String PARLIAMENT_RESULTS_FOLDER_NAME = "parliament";
+    public static final File PARLIAMENT_KNOWLEDGE_BASE_FOLDER = new File("parliament_kb");
 
     /**
      * @param args the command line arguments
@@ -27,13 +30,22 @@ public class Main {
 
         HashMap<String, File> datasetMap = DatasetSources.getFixedDatasets();
         //ParliamentTestSystemFactory.loadDataset(datasetMap);
+        //storeLoadDatasetResults(datasetMap, PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
 
         runParliament(BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
     }
 
-    private static void runParliament(Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
-        BenchmarkExecution.runWarm(new ParliamentTestSystemFactory("parliament"), iterations, timeout, queryMap);
-        BenchmarkExecution.runCold(new ParliamentTestSystemFactory("parliament"), iterations, timeout, queryMap);
+    public static void storeLoadDatasetResults(HashMap<String, File> datasetMap, File parliamentKnowledgeBaseFolder) {
+        LOGGER.info("Parliament Knowledge Base is controlled in the ParliamentConfig.txt file.");
+        parliamentKnowledgeBaseFolder.delete();
+        DatasetLoadResult parliamentDatasetLoadResult = ParliamentTestSystemFactory.loadDataset(datasetMap);
+        DatasetLoadResult.writeResultsFile(new File(BenchmarkExecution.RESULTS_FOLDER, PARLIAMENT_RESULTS_FOLDER_NAME), parliamentDatasetLoadResult);
+
+    }
+
+    public static void runParliament(Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
+        BenchmarkExecution.runWarm(new ParliamentTestSystemFactory(PARLIAMENT_RESULTS_FOLDER_NAME), iterations, timeout, queryMap);
+        BenchmarkExecution.runCold(new ParliamentTestSystemFactory(PARLIAMENT_RESULTS_FOLDER_NAME), iterations, timeout, queryMap);
     }
 
     private static void rdfsParliamentTest() {

@@ -2,10 +2,10 @@ package geosparql_benchmarking.strabon;
 
 import eu.earthobservatory.runtime.postgis.Strabon;
 import eu.earthobservatory.utils.Format;
-import geosparql_benchmarking.BenchmarkParameters;
 import geosparql_benchmarking.DatasetSources;
 import geosparql_benchmarking.GraphURI;
 import geosparql_benchmarking.experiments.BenchmarkExecution;
+import geosparql_benchmarking.experiments.DatasetLoadResult;
 import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -29,7 +29,7 @@ public class Main {
      */
     public static void main(String[] args) {
 
-        String db = "endpoint";
+        String dbName = "endpoint";
         String user = "postgres"; //String user = "postgres";
         String passwd = "postgres"; //String passwd = "postgres";
         Integer port = 5432;
@@ -39,20 +39,33 @@ public class Main {
         String postgresBinPath = "\"C:\\Program Files\\PostgreSQL\\10\\bin\\";
         String postgresDataPath = "\"C:\\Program Files\\PostgreSQL\\10\\data\\\"";
 
-        StrabonTestSystemFactory testSystemFactory = new StrabonTestSystemFactory(db, user, passwd, port, host, resultsFolder, postgresBinPath, postgresDataPath);
+        StrabonTestSystemFactory testSystemFactory = new StrabonTestSystemFactory(dbName, user, passwd, port, host, resultsFolder, postgresBinPath, postgresDataPath);
 
         HashMap<String, File> datasetMap = DatasetSources.getDatasets();
         Boolean inferenceEnabled = true;
         String baseURI = null;
         String format = "NTRIPLES";
 
+        storeLoadDatasetResults(datasetMap, baseURI, format, inferenceEnabled, "template_postgis", testSystemFactory);
         //StrabonTestSystemFactory.loadDataset(datasetMap, baseURI, format, inferenceEnabled, testSystemFactory);
         //Back up made: https://www.postgresql.org/docs/10/static/backup-dump.html
         //rdfsStrabonTest(testSystemFactory);
-        runStrabon(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
+        //runStrabon(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
     }
 
-    private static void runStrabon(StrabonTestSystemFactory testSystemFactory, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
+    public static void storeLoadDatasetResults(HashMap<String, File> datasetMap, String baseURI, String format, Boolean inferenceEnabled, String template, StrabonTestSystemFactory testSystemFactory) {
+        try {
+            testSystemFactory.dropPostgresDatabase();
+            testSystemFactory.createPostgresDatabase(template);
+        } catch (IOException | InterruptedException ex) {
+            LOGGER.error("Exception: {}", ex.getMessage());
+        }
+
+        DatasetLoadResult strabonDatasetLoadResult = StrabonTestSystemFactory.loadDataset(datasetMap, baseURI, format, inferenceEnabled, testSystemFactory);
+        DatasetLoadResult.writeResultsFile(testSystemFactory.getResultsFolder(), strabonDatasetLoadResult);
+    }
+
+    public static void runStrabon(StrabonTestSystemFactory testSystemFactory, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
         BenchmarkExecution.runWarm(testSystemFactory, iterations, timeout, queryMap);
         BenchmarkExecution.runCold(testSystemFactory, iterations, timeout, queryMap);
     }
