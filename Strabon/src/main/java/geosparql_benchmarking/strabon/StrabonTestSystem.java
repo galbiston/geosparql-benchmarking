@@ -50,6 +50,8 @@ public class StrabonTestSystem implements TestSystem {
     private final String postgresPG_CTLPath;
     private final String postgresDataPath;
 
+    private static final Boolean DEBUG_MESSAGES = true;
+
     public StrabonTestSystem(String db, String user, String password, Integer port, String host, String postgresIsReadyPath, String postgresPG_CTLPath, String postgresDataPath) throws Exception {
         this.db = db;
         this.user = user;
@@ -82,23 +84,50 @@ public class StrabonTestSystem implements TestSystem {
     }
 
     private void stopPostgres() throws IOException, InterruptedException {
-        String[] postgresReady = {postgresIsReadyPath, "-h", host, "-p", port.toString()};
-        Process pr = Runtime.getRuntime().exec(postgresReady);
-        int readyResult = pr.waitFor();
-        System.out.println(StringUtils.join(postgresReady, " "));
-        LOGGER.info("Postgres {}", pr.exitValue());
+        int readyResult = checkPostgresReady();
         if (readyResult == 0) {
             //Stop Postgresql
             String[] postgresStop = {postgresPG_CTLPath, "stop", "-s", "-w", "-m", "fast"};
-            pr = Runtime.getRuntime().exec(postgresStop);
+            Process pr = Runtime.getRuntime().exec(postgresStop);
             int stopResult = pr.waitFor();
-            System.out.println(StringUtils.join(postgresStop, " "));
+
             if (stopResult > 0) {
-                LOGGER.error("PostgreSQL failed to stop: Exit Value - {}. Absolute path to PostgreSQL bin and data folders may be required.", stopResult);
+                String stopCommand = StringUtils.join(postgresStop, " ");
+                LOGGER.error("PostgreSQL failed to stop: Exit Value - {}. Absolute path to PostgreSQL bin and data folders may be required. Postgres start command: {}", stopResult, stopCommand);
             } else {
-                LOGGER.info("Postgres stopped");
+                if (DEBUG_MESSAGES) {
+                    LOGGER.info("Postgres stopped");
+                }
             }
         }
+    }
+
+    private int checkPostgresReady() throws IOException, InterruptedException {
+        String[] postgresReady = {postgresIsReadyPath, "-h", host, "-p", port.toString()};
+        Process pr = Runtime.getRuntime().exec(postgresReady);
+        int readyResult = pr.waitFor();
+        String isReadyCommand = StringUtils.join(postgresReady, " ");
+        String readyMessage;
+        switch (readyResult) {
+            case 0:
+                readyMessage = "0: Postgres server is already running and accepting connections.";
+                break;
+            case 1:
+                readyMessage = "1: Postgres server is already running but rejected connection. Possibly due to starting up.";
+                break;
+            case 2:
+                readyMessage = "2: Postgres server did not respond so assumed to be not running.";
+                break;
+            case 3:
+                readyMessage = "3: No attempt made to connect due to invalid parameters. " + isReadyCommand;
+                break;
+            default:
+                readyMessage = "Other: Unknown Postgres result. Refer to documentation for version at: https://www.postgresql.org/docs/10/static/app-pg-isready.html";
+                break;
+        }
+
+        LOGGER.info("Postgres Ready Result: {}", readyMessage);
+        return readyResult;
     }
 
     private void clearCache() throws IOException, InterruptedException {
@@ -110,7 +139,8 @@ public class StrabonTestSystem implements TestSystem {
             Process pr = Runtime.getRuntime().exec(dropCaches);
             int cacheDropResult = pr.waitFor();
             if (cacheDropResult > 0) {
-                LOGGER.error("Dropping caches failed: Exit Value - {}", pr.exitValue());
+                String dropCacheCommand = StringUtils.join(dropCaches, " ");
+                LOGGER.error("Dropping caches failed: Exit Value - {}. Drop cache command: {}", pr.exitValue(), dropCacheCommand);
             }
         }
     }
@@ -123,13 +153,15 @@ public class StrabonTestSystem implements TestSystem {
             postgresStart = new String[]{postgresPG_CTLPath, "start", "-w", "-o", "\"-h " + host + "\"", "-o", "\"-p " + port + "\"", "-D", postgresDataPath};
         }
 
-        System.out.println(StringUtils.join(postgresStart, " "));
         Process pr = Runtime.getRuntime().exec(postgresStart);
         int startResult = pr.waitFor();
         if (startResult > 0) {
-            LOGGER.error("PostgreSQL failed to start: Exit Value - {}. Absolute path to PostgreSQL bin and data folders may be required.", startResult);
+            String startCommand = StringUtils.join(postgresStart, " ");
+            LOGGER.error("PostgreSQL failed to start: Exit Value - {}. Absolute path to PostgreSQL bin and data folders may be required. Postgres start command: {}", startResult, startCommand);
         } else {
-            LOGGER.info("Postgres started");
+            if (DEBUG_MESSAGES) {
+                LOGGER.info("Postgres started");
+            }
         }
     }
 
@@ -338,6 +370,7 @@ public class StrabonTestSystem implements TestSystem {
                     }
                     results.add(result);
                 }
+                tupleQueryResult.close();
 
             } catch (MalformedQueryException | QueryEvaluationException | TupleQueryResultHandlerException | IOException ex) {
                 LOGGER.error("Exception: {}", ex.getMessage());
