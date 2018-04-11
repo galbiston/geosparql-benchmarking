@@ -94,6 +94,10 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
 
     @Override
     public TestSystem getTestSystem() {
+        return getStrabonTestSystem();
+    }
+
+    public StrabonTestSystem getStrabonTestSystem() {
         try {
             return new StrabonTestSystem(db, user, password, port, host, postgresIsReadyPath, postgresPG_CTLPath, postgresDataPath);
         } catch (Exception ex) {
