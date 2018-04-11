@@ -9,20 +9,28 @@
 // Note however, that you may define your own "run" and "debug" task if you
 // prefer. In this case NetBeans will not add these tasks but you may rely on
 // your own implementation.
+apply plugin: 'application'
+mainClassName = 'geosparql_benchmarking.geosparql_jena.Main'
+
 if (!hasProperty('mainClass')) {
     ext.mainClass = 'geosparql_benchmarking.geosparql_jena.Main'
 }
 
 dependencies {
-    
+
     //Core Benchmarking Project
     compile project(":Core")
-    
+
     //GeoSPARQL Extension
     ext.geosparqlVersion = "0.9.6"
     implementation "org.ntu:GeoSPARQL:$geosparqlVersion"
-    
+
+    compile ('org.apache.jena:jena-cmds:3.7.0'){
+        exclude group: "org.apache.jena", module: "apache-jena-libs"
+        exclude group: "org.slf4j", module: "slf4j-log4j12"
+    }
+
     //SLF4J Logback
     compile "ch.qos.logback:logback-classic:$logbackVersion"
-    
+
 }

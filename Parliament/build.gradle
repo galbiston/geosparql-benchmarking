@@ -9,18 +9,21 @@
 // Note however, that you may define your own "run" and "debug" task if you
 // prefer. In this case NetBeans will not add these tasks but you may rely on
 // your own implementation.
+apply plugin: 'application'
+mainClassName = 'geosparql_benchmarking.parliament.Main'
+
 if (!hasProperty('mainClass')) {
     ext.mainClass = 'geosparql_benchmarking.parliament.Main'
 }
 
 dependencies {
-    
+
     //Core Benchmarking Project
     compile project(":Core")
-    
+
     //Jar Libraries
     compile fileTree(dir: 'libs/parliament', include: '*.jar')
-    
+
     //Apache Jena for Parliament
     compile (group: 'org.apache.jena', name: 'jena-arq', version: '2.9.4'){
         exclude group: 'org.slf4j', module: 'slf4j-log4j12'
@@ -31,7 +34,7 @@ dependencies {
 
     //BerkeleyDB Jave Edition for Parliament
     compile 'com.sleepycat:je:5.0.73'
-    
+
     //SLF4J Logback
     compile "ch.qos.logback:logback-classic:$logbackVersion"
 }

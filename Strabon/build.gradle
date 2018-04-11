@@ -9,6 +9,9 @@
 // Note however, that you may define your own "run" and "debug" task if you
 // prefer. In this case NetBeans will not add these tasks but you may rely on
 // your own implementation.
+apply plugin: 'application'
+mainClassName = 'geosparql_benchmarking.strabon.Main'
+
 if (!hasProperty('mainClass')) {
     ext.mainClass = 'geosparql_benchmarking.strabon.Main'
 }
