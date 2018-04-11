@@ -106,27 +106,29 @@ public class StrabonTestSystem implements TestSystem {
         String[] postgresReady = {postgresIsReadyPath, "-h", host, "-p", port.toString()};
         Process pr = Runtime.getRuntime().exec(postgresReady);
         int readyResult = pr.waitFor();
-        String isReadyCommand = StringUtils.join(postgresReady, " ");
-        String readyMessage;
-        switch (readyResult) {
-            case 0:
-                readyMessage = "0: Postgres server is already running and accepting connections.";
-                break;
-            case 1:
-                readyMessage = "1: Postgres server is already running but rejected connection. Possibly due to starting up.";
-                break;
-            case 2:
-                readyMessage = "2: Postgres server did not respond so assumed to be not running.";
-                break;
-            case 3:
-                readyMessage = "3: No attempt made to connect due to invalid parameters. " + isReadyCommand;
-                break;
-            default:
-                readyMessage = "Other: Unknown Postgres result. Refer to documentation for version at: https://www.postgresql.org/docs/10/static/app-pg-isready.html";
-                break;
-        }
+        if (DEBUG_MESSAGES | readyResult > 0) {
+            String isReadyCommand = StringUtils.join(postgresReady, " ");
+            String readyMessage;
+            switch (readyResult) {
+                case 0:
+                    readyMessage = "0: Postgres server is already running and accepting connections.";
+                    break;
+                case 1:
+                    readyMessage = "1: Postgres server is already running but rejected connection. Possibly due to starting up.";
+                    break;
+                case 2:
+                    readyMessage = "2: Postgres server did not respond so assumed to be not running.";
+                    break;
+                case 3:
+                    readyMessage = "3: No attempt made to connect due to invalid parameters. " + isReadyCommand;
+                    break;
+                default:
+                    readyMessage = "Other: Unknown Postgres result. Refer to documentation for version at: https://www.postgresql.org/docs/10/static/app-pg-isready.html";
+                    break;
+            }
 
-        LOGGER.info("Postgres Ready Result: {}", readyMessage);
+            LOGGER.info("Postgres Ready Result: {}", readyMessage);
+        }
         return readyResult;
     }
 
