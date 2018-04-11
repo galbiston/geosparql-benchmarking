@@ -3,10 +3,10 @@ package geosparql_benchmarking.parliament;
 import com.bbn.parliament.jena.graph.KbGraphFactory;
 import com.bbn.parliament.jena.graph.KbGraphStore;
 import com.hp.hpl.jena.graph.Node;
+import geosparql_benchmarking.BenchmarkParameters;
 import geosparql_benchmarking.DatasetSources;
 import geosparql_benchmarking.GraphURI;
 import geosparql_benchmarking.experiments.BenchmarkExecution;
-import geosparql_benchmarking.experiments.QueryLoader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,14 +28,12 @@ public class Main {
         HashMap<String, File> datasetMap = DatasetSources.getFixedDatasets();
         //ParliamentTestSystemFactory.loadDataset(datasetMap);
 
-        //Benchmark
-        Duration runtime = Duration.ofMinutes(30);
-        Integer iterations = 1; //10;
-        Duration timeout = Duration.ofSeconds(3600);
+        runParliament(BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
+    }
 
-        HashMap<String, String> queryMap = QueryLoader.loadNonTopologicalFunctionsQueries();
-        //HashMap<String, String> queryMap = QueryLoader.loadMainQuerySet();
-        BenchmarkExecution.run(new ParliamentTestSystemFactory("parliament"), iterations, timeout, queryMap);
+    private static void runParliament(Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
+        BenchmarkExecution.runWarm(new ParliamentTestSystemFactory("parliament"), iterations, timeout, queryMap);
+        BenchmarkExecution.runCold(new ParliamentTestSystemFactory("parliament"), iterations, timeout, queryMap);
     }
 
     private static void rdfsParliamentTest() {
