@@ -292,9 +292,10 @@ public class StrabonTestSystem implements TestSystem {
 
         try {
             strabon.close();
+            stopPostgres();
             System.gc();
             LOGGER.info("Strabon Closed");
-        } catch (Exception ex) {
+        } catch (IOException | InterruptedException | RuntimeException ex) {
             LOGGER.error("Exception closing Strabon: {}", ex.getMessage());
         }
 
