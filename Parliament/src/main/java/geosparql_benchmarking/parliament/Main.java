@@ -24,7 +24,10 @@ public class Main {
     public static final File PARLIAMENT_KNOWLEDGE_BASE_FOLDER = new File("parliament_kb");
 
     /**
-     * @param args the command line arguments
+     * @param args the command line arguments The Parliament DLL folder needs to
+     * added to the PATH and the ParliamentConfig.txt filepath set to the
+     * PARLIAMENT_CONFIG_PATH environment variables so that they are available
+     * on the java.library.path property.
      */
     public static void main(String[] args) {
 
