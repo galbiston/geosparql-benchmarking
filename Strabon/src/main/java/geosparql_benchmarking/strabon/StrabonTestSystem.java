@@ -50,7 +50,6 @@ public class StrabonTestSystem implements TestSystem {
     private final String postgresPG_CTLPath;
     private final String postgresDataPath;
 
-    private static final Boolean DEBUG_MESSAGES = true;
 
     public StrabonTestSystem(String db, String user, String password, Integer port, String host, String postgresIsReadyPath, String postgresPG_CTLPath, String postgresDataPath) throws Exception {
         this.db = db;
@@ -95,7 +94,7 @@ public class StrabonTestSystem implements TestSystem {
                 String stopCommand = StringUtils.join(postgresStop, " ");
                 LOGGER.error("PostgreSQL failed to stop: Exit Value - {}. Absolute path to PostgreSQL bin and data folders may be required. Postgres start command: {}", stopResult, stopCommand);
             } else {
-                if (DEBUG_MESSAGES) {
+                if (Main.DEBUG_MESSAGES) {
                     LOGGER.info("Postgres stopped");
                 }
             }
@@ -106,7 +105,7 @@ public class StrabonTestSystem implements TestSystem {
         String[] postgresReady = {postgresIsReadyPath, "-h", host, "-p", port.toString()};
         Process pr = Runtime.getRuntime().exec(postgresReady);
         int readyResult = pr.waitFor();
-        if (DEBUG_MESSAGES | readyResult > 0) {
+        if (Main.DEBUG_MESSAGES | readyResult > 0) {
             String isReadyCommand = StringUtils.join(postgresReady, " ");
             String readyMessage;
             switch (readyResult) {
@@ -161,7 +160,7 @@ public class StrabonTestSystem implements TestSystem {
             String startCommand = StringUtils.join(postgresStart, " ");
             LOGGER.error("PostgreSQL failed to start: Exit Value - {}. Absolute path to PostgreSQL bin and data folders may be required. Postgres start command: {}", startResult, startCommand);
         } else {
-            if (DEBUG_MESSAGES) {
+            if (Main.DEBUG_MESSAGES) {
                 LOGGER.info("Postgres started");
             }
         }
@@ -277,7 +276,7 @@ public class StrabonTestSystem implements TestSystem {
     @Override
     public void close() {
 
-        LOGGER.info("Closing..");
+        LOGGER.info("Strabon Closing");
         try {
             strabon.close();
         } catch (Exception ex) {
