@@ -123,7 +123,7 @@ public class StrabonTestSystem implements TestSystem {
                     readyMessage = "3: No attempt made to connect due to invalid parameters. " + isReadyCommand;
                     break;
                 default:
-                    readyMessage = "Other: Unknown Postgres result. Refer to documentation for version at: https://www.postgresql.org/docs/10/static/app-pg-isready.html";
+                    readyMessage = readyResult + ": Unknown Postgres result. Refer to documentation for version at: https://www.postgresql.org/docs/10/static/app-pg-isready.html";
                     break;
             }
 
