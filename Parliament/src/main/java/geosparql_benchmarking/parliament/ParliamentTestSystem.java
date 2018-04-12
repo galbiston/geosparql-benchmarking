@@ -79,7 +79,7 @@ public class ParliamentTestSystem implements TestSystem {
     }
 
     private void checkGraphIndexes() {
-        LOGGER.info("Index Default Enabled: {}", IndexFactoryRegistry.getInstance().isIndexingEnabledByDefault());
+        LOGGER.debug("Index Default Enabled: {}", IndexFactoryRegistry.getInstance().isIndexingEnabledByDefault());
         IndexManager indexManager = IndexManager.getInstance();
         Iterator<Node> graphNodes = graphStore.listGraphNodes();
         while (graphNodes.hasNext()) {
@@ -87,7 +87,7 @@ public class ParliamentTestSystem implements TestSystem {
             Graph namedGraph = graphStore.getGraph(graphNode);
             Boolean isIndexEnabled = isIndexingEnabled(graphNode, graphStore);
             Boolean hasIndex = indexManager.hasIndexes(namedGraph);
-            LOGGER.info("Graph: {}, Index Enabled: {}, Has Index: {}", graphNode, isIndexEnabled, hasIndex);
+            LOGGER.debug("Graph: {}, Index Enabled: {}, Has Index: {}", graphNode, isIndexEnabled, hasIndex);
         }
     }
 
@@ -154,7 +154,7 @@ public class ParliamentTestSystem implements TestSystem {
             graphStore.close();
         }
         System.gc();
-        LOGGER.info("Parliament closed");
+        LOGGER.debug("Parliament closed");
 
     }
 
