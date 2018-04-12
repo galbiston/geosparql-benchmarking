@@ -19,7 +19,7 @@ public class BenchmarkParameters {
     public static final Duration TIMEOUT = Duration.ofSeconds(3600);
 
     //public static final HashMap<String, String> QUERY_MAP = QueryLoader.loadSpatialSelectionsQuery_14();
-    public static final HashMap<String, String> QUERY_MAP = QueryLoader.loadNonTopologicalFunctionsQueries();
-    //public static final HashMap<String, String> QUERY_MAP = QueryLoader.loadMainQuerySet();
+    //public static final HashMap<String, String> QUERY_MAP = QueryLoader.loadNonTopologicalFunctionsQueries();
+    public static final HashMap<String, String> QUERY_MAP = QueryLoader.loadMainQuerySet();
 
 }
