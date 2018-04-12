@@ -1,5 +1,6 @@
 package geosparql_benchmarking.geosparql_jena;
 
+import geosparql_benchmarking.BenchmarkParameters;
 import geosparql_benchmarking.DatasetSources;
 import geosparql_benchmarking.GraphURI;
 import geosparql_benchmarking.experiments.BenchmarkExecution;
@@ -41,12 +42,11 @@ public class Main {
         Boolean inferenceEnabled = true;
 
         //TDB
-        GeosparqlJenaTDBTestSystemFactory.clearDataset(GEOSPARQL_JENA_TDB_FOLDER);
-        GeosparqlJenaTDBTestSystemFactory.loadDataset(GEOSPARQL_JENA_TDB_FOLDER, datasetMap, inferenceEnabled);
-        //GeosparqlJenaTDBTestSystemFactory testSystemFactory = new GeosparqlJenaTDBTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_TDB_RESULTS_FOLDER_NAME, inferenceEnabled);
+        //GeosparqlJenaTDBTestSystemFactory.clearDataset(GEOSPARQL_JENA_TDB_FOLDER);
+        //GeosparqlJenaTDBTestSystemFactory.loadDataset(GEOSPARQL_JENA_TDB_FOLDER, datasetMap, inferenceEnabled);
+        GeosparqlJenaTDBTestSystemFactory testSystemFactory = new GeosparqlJenaTDBTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_TDB_RESULTS_FOLDER_NAME, inferenceEnabled);
         //runDatasetLoad(testSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
-        //runJena(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
-
+        runJena(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
         //Memory
         /*
         Dataset memDataset = DatasetFactory.createTxnMem();

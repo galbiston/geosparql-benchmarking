@@ -92,6 +92,15 @@ public class GeosparqlJenaTDBTestSystemFactory implements TestSystemFactory {
         }
     }
 
+    /**
+     * Loads the dataset into the target location. No clearing of the dataset is
+     * done before this and may be recommended.
+     *
+     * @param datasetFolder
+     * @param datasetMap
+     * @param inferenceEnabled
+     * @return
+     */
     public static DatasetLoadResult loadDataset(File datasetFolder, HashMap<String, File> datasetMap, Boolean inferenceEnabled) {
         return loadDataset(datasetFolder, datasetMap, inferenceEnabled, 0);
     }
@@ -136,13 +145,13 @@ public class GeosparqlJenaTDBTestSystemFactory implements TestSystemFactory {
 
         dataset.close();
 
-        //optimiseTDB(datasetFolder);
+        optimiseTDB(datasetFolder);
         long endNanoTime = System.nanoTime();
         LOGGER.info("Geosparql Jena Loading: Completed");
         return new DatasetLoadResult(TEST_SYSTEM_NAME, isCompleted, iteration, startNanoTime, endNanoTime, datasetLoadTimeResults);
     }
 
-    private static void optimiseTDB(File datasetFolder) {
+    public static void optimiseTDB(File datasetFolder) {
         //TDB Optimisation file generation based on:
         //https://jena.apache.org/documentation/tdb/optimizer.html#generating-statistics-for-union-graphs
         //https://github.com/apache/jena/blob/master/jena-cmds/src/main/java/tdb2/tdbstats.java
@@ -164,6 +173,5 @@ public class GeosparqlJenaTDBTestSystemFactory implements TestSystemFactory {
         } finally {
             dataset.close();
         }
-
     }
 }
