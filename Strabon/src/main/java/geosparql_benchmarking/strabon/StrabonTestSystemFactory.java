@@ -253,9 +253,7 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
             String createCommand = StringUtils.join(postgresCreate, " ");
             LOGGER.error("PostgreSQL failed to createDB: Exit Value - {}. Absolute path to PostgreSQL bin and data folders may be required. Postgres start command: {}", createResult, createCommand);
         } else {
-            if (Main.DEBUG_MESSAGES) {
-                LOGGER.info("Postgres createdDB: {}", dbName);
-            }
+            LOGGER.debug("Postgres createdDB: {}", dbName);
         }
     }
 
@@ -269,9 +267,7 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
             String createCommand = StringUtils.join(postgresCreate, " ");
             LOGGER.error("PostgreSQL failed to dropDB: Exit Value - {}. Absolute path to PostgreSQL bin and data folders may be required. Postgres start command: {}", createResult, createCommand);
         } else {
-            if (Main.DEBUG_MESSAGES) {
-                LOGGER.info("Postgres droppedDB: {}", dbName);
-            }
+            LOGGER.debug("Postgres droppedDB: {}", dbName);
         }
     }
 

@@ -108,9 +108,7 @@ public class StrabonTestSystem implements TestSystem {
                 String stopCommand = StringUtils.join(postgresStop, " ");
                 LOGGER.error("PostgreSQL failed to stop: Exit Value - {}. Absolute path to PostgreSQL bin and data folders may be required. Postgres start command: {}", stopResult, stopCommand);
             } else {
-                if (Main.DEBUG_MESSAGES) {
-                    LOGGER.info("Postgres stopped");
-                }
+                LOGGER.debug("Postgres stopped");
             }
         }
     }
@@ -119,29 +117,28 @@ public class StrabonTestSystem implements TestSystem {
         String[] postgresReady = {postgresIsReadyPath, "-h", host, "-p", port.toString()};
         Process pr = Runtime.getRuntime().exec(postgresReady);
         int readyResult = pr.waitFor();
-        if (Main.DEBUG_MESSAGES | readyResult > 0) {
-            String isReadyCommand = StringUtils.join(postgresReady, " ");
-            String readyMessage;
-            switch (readyResult) {
-                case 0:
-                    readyMessage = "0: Postgres server is already running and accepting connections.";
-                    break;
-                case 1:
-                    readyMessage = "1: Postgres server is already running but rejected connection. Possibly due to starting up.";
-                    break;
-                case 2:
-                    readyMessage = "2: Postgres server did not respond so assumed to be not running.";
-                    break;
-                case 3:
-                    readyMessage = "3: No attempt made to connect due to invalid parameters. " + isReadyCommand;
-                    break;
-                default:
-                    readyMessage = readyResult + ": Unknown Postgres result. Refer to documentation for version at: https://www.postgresql.org/docs/10/static/app-pg-isready.html";
-                    break;
-            }
 
-            LOGGER.info("Postgres Ready Result: {}", readyMessage);
+        String isReadyCommand = StringUtils.join(postgresReady, " ");
+        String readyMessage;
+        switch (readyResult) {
+            case 0:
+                readyMessage = "0: Postgres server is already running and accepting connections.";
+                break;
+            case 1:
+                readyMessage = "1: Postgres server is already running but rejected connection. Possibly due to starting up.";
+                break;
+            case 2:
+                readyMessage = "2: Postgres server did not respond so assumed to be not running.";
+                break;
+            case 3:
+                readyMessage = "3: No attempt made to connect due to invalid parameters. " + isReadyCommand;
+                break;
+            default:
+                readyMessage = readyResult + ": Unknown Postgres result. Refer to documentation for version at: https://www.postgresql.org/docs/10/static/app-pg-isready.html";
+                break;
         }
+        LOGGER.debug("Postgres Ready Result: {}", readyMessage);
+
         return readyResult;
     }
 
@@ -174,9 +171,7 @@ public class StrabonTestSystem implements TestSystem {
             String startCommand = StringUtils.join(postgresStart, " ");
             LOGGER.error("PostgreSQL failed to start: Exit Value - {}. Absolute path to PostgreSQL bin and data folders may be required. Postgres start command: {}", startResult, startCommand);
         } else {
-            if (Main.DEBUG_MESSAGES) {
-                LOGGER.info("Postgres started");
-            }
+            LOGGER.debug("Postgres started");
         }
     }
 
@@ -294,7 +289,7 @@ public class StrabonTestSystem implements TestSystem {
             strabon.close();
             stopPostgres();
             System.gc();
-            LOGGER.info("Strabon Closed");
+            LOGGER.debug("Strabon Closed");
         } catch (IOException | InterruptedException | RuntimeException ex) {
             LOGGER.error("Exception closing Strabon: {}", ex.getMessage());
         }

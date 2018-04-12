@@ -2,6 +2,7 @@ package geosparql_benchmarking.strabon;
 
 import eu.earthobservatory.runtime.postgis.Strabon;
 import eu.earthobservatory.utils.Format;
+import geosparql_benchmarking.BenchmarkParameters;
 import geosparql_benchmarking.DatasetSources;
 import geosparql_benchmarking.GraphURI;
 import geosparql_benchmarking.experiments.BenchmarkExecution;
@@ -22,7 +23,6 @@ import org.slf4j.LoggerFactory;
 public class Main {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    public static final Boolean DEBUG_MESSAGES = true;
 
     /**
      * @param args the command line arguments
@@ -51,10 +51,11 @@ public class Main {
         HashMap<String, File> datasetMap = DatasetSources.getDatasets();
 
         //runDatasetLoad(testSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
-        //StrabonTestSystemFactory.loadDataset(datasetMap, baseURI, format, inferenceEnabled, testSystemFactory);
+        //StrabonTestSystemFactory.clearDataset(testSystemFactory);
+        //StrabonTestSystemFactory.loadDataset(datasetMap, testSystemFactory);
         //Back up made: https://www.postgresql.org/docs/10/static/backup-dump.html
         //rdfsStrabonTest(testSystemFactory);
-        //runStrabon(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
+        runStrabon(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
     }
 
     public static void runDatasetLoad(TestSystemFactory testSystemFactory, Integer iterations, HashMap<String, File> datasetMap) {
@@ -81,22 +82,6 @@ public class Main {
             SPARQLResultsCSVWriter csvWriter = new SPARQLResultsCSVWriter(System.out);
             tupleQuery.evaluate(csvWriter);
 
-            /*
-            TupleQueryResult tupleQueryResult = tupleQuery.evaluate();
-
-            while (tupleQueryResult.hasNext()) {
-
-                BindingSet bindingSet = tupleQueryResult.next();
-                List<String> bindingNames = tupleQueryResult.getBindingNames();
-                StringBuilder sb = new StringBuilder();
-                for (String binding : bindingNames) {
-                    Value value = bindingSet.getValue(binding);
-                    String valueStr = value.stringValue();
-                    sb.append(value).append("-").append(valueStr).append(". ");
-                }
-            }
-            tupleQueryResult.close();
-             */
         } catch (MalformedQueryException | QueryEvaluationException | TupleQueryResultHandlerException | IOException ex) {
             LOGGER.error("Exception: {}", ex.getMessage());
         }
