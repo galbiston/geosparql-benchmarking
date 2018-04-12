@@ -3,9 +3,11 @@ package geosparql_benchmarking.parliament;
 import com.bbn.parliament.jena.graph.KbGraphFactory;
 import com.bbn.parliament.jena.graph.KbGraphStore;
 import com.hp.hpl.jena.graph.Node;
+import geosparql_benchmarking.BenchmarkParameters;
 import geosparql_benchmarking.DatasetSources;
 import geosparql_benchmarking.GraphURI;
 import geosparql_benchmarking.experiments.BenchmarkExecution;
+import geosparql_benchmarking.experiments.QueryLoader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -31,10 +33,14 @@ public class Main {
     public static void main(String[] args) {
 
         HashMap<String, File> datasetMap = DatasetSources.getCRS84Datasets();
+        //ParliamentTestSystemFactory.clearDataset(PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
         //ParliamentTestSystemFactory.loadDataset(datasetMap);
         ParliamentTestSystemFactory testSystemFactory = new ParliamentTestSystemFactory(PARLIAMENT_RESULTS_FOLDER_NAME, PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
-        //runDatasetLoad(testSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
         //runParliament(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
+        runParliament(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, QueryLoader.loadNonTopologicalFunctionsQuery_3());
+        //Data Loading
+        //runDatasetLoad(testSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
+
     }
 
     public static void runDatasetLoad(ParliamentTestSystemFactory testSystemFactory, Integer iterations, HashMap<String, File> datasetMap) {
@@ -42,7 +48,6 @@ public class Main {
     }
 
     public static void runParliament(ParliamentTestSystemFactory testSystemFactory, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
-
         BenchmarkExecution.runWarm(testSystemFactory, iterations, timeout, queryMap);
         BenchmarkExecution.runCold(testSystemFactory, iterations, timeout, queryMap);
     }

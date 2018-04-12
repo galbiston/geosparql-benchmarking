@@ -6,6 +6,7 @@ import geosparql_benchmarking.BenchmarkParameters;
 import geosparql_benchmarking.DatasetSources;
 import geosparql_benchmarking.GraphURI;
 import geosparql_benchmarking.experiments.BenchmarkExecution;
+import geosparql_benchmarking.experiments.QueryLoader;
 import geosparql_benchmarking.experiments.TestSystemFactory;
 import java.io.File;
 import java.io.IOException;
@@ -48,14 +49,16 @@ public class Main {
 
         StrabonTestSystemFactory testSystemFactory = new StrabonTestSystemFactory(dbName, user, password, port, host, resultsFolder, inferenceEnabled, baseURI, format, postgresBinPath, postgresDataPath, databaseTemplate);
 
-        HashMap<String, File> datasetMap = DatasetSources.getWGS84LegacyDatasets();
+        HashMap<String, File> datasetMap = DatasetSources.getCRS84Datasets();
+        //HashMap<String, File> datasetMap = DatasetSources.getWGS84LegacyDatasets();
 
         //runDatasetLoad(testSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
         //StrabonTestSystemFactory.clearDataset(testSystemFactory);
         //StrabonTestSystemFactory.loadDataset(datasetMap, testSystemFactory);
         //Back up made: https://www.postgresql.org/docs/10/static/backup-dump.html
         //rdfsStrabonTest(testSystemFactory);
-        runStrabon(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
+        //runStrabon(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
+        runStrabon(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, QueryLoader.loadNonTopologicalFunctionsQuery_3());
     }
 
     public static void runDatasetLoad(TestSystemFactory testSystemFactory, Integer iterations, HashMap<String, File> datasetMap) {
