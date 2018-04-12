@@ -164,6 +164,7 @@ public class GeosparqlJenaTDBTestSystemFactory implements TestSystemFactory {
         }
 
         dataset.close();
+        TDBFactory.release(dataset);
 
         optimiseTDB(datasetFolder);
         long endNanoTime = System.nanoTime();
@@ -194,6 +195,7 @@ public class GeosparqlJenaTDBTestSystemFactory implements TestSystemFactory {
         } finally {
             dataset.end();
             dataset.close();
+            TDBFactory.release(dataset);
         }
     }
 }
