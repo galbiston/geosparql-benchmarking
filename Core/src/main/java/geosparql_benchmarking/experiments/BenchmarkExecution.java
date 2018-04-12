@@ -40,6 +40,7 @@ public class BenchmarkExecution {
         String testSystemName = testSystemFactory.getTestSystemName();
         File testSystemResultsFolder = testSystemFactory.getResultsFolder();
         File runResultsFolder = new File(testSystemResultsFolder, WARM_RUN_RESULTS_FOLDER_NAME);
+        runResultsFolder.mkdir();
         LOGGER.info("----------Warm Run - System: {}, Folder: {} - Started----------", testSystemName, runResultsFolder);
 
         List<IterationResult> allIterationResults = new ArrayList<>(queryMap.size() * iterations);
@@ -111,6 +112,7 @@ public class BenchmarkExecution {
         String testSystemName = testSystemFactory.getTestSystemName();
         File testSystemResultsFolder = testSystemFactory.getResultsFolder();
         File runResultsFolder = new File(testSystemResultsFolder, COLD_RUN_RESULTS_FOLDER_NAME);
+        runResultsFolder.mkdir();
         LOGGER.info("----------Cold Run - System: {}, Folder: {} - Started----------", testSystemName, runResultsFolder);
 
         List<IterationResult> allIterationResults = new ArrayList<>(queryMap.size() * iterations);
