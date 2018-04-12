@@ -22,7 +22,7 @@ dependencies {
     compile project(":Core")
 
     //GeoSPARQL Extension
-    ext.geosparqlVersion = "0.9.6"
+    ext.geosparqlVersion = "1.0.0"
     implementation "org.ntu:GeoSPARQL:$geosparqlVersion"
 
     compile ('org.apache.jena:jena-cmds:3.7.0'){
