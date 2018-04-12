@@ -45,6 +45,18 @@ public class QueryLoader {
         return queryMap;
     }
 
+    public static HashMap<String, String> loadNonTopologicalFunctionsQuery_3() {
+        HashMap<String, String> queryMap = new HashMap<>();
+        queryMap.put("NonTopologicalFunctions#Query3", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query3.spl"));
+        return queryMap;
+    }
+
+    public static HashMap<String, String> loadNonTopologicalFunctionsQuery_4() {
+        HashMap<String, String> queryMap = new HashMap<>();
+        queryMap.put("NonTopologicalFunctions#Query4", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query4.spl"));
+        return queryMap;
+    }
+
     /**
      * Load set of all queries except those with Strabon only syntax (Query 6,
      * 28 and 29).
