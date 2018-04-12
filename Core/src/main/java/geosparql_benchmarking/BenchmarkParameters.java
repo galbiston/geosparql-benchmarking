@@ -15,7 +15,7 @@ import java.util.HashMap;
  */
 public class BenchmarkParameters {
 
-    public static final Integer ITERATIONS = 1; //10;
+    public static final Integer ITERATIONS = 5; //10;
     public static final Duration TIMEOUT = Duration.ofSeconds(3600);
 
     //public static final HashMap<String, String> QUERY_MAP = QueryLoader.loadSpatialSelectionsQuery_14();
