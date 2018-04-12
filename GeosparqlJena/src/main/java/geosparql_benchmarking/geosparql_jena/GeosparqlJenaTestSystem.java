@@ -99,6 +99,9 @@ public class GeosparqlJenaTestSystem implements TestSystem {
     @Override
     public void close() {
         dataset.close();
+        if (TDBFactory.isBackedByTDB(dataset)) {
+            TDBFactory.release(dataset);
+        }
         GeoSPARQLSupport.clearAllIndexesAndRegistries();
         LOGGER.debug("GeosparqlJena closed");
     }

@@ -27,7 +27,6 @@ import org.apache.jena.rdf.model.InfModel;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.sparql.core.DatasetGraph;
 import org.apache.jena.tdb.TDBFactory;
 import org.apache.jena.tdb.solver.stats.Stats;
 import org.apache.jena.tdb.solver.stats.StatsResults;
@@ -166,7 +165,7 @@ public class GeosparqlJenaTDBTestSystemFactory implements TestSystemFactory {
 
         dataset.close();
 
-        //optimiseTDB(datasetFolder);
+        optimiseTDB(datasetFolder);
         long endNanoTime = System.nanoTime();
         LOGGER.info("Geosparql Jena Loading: Completed");
         return new DatasetLoadResult(TEST_SYSTEM_NAME, isCompleted, iteration, startNanoTime, endNanoTime, datasetLoadTimeResults);
@@ -181,7 +180,7 @@ public class GeosparqlJenaTDBTestSystemFactory implements TestSystemFactory {
 
         Dataset dataset = TDBFactory.createDataset(datasetFolder.getAbsolutePath());
 
-        DatasetGraph datasetGraph = dataset.asDatasetGraph();
+        dataset.begin(ReadWrite.READ);
         File statsFile = new File(datasetFolder, "stats.opt");
         try (FileOutputStream outputStream = new FileOutputStream(statsFile)) {
             DatasetGraphTDB datasetGraphTDB = TDBInternal.getDatasetGraphTDB(dataset);
@@ -193,6 +192,7 @@ public class GeosparqlJenaTDBTestSystemFactory implements TestSystemFactory {
         } catch (IOException ex) {
             LOGGER.error("Optimise TDB Error: {} - {}", statsFile, ex.getMessage());
         } finally {
+            dataset.end();
             dataset.close();
         }
     }
