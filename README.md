@@ -4,7 +4,7 @@ This framework is for the testing the performance and feature set of three RDF s
 
 --GeosparqlJena
 
-Setup: There is one step to follow in setting up GeosparqlJena. That is running the project or calling GeosparqlSupport.loadFunctions() in a Java application. This is already done by the test system.
+Setup: There is one step to follow in setting up GeosparqlJena. That is running the project or calling GeoSPARQLSupport.loadFunctions() in a Java application. This is already done by the test system.
 
 geopsarql_vocab_all.rdf - This file provides the schema for Geosparql 1.0. The file is loaded into the dataset prior to performing RDFS inferencing. Replacing this file and re-running the dataset clearing and loading will provide the latest version of the Geosparql, or a customised, schema. It is avaible from:
 
