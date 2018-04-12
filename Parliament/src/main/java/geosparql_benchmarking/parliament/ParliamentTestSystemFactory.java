@@ -113,40 +113,61 @@ public class ParliamentTestSystemFactory implements TestSystemFactory {
         IndexManager indexManager = IndexManager.getInstance();
 
         //Parliament graph store that contains all graphs. Requires default graph for constructor.
-        KbGraph graph = KbGraphFactory.createDefaultGraph();
-        KbGraphStore graphStore = new KbGraphStore(graph);
+        KbGraph defaultGraph = KbGraphFactory.createDefaultGraph();
+        KbGraphStore graphStore = new KbGraphStore(defaultGraph);
+        Model defaultModel = ModelFactory.createModelForGraph(defaultGraph);
         try {
             graphStore.initialize();
             //Register named graph and index with IndexManager.
-            indexManager.createAndRegister(graph, KbGraphStore.DEFAULT_GRAPH_NODE, SPATIAL_INDEX_FACTORY);
+            indexManager.createAndRegister(defaultGraph, KbGraphStore.DEFAULT_GRAPH_NODE, SPATIAL_INDEX_FACTORY);
 
             //Named graphs for each file loaded.
             for (Map.Entry<String, File> entry : datasetMap.entrySet()) {
                 String graphName = entry.getKey();
                 File sourceRDFFile = entry.getValue();
 
-                //Data loading into the named graph.
-                LOGGER.info("Loading - {} into {}: Started", sourceRDFFile, graphName);
-                Node graphNode = Node.createURI(graphName);
-                KbGraph namedGraph = KbGraphFactory.createNamedGraph();
-                Model namedModel = ModelFactory.createModelForGraph(namedGraph);
-                namedModel.read(sourceRDFFile.toURI().toURL().toString(), "N-TRIPLE");
-                graphStore.addGraph(graphNode, namedGraph);
-                LOGGER.info("Loading - {} into {}: Completed", sourceRDFFile, graphName);
-
-                //Register named graph and index with IndexManager.
-                LOGGER.info("Spatial Indexing - {} : Started", graphName);
                 long datasetStartNanoTime = System.nanoTime();
-                graphStore.setIndexingEnabled(graphNode, true);
-                indexManager.createAndRegister(namedGraph, graphNode, SPATIAL_INDEX_FACTORY);
-                //Force the building of the index for the graph.
-                indexManager.rebuild(namedGraph);
-                indexManager.flush(namedGraph);
-                indexManager.closeAll(namedGraph);
+                if (graphName.isEmpty()) {
+                    LOGGER.info("Loading - {} into default graph: Started", sourceRDFFile);
+                    defaultModel.read(sourceRDFFile.toURI().toURL().toString(), "N-TRIPLE");
+                    LOGGER.info("Loading - {} into default graph: Completed", sourceRDFFile);
+
+                    //Register default graph and index with IndexManager.
+                    LOGGER.info("Spatial Indexing - default graph : Started");
+
+                    graphStore.setIndexingEnabled(KbGraphStore.DEFAULT_GRAPH_NODE, true);
+                    indexManager.createAndRegister(defaultGraph, KbGraphStore.DEFAULT_GRAPH_NODE, SPATIAL_INDEX_FACTORY);
+                    //Force the building of the index for the graph.
+                    indexManager.rebuild(defaultGraph);
+                    indexManager.flush(defaultGraph);
+                    indexManager.closeAll(defaultGraph);
+                    LOGGER.info("Spatial Indexing - default graph : Completed");
+                } else {
+                    //Data loading into the named graph.
+                    LOGGER.info("Loading - {} into {}: Started", sourceRDFFile, graphName);
+                    Node graphNode = Node.createURI(graphName);
+                    KbGraph namedGraph = KbGraphFactory.createNamedGraph();
+                    Model namedModel = ModelFactory.createModelForGraph(namedGraph);
+                    namedModel.read(sourceRDFFile.toURI().toURL().toString(), "N-TRIPLE");
+                    graphStore.addGraph(graphNode, namedGraph);
+                    LOGGER.info("Loading - {} into {}: Completed", sourceRDFFile, graphName);
+
+                    //Register named graph and index with IndexManager.
+                    LOGGER.info("Spatial Indexing - {} : Started", graphName);
+
+                    graphStore.setIndexingEnabled(graphNode, true);
+                    indexManager.createAndRegister(namedGraph, graphNode, SPATIAL_INDEX_FACTORY);
+                    //Force the building of the index for the graph.
+                    indexManager.rebuild(namedGraph);
+                    indexManager.flush(namedGraph);
+                    indexManager.closeAll(namedGraph);
+                    LOGGER.info("Spatial Indexing - {} : Completed", graphName);
+                }
+
                 long datasetEndNanoTime = System.nanoTime();
+                LOGGER.info("Spatial Indexing - {} : Completed", graphName);
                 DatasetLoadTimeResult datasetLoadTimeResult = new DatasetLoadTimeResult(graphName, datasetStartNanoTime, datasetEndNanoTime);
                 datasetLoadTimeResults.add(datasetLoadTimeResult);
-                LOGGER.info("Spatial Indexing - {} : Completed", graphName);
             }
         } catch (MalformedURLException ex) {
             isCompleted = false;

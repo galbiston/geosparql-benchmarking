@@ -108,9 +108,19 @@ public class GeosparqlJenaMemTestSystemFactory implements TestSystemFactory {
                 if (inferenceEnabled) {
                     InfModel infModel = ModelFactory.createRDFSModel(geosparqlSchema, dataModel);
                     infModel.prepare();
-                    dataset.addNamedModel(graphName, infModel);
+                    if (graphName.isEmpty()) {
+                        Model defaultModel = dataset.getDefaultModel();
+                        defaultModel.add(infModel);
+                    } else {
+                        dataset.addNamedModel(graphName, infModel);
+                    }
                 } else {
-                    dataset.addNamedModel(graphName, dataModel);
+                    if (graphName.isEmpty()) {
+                        Model defaultModel = dataset.getDefaultModel();
+                        defaultModel.add(dataModel);
+                    } else {
+                        dataset.addNamedModel(graphName, dataModel);
+                    }
                 }
                 dataset.commit();
 
