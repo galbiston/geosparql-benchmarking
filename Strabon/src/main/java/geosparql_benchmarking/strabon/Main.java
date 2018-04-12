@@ -31,7 +31,7 @@ public class Main {
 
         String dbName = "endpoint";
         String user = "postgres"; //String user = "postgres";
-        String passwd = "postgres"; //String passwd = "postgres";
+        String password = "postgres"; //String passwd = "postgres";
         Integer port = 5432;
         String host = "localhost"; //"localhost"; //"127.0.0.1"
         String resultsFolder = "strabon";
@@ -46,7 +46,7 @@ public class Main {
         //Built using PGAdmin tool to create a PostGIS template.
         String databaseTemplate = "template_postgis";
 
-        StrabonTestSystemFactory testSystemFactory = new StrabonTestSystemFactory(dbName, user, passwd, port, host, resultsFolder, inferenceEnabled, baseURI, format, postgresBinPath, postgresDataPath, databaseTemplate);
+        StrabonTestSystemFactory testSystemFactory = new StrabonTestSystemFactory(dbName, user, password, port, host, resultsFolder, inferenceEnabled, baseURI, format, postgresBinPath, postgresDataPath, databaseTemplate);
 
         HashMap<String, File> datasetMap = DatasetSources.getDatasets();
 
