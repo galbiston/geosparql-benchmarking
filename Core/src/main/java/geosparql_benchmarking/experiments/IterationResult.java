@@ -11,7 +11,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +30,7 @@ public class IterationResult {
     private final String queryType;
     private final String queryName;
     private final String queryString;
+    private final String resultsFileLabel;
     private final String iteration;
     private final QueryResult queryResult;
     private final String nonEmptyResultsCount;
@@ -45,6 +45,7 @@ public class IterationResult {
         this.queryString = queryString;
         this.iteration = iteration.toString();
         this.queryResult = queryResult;
+        this.resultsFileLabel = testSystemName + "-" + queryType + "-" + queryName + "-" + iteration;
 
         Integer nonEmptyCount = 0;
         for (HashMap<String, String> result : queryResult.getResults()) {
@@ -87,7 +88,7 @@ public class IterationResult {
     }
 
     public String getResultFileLabel() {
-        return testSystemName + "-" + queryType + "-" + queryName;
+        return resultsFileLabel;
     }
 
     public long getInitStartNanoTime() {
@@ -125,14 +126,18 @@ public class IterationResult {
         return line.toArray(new String[line.size()]);
     }
 
-    private static final DateTimeFormatter FILE_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
+    public static final DateTimeFormatter FILE_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
 
-    public static final void writeSummaryFile(File systemResultsFolder, List<IterationResult> allIterationResults) {
+    public static final void writeSummaryFile(File systemResultsFolder, List<IterationResult> allIterationResults, String testTimestamp) {
 
-        String filename = "summary-" + LocalDateTime.now().format(FILE_DATE_TIME_FORMAT) + ".csv";
+        String filename = "summary-" + testTimestamp + ".csv";
         File summaryFile = new File(systemResultsFolder, filename);
-        try (CSVWriter writer = new CSVWriter(new FileWriter(summaryFile))) {
-            writer.writeNext(SUMMARY_HEADER);
+        boolean summaryFileAlreadyExists = summaryFile.exists();
+
+        try (CSVWriter writer = new CSVWriter(new FileWriter(summaryFile, true))) {
+            if (!summaryFileAlreadyExists) {
+                writer.writeNext(SUMMARY_HEADER);
+            }
             for (IterationResult iterationResult : allIterationResults) {
                 writer.writeNext(iterationResult.writeSummary());
             }
@@ -178,23 +183,15 @@ public class IterationResult {
         return lines;
     }
 
-    public static final void writeResultsFile(File resultsFolder, List<IterationResult> iterationResults) {
+    public static final void writeResultsFile(File resultsFolder, IterationResult iterationResult, String testTimestamp) {
 
-        if (!iterationResults.isEmpty()) {
-            IterationResult firstIterationResult = iterationResults.get(0);
-            String filename = firstIterationResult.getResultFileLabel() + "-results-" + LocalDateTime.now().format(FILE_DATE_TIME_FORMAT) + ".csv";
-            File resultsFile = new File(resultsFolder, filename);
-            try (CSVWriter writer = new CSVWriter(new FileWriter(resultsFile))) {
-                writer.writeNext(firstIterationResult.getResultHeader());
-                for (IterationResult iterationResult : iterationResults) {
-                    writer.writeAll(iterationResult.writeResults());
-                }
-
-            } catch (IOException ex) {
-                LOGGER.error("IOException: {}", ex.getMessage());
-            }
-        } else {
-            LOGGER.warn("Iteration Results is Empty - Not writing to {}.", resultsFolder);
+        String filename = iterationResult.getResultFileLabel() + "-results-" + testTimestamp + ".csv";
+        File resultsFile = new File(resultsFolder, filename);
+        try (CSVWriter writer = new CSVWriter(new FileWriter(resultsFile))) {
+            writer.writeNext(iterationResult.getResultHeader());
+            writer.writeAll(iterationResult.writeResults());
+        } catch (IOException ex) {
+            LOGGER.error("IOException: {}", ex.getMessage());
         }
     }
 

@@ -3,6 +3,7 @@ package geosparql_benchmarking.experiments;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,15 +36,15 @@ public class BenchmarkExecution {
      * @param queryMap
      * @return
      */
-    public static final List<IterationResult> runWarm(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
+    public static final void runWarm(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
 
         String testSystemName = testSystemFactory.getTestSystemName();
+        String testTimestamp = LocalDateTime.now().format(IterationResult.FILE_DATE_TIME_FORMAT);
         File testSystemResultsFolder = testSystemFactory.getResultsFolder();
         File runResultsFolder = new File(testSystemResultsFolder, WARM_RUN_RESULTS_FOLDER_NAME);
         runResultsFolder.mkdir();
         LOGGER.info("------Warm Run - System: {}, Folder: {} - Started------", testSystemName, runResultsFolder);
 
-        List<IterationResult> allIterationResults = new ArrayList<>(queryMap.size() * iterations);
         for (Entry<String, String> entry : queryMap.entrySet()) {
             List<IterationResult> iterationResults = new ArrayList<>(iterations);
             String[] queryLabel = entry.getKey().split("#");
@@ -70,6 +71,8 @@ public class BenchmarkExecution {
                         LOGGER.info("------Query Iteration - System: {}, Type: {}, Query: {}, Iteration: {} - Completed------", testSystemName, queryType, queryName, i);
                         if (queryResult.isCompleted()) {
                             IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, i, queryResult, initStartNanoTime, initEndNanoTime);
+                            //Write results for all iterations for each query to own file.
+                            IterationResult.writeResultsFile(resultsFolder, iterationResult, testTimestamp);
                             iterationResults.add(iterationResult);
                         } else {
                             LOGGER.error("System: {}, Type: {}, Query: {}, Iteration: {} - Did not complete. Skipping remaining iterations.", testSystemName, queryType, queryName, i);
@@ -83,16 +86,12 @@ public class BenchmarkExecution {
                 LOGGER.error("Exception: {}", ex.getMessage());
             }
 
-            //Write results for all iterations for each query to own file.
-            IterationResult.writeResultsFile(resultsFolder, iterationResults);
-            allIterationResults.addAll(iterationResults);
+            //Write summary for all queries and iterations performed to a single file.
+            IterationResult.writeSummaryFile(runResultsFolder, iterationResults, testTimestamp);
         }
 
-        //Write summary for all queries and iterations performed to a single file.
-        IterationResult.writeSummaryFile(runResultsFolder, allIterationResults);
         LOGGER.info("------Warm Run - System: {}, Folder: {} - Completed------", testSystemFactory.getTestSystemName(), testSystemFactory.getResultsFolder());
 
-        return allIterationResults;
     }
 
     /**
@@ -107,15 +106,15 @@ public class BenchmarkExecution {
      * @param queryMap
      * @return
      */
-    public static final List<IterationResult> runCold(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
+    public static final void runCold(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
 
         String testSystemName = testSystemFactory.getTestSystemName();
+        String testTimestamp = LocalDateTime.now().format(IterationResult.FILE_DATE_TIME_FORMAT);
         File testSystemResultsFolder = testSystemFactory.getResultsFolder();
         File runResultsFolder = new File(testSystemResultsFolder, COLD_RUN_RESULTS_FOLDER_NAME);
         runResultsFolder.mkdir();
         LOGGER.info("------Cold Run - System: {}, Folder: {} - Started------", testSystemName, runResultsFolder);
 
-        List<IterationResult> allIterationResults = new ArrayList<>(queryMap.size() * iterations);
         for (Entry<String, String> entry : queryMap.entrySet()) {
             List<IterationResult> iterationResults = new ArrayList<>(iterations);
             String[] queryLabel = entry.getKey().split("#");
@@ -137,6 +136,8 @@ public class BenchmarkExecution {
                     LOGGER.info("------Cold Iteration - System: {}, Type: {}, Query: {}, Iteration: {} - Completed------", testSystemName, queryType, queryName, i);
                     if (queryResult.isCompleted()) {
                         IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, i, queryResult, initStartNanoTime, initEndNanoTime);
+                        //Write results for all iterations for each query to own file.
+                        IterationResult.writeResultsFile(resultsFolder, iterationResult, testTimestamp);
                         iterationResults.add(iterationResult);
                     } else {
                         LOGGER.error("System: {}, Type: {}, Query: {}, Iteration: {} - Did not complete. Skipping remaining iterations.", testSystemName, queryType, queryName, i);
@@ -147,16 +148,11 @@ public class BenchmarkExecution {
                 }
             }
 
-            //Write results for all iterations for each query to own file.
-            IterationResult.writeResultsFile(resultsFolder, iterationResults);
-            allIterationResults.addAll(iterationResults);
+            //Write summary for all queries and iterations performed to a single file.
+            IterationResult.writeSummaryFile(runResultsFolder, iterationResults, testTimestamp);
         }
 
-        //Write summary for all queries and iterations performed to a single file.
-        IterationResult.writeSummaryFile(runResultsFolder, allIterationResults);
         LOGGER.info("------Cold Run - System: {}, Folder: {} - Completed------", testSystemFactory.getTestSystemName(), testSystemFactory.getResultsFolder());
-
-        return allIterationResults;
     }
 
     public static final List<DatasetLoadResult> runDatasetLoad(TestSystemFactory testSystemFactory, Integer iterations, HashMap<String, File> datasetMap) {
