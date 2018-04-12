@@ -278,13 +278,13 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
 
     public void dropPostgresDatabase() throws IOException, InterruptedException {
 
-        String[] postgresCreate = new String[]{postgresDropDBPath, "-h", host, "-p", port.toString(), "-U", user, "--if-exists", dbName};
+        String[] postgresDrop = new String[]{postgresDropDBPath, "-h", host, "-p", port.toString(), "-U", user, "--if-exists", dbName};
 
-        Process pr = Runtime.getRuntime().exec(postgresCreate);
-        int createResult = pr.waitFor();
-        if (createResult > 0) {
-            String createCommand = StringUtils.join(postgresCreate, " ");
-            LOGGER.error("PostgreSQL failed to dropDB: Exit Value - {}. Absolute path to PostgreSQL bin and data folders may be required. Postgres start command: {}", createResult, createCommand);
+        Process pr = Runtime.getRuntime().exec(postgresDrop);
+        int dropResult = pr.waitFor();
+        if (dropResult > 0) {
+            String dropCommand = StringUtils.join(postgresDrop, " ");
+            LOGGER.error("PostgreSQL failed to dropDB: Exit Value - {}. Absolute path to PostgreSQL bin and data folders may be required. Postgres start command: {}", dropResult, dropCommand);
         } else {
             LOGGER.debug("Postgres droppedDB: {}", dbName);
         }
