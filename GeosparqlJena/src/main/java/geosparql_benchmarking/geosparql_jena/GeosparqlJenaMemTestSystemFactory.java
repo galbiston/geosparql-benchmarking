@@ -73,6 +73,17 @@ public class GeosparqlJenaMemTestSystemFactory implements TestSystemFactory {
         return loadDataset(datasetMap, inferenceEnabled, dataset, iteration);
     }
 
+    @Override
+    public Boolean clearLoadDataset(HashMap<String, File> datasetMap) {
+
+        Boolean isClear = clearDataset();
+        if (isClear) {
+            DatasetLoadResult loadResult = loadDataset(datasetMap, 0);
+            return loadResult.getIsCompleted();
+        }
+        return isClear;
+    }
+
     public static DatasetLoadResult loadDataset(HashMap<String, File> datasetMap, Boolean inferenceEnabled, Dataset dataset) {
         return loadDataset(datasetMap, inferenceEnabled, dataset, 0);
     }

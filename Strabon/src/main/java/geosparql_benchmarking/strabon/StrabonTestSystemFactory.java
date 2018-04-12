@@ -173,6 +173,17 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
         return loadDataset(datasetMap, this, iteration);
     }
 
+    @Override
+    public Boolean clearLoadDataset(HashMap<String, File> datasetMap) {
+
+        Boolean isClear = clearDataset();
+        if (isClear) {
+            DatasetLoadResult loadResult = loadDataset(datasetMap, 0);
+            return loadResult.getIsCompleted();
+        }
+        return isClear;
+    }
+
     /**
      * Removes the entire existing database and uses the database template to
      * provide a fresh database.

@@ -80,6 +80,17 @@ public class ParliamentTestSystemFactory implements TestSystemFactory {
         return loadDatasetStatic(datasetMap, iteration);
     }
 
+    @Override
+    public Boolean clearLoadDataset(HashMap<String, File> datasetMap) {
+
+        Boolean isClear = clearDataset();
+        if (isClear) {
+            DatasetLoadResult loadResult = loadDataset(datasetMap, 0);
+            return loadResult.getIsCompleted();
+        }
+        return isClear;
+    }
+
     /**
      * Loads the dataset into the target location. No clearing of the dataset is
      * done before this and may be recommended.

@@ -30,5 +30,18 @@ public interface TestSystemFactory {
      */
     public DatasetLoadResult loadDataset(HashMap<String, File> datasetMap, Integer iteration);
 
+    /**
+     * Clears the entire contents of the dataset.
+     *
+     * @return
+     */
     public Boolean clearDataset();
+
+    /**
+     * Clear the entire contents of the dataset before loading fresh data.
+     *
+     * @param datasetMap
+     * @return
+     */
+    public Boolean clearLoadDataset(HashMap<String, File> datasetMap);
 }

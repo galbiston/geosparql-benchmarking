@@ -82,6 +82,17 @@ public class GeosparqlJenaTDBTestSystemFactory implements TestSystemFactory {
         return loadDataset(datasetFolder, datasetMap, inferenceEnabled, iteration);
     }
 
+    @Override
+    public Boolean clearLoadDataset(HashMap<String, File> datasetMap) {
+
+        Boolean isClear = clearDataset();
+        if (isClear) {
+            DatasetLoadResult loadResult = loadDataset(datasetMap, 0);
+            return loadResult.getIsCompleted();
+        }
+        return isClear;
+    }
+
     public static Boolean clearDataset(File datasetFolder) {
         try {
             FileUtils.deleteDirectory(datasetFolder);
