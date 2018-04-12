@@ -48,7 +48,7 @@ public class Main {
 
         StrabonTestSystemFactory testSystemFactory = new StrabonTestSystemFactory(dbName, user, password, port, host, resultsFolder, inferenceEnabled, baseURI, format, postgresBinPath, postgresDataPath, databaseTemplate);
 
-        HashMap<String, File> datasetMap = DatasetSources.getDatasets();
+        HashMap<String, File> datasetMap = DatasetSources.getWGS84LegacyDatasets();
 
         //runDatasetLoad(testSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
         //StrabonTestSystemFactory.clearDataset(testSystemFactory);

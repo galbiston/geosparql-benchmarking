@@ -30,7 +30,7 @@ public class Main {
      */
     public static void main(String[] args) {
 
-        HashMap<String, File> datasetMap = DatasetSources.getFixedDatasets();
+        HashMap<String, File> datasetMap = DatasetSources.getCRS84Datasets();
         //ParliamentTestSystemFactory.loadDataset(datasetMap);
         ParliamentTestSystemFactory testSystemFactory = new ParliamentTestSystemFactory(PARLIAMENT_RESULTS_FOLDER_NAME, PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
         //runDatasetLoad(testSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);

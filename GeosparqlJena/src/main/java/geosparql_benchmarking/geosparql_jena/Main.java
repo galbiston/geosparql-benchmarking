@@ -1,10 +1,11 @@
 package geosparql_benchmarking.geosparql_jena;
 
-import geosparql_benchmarking.BenchmarkParameters;
 import geosparql_benchmarking.DatasetSources;
 import geosparql_benchmarking.GraphURI;
 import geosparql_benchmarking.experiments.BenchmarkExecution;
 import geosparql_benchmarking.experiments.TestSystemFactory;
+import implementation.CRSRegistry;
+import implementation.ConvertCRS;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -37,16 +38,16 @@ public class Main {
      */
     public static void main(String[] args) {
 
-        //HashMap<String, File> datasetMap = DatasetSources.getTestDatasets();
-        HashMap<String, File> datasetMap = DatasetSources.getDatasets();
+        //HashMap<String, File> datasetMap = DatasetSources.getWGS84LegacyTestDatasets();
+        HashMap<String, File> datasetMap = DatasetSources.getWGS84LegacyDatasets();
         Boolean inferenceEnabled = true;
 
         //TDB
         //GeosparqlJenaTDBTestSystemFactory.clearDataset(GEOSPARQL_JENA_TDB_FOLDER);
         //GeosparqlJenaTDBTestSystemFactory.loadDataset(GEOSPARQL_JENA_TDB_FOLDER, datasetMap, inferenceEnabled);
-        GeosparqlJenaTDBTestSystemFactory testSystemFactory = new GeosparqlJenaTDBTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_TDB_RESULTS_FOLDER_NAME, inferenceEnabled);
+        //GeosparqlJenaTDBTestSystemFactory testSystemFactory = new GeosparqlJenaTDBTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_TDB_RESULTS_FOLDER_NAME, inferenceEnabled);
         //runDatasetLoad(testSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
-        runJena(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
+        //runJena(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
         //Memory
         /*
         Dataset memDataset = DatasetFactory.createTxnMem();
@@ -92,4 +93,18 @@ public class Main {
         }
     }
 
+    /**
+     * Parliament 2.7.10 does not accept the original WGS84 coordinate reference
+     * system URI present in Geographica datasets.<br>
+     * This methods converts the datasets from
+     */
+    public static void convertDatasetCRS() {
+
+        File inputFolder = DatasetSources.DATASET_WGS84_LEGACY_FOLDER;
+        Lang inputLanguage = Lang.NTRIPLES;
+        File outputFolder = DatasetSources.DATASET_CRS84_FOLDER;
+        Lang outputLanguage = Lang.NTRIPLES;
+        String outputSrsURI = CRSRegistry.DEFAULT_WKT_CRS;
+        ConvertCRS.convertFolder(inputFolder, inputLanguage, outputFolder, outputLanguage, outputSrsURI);
+    }
 }
