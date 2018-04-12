@@ -48,8 +48,7 @@ public class GeosparqlJenaMemTestSystemFactory implements TestSystemFactory {
 
     @Override
     public TestSystem getTestSystem() {
-        Dataset copyDataset = DatasetFactory.wrap(dataset.asDatasetGraph());
-        return new GeosparqlJenaTestSystem(copyDataset);
+        return new GeosparqlJenaTestSystem(dataset);
     }
 
     @Override
@@ -94,7 +93,9 @@ public class GeosparqlJenaMemTestSystemFactory implements TestSystemFactory {
         Boolean isCompleted = true;
         long startNanoTime = System.nanoTime();
 
-        dataset = DatasetFactory.createTxnMem();
+        if (dataset == null) {
+            dataset = DatasetFactory.createTxnMem();
+        }
         Model geosparqlSchema = RDFDataMgr.loadModel(Main.GEOSPARQL_SCHEMA_FILE.getAbsolutePath());
 
         for (Map.Entry<String, File> entry : datasetMap.entrySet()) {
@@ -129,7 +130,7 @@ public class GeosparqlJenaMemTestSystemFactory implements TestSystemFactory {
                 datasetLoadTimeResults.add(datasetLoadTimeResult);
                 LOGGER.info("Loading: {} into {}: Completed", sourceRDFFile, graphName);
 
-            } catch (RuntimeException ex) {
+            } catch (Exception ex) {
                 isCompleted = false;
                 LOGGER.error("Memory Load Error: {}", ex.getMessage());
             } finally {

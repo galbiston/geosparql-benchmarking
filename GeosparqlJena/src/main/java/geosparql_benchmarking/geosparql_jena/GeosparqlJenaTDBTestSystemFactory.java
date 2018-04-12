@@ -155,7 +155,7 @@ public class GeosparqlJenaTDBTestSystemFactory implements TestSystemFactory {
                 DatasetLoadTimeResult datasetLoadTimeResult = new DatasetLoadTimeResult(graphName, datasetStartNanoTime, datasetEndNanoTime);
                 datasetLoadTimeResults.add(datasetLoadTimeResult);
                 LOGGER.info("Loading: {} into {}: Completed", sourceRDFFile, graphName);
-            } catch (RuntimeException ex) {
+            } catch (Exception ex) {
                 isCompleted = false;
                 LOGGER.error("TDB Load Error: {}", ex.getMessage());
             } finally {
@@ -175,7 +175,7 @@ public class GeosparqlJenaTDBTestSystemFactory implements TestSystemFactory {
     public static void optimiseTDB(File datasetFolder) {
         //TDB Optimisation file generation based on:
         //https://jena.apache.org/documentation/tdb/optimizer.html#generating-statistics-for-union-graphs
-        //https://github.com/apache/jena/blob/master/jena-cmds/src/main/java/tdb2/tdbstats.java
+        //https://github.com/apache/jena/blob/master/jena-cmds/src/main/java/tdb/tdbstats.java
         //Throws Exception that dataset is closed if run immediately after running the dataset.
         //Can run afterwards without any issue.
 
