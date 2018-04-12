@@ -29,7 +29,7 @@
         <file>${LOG_FOLDER}/GeoSPARQL_Benchmarking-${TIME_STAMP}.log</file>
         <append>false</append>
         <!-- set immediateFlush to false for much higher logging throughput -->
-        <immediateFlush>false</immediateFlush>
+        <immediateFlush>true</immediateFlush>
 
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg%n</pattern>
@@ -37,9 +37,8 @@
         </encoder>
     </appender>
 
-    <root level="info">
+    <root level="debug">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
     </root>
-    <shutdownHook/>
 </configuration>

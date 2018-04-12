@@ -33,5 +33,4 @@
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
     </root>
-    <shutdownHook/>
 </configuration>
