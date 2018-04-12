@@ -165,19 +165,30 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
 
     @Override
     public Boolean clearDataset() {
-        try {
-            dropPostgresDatabase();
-            createPostgresDatabase(databaseTemplate);
-            return true;
-        } catch (IOException | InterruptedException ex) {
-            LOGGER.error("Exception: {}", ex.getMessage());
-            return false;
-        }
+        return clearDataset(this);
     }
 
     @Override
     public DatasetLoadResult loadDataset(HashMap<String, File> datasetMap, Integer iteration) {
         return loadDataset(datasetMap, this, iteration);
+    }
+
+    /**
+     * Removes the entire existing database and uses the database template to
+     * provide a fresh database.
+     *
+     * @param testSystemFactory
+     * @return
+     */
+    public static Boolean clearDataset(StrabonTestSystemFactory testSystemFactory) {
+        try {
+            testSystemFactory.dropPostgresDatabase();
+            testSystemFactory.createPostgresDatabase();
+            return true;
+        } catch (IOException | InterruptedException ex) {
+            LOGGER.error("Exception: {}", ex.getMessage());
+            return false;
+        }
     }
 
     public static DatasetLoadResult loadDataset(HashMap<String, File> datasetMap, StrabonTestSystemFactory testSystemFactory) {
@@ -229,8 +240,12 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
         return new DatasetLoadResult(TEST_SYSTEM_NAME, isCompleted, iteration, startNanoTime, endNanoTime, datasetLoadTimeResults);
     }
 
-    public void createPostgresDatabase(String template) throws IOException, InterruptedException {
-        String[] postgresCreate = new String[]{postgresCreateDBPath, "-T", template, "-h", host, "-p", port.toString(), "-U", user, dbName};
+    public void createPostgresDatabase() throws IOException, InterruptedException {
+        createPostgresDatabase(databaseTemplate);
+    }
+
+    public void createPostgresDatabase(String templateDatabase) throws IOException, InterruptedException {
+        String[] postgresCreate = new String[]{postgresCreateDBPath, "-T", templateDatabase, "-h", host, "-p", port.toString(), "-U", user, dbName};
 
         Process pr = Runtime.getRuntime().exec(postgresCreate);
         int createResult = pr.waitFor();
