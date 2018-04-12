@@ -65,14 +65,7 @@ public class ParliamentTestSystemFactory implements TestSystemFactory {
 
     @Override
     public Boolean clearDataset() {
-        LOGGER.info("Parliament Knowledge Base is controlled in the ParliamentConfig.txt file.");
-        try {
-            FileUtils.deleteDirectory(parliamentKnowledgeBaseFolder);
-            return true;
-        } catch (IOException ex) {
-            LOGGER.error("Parliament KB Folder deletion: {} - {}", parliamentKnowledgeBaseFolder.getAbsolutePath(), ex.getMessage());
-            return false;
-        }
+        return clearDataset(parliamentKnowledgeBaseFolder);
     }
 
     @Override
@@ -89,6 +82,17 @@ public class ParliamentTestSystemFactory implements TestSystemFactory {
             return loadResult.getIsCompleted();
         }
         return isClear;
+    }
+
+    public static Boolean clearDataset(File parliamentKnowledgeBaseFolder) {
+        LOGGER.info("Parliament Knowledge Base is controlled in the ParliamentConfig.txt file.");
+        try {
+            FileUtils.deleteDirectory(parliamentKnowledgeBaseFolder);
+            return true;
+        } catch (IOException ex) {
+            LOGGER.error("Parliament KB Folder deletion: {} - {}", parliamentKnowledgeBaseFolder.getAbsolutePath(), ex.getMessage());
+            return false;
+        }
     }
 
     /**
@@ -165,7 +169,6 @@ public class ParliamentTestSystemFactory implements TestSystemFactory {
                 }
 
                 long datasetEndNanoTime = System.nanoTime();
-                LOGGER.info("Spatial Indexing - {} : Completed", graphName);
                 DatasetLoadTimeResult datasetLoadTimeResult = new DatasetLoadTimeResult(graphName, datasetStartNanoTime, datasetEndNanoTime);
                 datasetLoadTimeResults.add(datasetLoadTimeResult);
             }
