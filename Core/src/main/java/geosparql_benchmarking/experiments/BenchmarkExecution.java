@@ -72,7 +72,7 @@ public class BenchmarkExecution {
                         if (queryResult.isCompleted()) {
                             IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, i, queryResult, initStartNanoTime, initEndNanoTime);
                             //Write results for all iterations for each query to own file.
-                            IterationResult.writeResultsFile(resultsFolder, iterationResult, testTimestamp);
+                            IterationResult.writeResultsFile(resultsFolder, iterationResult, queryResult, testTimestamp);
                             iterationResults.add(iterationResult);
                         } else {
                             LOGGER.error("System: {}, Type: {}, Query: {}, Iteration: {} - Did not complete. Skipping remaining iterations.", testSystemName, queryType, queryName, i);
@@ -137,7 +137,7 @@ public class BenchmarkExecution {
                     if (queryResult.isCompleted()) {
                         IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, i, queryResult, initStartNanoTime, initEndNanoTime);
                         //Write results for all iterations for each query to own file.
-                        IterationResult.writeResultsFile(resultsFolder, iterationResult, testTimestamp);
+                        IterationResult.writeResultsFile(resultsFolder, iterationResult, queryResult, testTimestamp);
                         iterationResults.add(iterationResult);
                     } else {
                         LOGGER.error("System: {}, Type: {}, Query: {}, Iteration: {} - Did not complete. Skipping remaining iterations.", testSystemName, queryType, queryName, i);
