@@ -25,6 +25,12 @@ public class DatasetSources {
         return datasetMap;
     }
 
+    public static HashMap<String, File> getWGS84LegacySyntheticDataset() {
+        HashMap<String, File> datasetMap = new HashMap<>();
+        datasetMap.put(GraphURI.DEFAULT, new File(DATASET_WGS84_LEGACY_FOLDER, "generator512.nt"));
+        return datasetMap;
+    }
+
     public static final File DATASET_CRS84_FOLDER = new File("../datasets_CRS84");
 
     public static HashMap<String, File> getCRS84Datasets() {
@@ -39,9 +45,9 @@ public class DatasetSources {
         return datasetMap;
     }
 
-    public static HashMap<String, File> getWGS84LegacySyntheticDataset() {
+    public static HashMap<String, File> getCRS84TestDatasets() {
         HashMap<String, File> datasetMap = new HashMap<>();
-        datasetMap.put(GraphURI.DEFAULT, new File(DATASET_WGS84_LEGACY_FOLDER, "generator512.nt"));
+        datasetMap.put(GraphURI.LGD_URI, new File(DATASET_CRS84_FOLDER, "linkedgeodata.nt"));
         return datasetMap;
     }
 
