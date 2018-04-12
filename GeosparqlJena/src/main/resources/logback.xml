@@ -3,6 +3,14 @@
     <logger name="support.NetworkUtils" level="ERROR" />
     <logger name="hsqldb.db.HSQLDB4AD417742A.ENGINE" level="ERROR" />
     <logger name="org.apache.jena.riot" level="ERROR" />
+    <!--
+        <logger name="org.apache.jena.tdb.base.file.BlockAccessMapped" level="ERROR" />
+    -->
+    <logger name="org.apache.jena.shared.LockMRSW" level="ERROR" />
+    <logger name="org.apache.jena.info" level="ERROR" />
+    <logger name="org.apache.jena.util.FileManager" level="ERROR" />
+    <logger name="org.apache.jena.util.LocationManager" level="ERROR" />
+
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 
