@@ -24,9 +24,9 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,12 +69,12 @@ public class ParliamentTestSystemFactory implements TestSystemFactory {
     }
 
     @Override
-    public DatasetLoadResult loadDataset(HashMap<String, File> datasetMap, Integer iteration) {
+    public DatasetLoadResult loadDataset(TreeMap<String, File> datasetMap, Integer iteration) {
         return loadDatasetStatic(datasetMap, iteration);
     }
 
     @Override
-    public Boolean clearLoadDataset(HashMap<String, File> datasetMap) {
+    public Boolean clearLoadDataset(TreeMap<String, File> datasetMap) {
 
         Boolean isClear = clearDataset();
         if (isClear) {
@@ -102,11 +102,11 @@ public class ParliamentTestSystemFactory implements TestSystemFactory {
      * @param datasetMap
      * @return
      */
-    public static DatasetLoadResult loadDataset(HashMap<String, File> datasetMap) {
+    public static DatasetLoadResult loadDataset(TreeMap<String, File> datasetMap) {
         return loadDatasetStatic(datasetMap, 0);
     }
 
-    private static DatasetLoadResult loadDatasetStatic(HashMap<String, File> datasetMap, Integer iteration) {
+    private static DatasetLoadResult loadDatasetStatic(TreeMap<String, File> datasetMap, Integer iteration) {
         LOGGER.info("Parliament Loading: Started");
         LOGGER.info("Parliament inferencing is controlled in the ParliamentConfig.txt file.");
         List<DatasetLoadTimeResult> datasetLoadTimeResults = new ArrayList<>();

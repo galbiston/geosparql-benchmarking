@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
-import java.util.HashMap;
+import java.util.TreeMap;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.TupleQuery;
@@ -49,8 +49,8 @@ public class Main {
 
         StrabonTestSystemFactory testSystemFactory = new StrabonTestSystemFactory(dbName, user, password, port, host, resultsFolder, inferenceEnabled, baseURI, format, postgresBinPath, postgresDataPath, databaseTemplate);
 
-        HashMap<String, File> datasetMap = DatasetSources.getCRS84Datasets();
-        //HashMap<String, File> datasetMap = DatasetSources.getWGS84LegacyDatasets();
+        TreeMap<String, File> datasetMap = DatasetSources.getCRS84Datasets();
+        //TreeMap<String, File> datasetMap = DatasetSources.getWGS84LegacyDatasets();
 
         //runDatasetLoad(testSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
         //StrabonTestSystemFactory.clearDataset(testSystemFactory);
@@ -61,11 +61,11 @@ public class Main {
         runStrabon(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, QueryLoader.loadNonTopologicalFunctionsQuery_3());
     }
 
-    public static void runDatasetLoad(TestSystemFactory testSystemFactory, Integer iterations, HashMap<String, File> datasetMap) {
+    public static void runDatasetLoad(TestSystemFactory testSystemFactory, Integer iterations, TreeMap<String, File> datasetMap) {
         BenchmarkExecution.runDatasetLoad(testSystemFactory, iterations, datasetMap);
     }
 
-    public static void runStrabon(StrabonTestSystemFactory testSystemFactory, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
+    public static void runStrabon(StrabonTestSystemFactory testSystemFactory, Integer iterations, Duration timeout, TreeMap<String, String> queryMap) {
         BenchmarkExecution.runWarm(testSystemFactory, iterations, timeout, queryMap);
         BenchmarkExecution.runCold(testSystemFactory, iterations, timeout, queryMap);
     }

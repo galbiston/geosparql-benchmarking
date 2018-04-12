@@ -15,9 +15,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
@@ -77,12 +77,12 @@ public class GeosparqlJenaTDBTestSystemFactory implements TestSystemFactory {
     }
 
     @Override
-    public DatasetLoadResult loadDataset(HashMap<String, File> datasetMap, Integer iteration) {
+    public DatasetLoadResult loadDataset(TreeMap<String, File> datasetMap, Integer iteration) {
         return loadDataset(datasetFolder, datasetMap, inferenceEnabled, iteration);
     }
 
     @Override
-    public Boolean clearLoadDataset(HashMap<String, File> datasetMap) {
+    public Boolean clearLoadDataset(TreeMap<String, File> datasetMap) {
 
         Boolean isClear = clearDataset();
         if (isClear) {
@@ -111,11 +111,11 @@ public class GeosparqlJenaTDBTestSystemFactory implements TestSystemFactory {
      * @param inferenceEnabled
      * @return
      */
-    public static DatasetLoadResult loadDataset(File datasetFolder, HashMap<String, File> datasetMap, Boolean inferenceEnabled) {
+    public static DatasetLoadResult loadDataset(File datasetFolder, TreeMap<String, File> datasetMap, Boolean inferenceEnabled) {
         return loadDataset(datasetFolder, datasetMap, inferenceEnabled, 0);
     }
 
-    private static DatasetLoadResult loadDataset(File datasetFolder, HashMap<String, File> datasetMap, Boolean inferenceEnabled, Integer iteration) {
+    private static DatasetLoadResult loadDataset(File datasetFolder, TreeMap<String, File> datasetMap, Boolean inferenceEnabled, Integer iteration) {
         LOGGER.info("Geosparql Jena Loading: Started");
         List<DatasetLoadTimeResult> datasetLoadTimeResults = new ArrayList<>();
         Boolean isCompleted = true;

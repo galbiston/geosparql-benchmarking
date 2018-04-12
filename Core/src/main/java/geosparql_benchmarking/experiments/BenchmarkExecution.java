@@ -5,9 +5,9 @@ import java.lang.invoke.MethodHandles;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +36,7 @@ public class BenchmarkExecution {
      * @param queryMap
      * @return
      */
-    public static final void runWarm(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
+    public static final void runWarm(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, TreeMap<String, String> queryMap) {
 
         String testSystemName = testSystemFactory.getTestSystemName();
         String testTimestamp = LocalDateTime.now().format(IterationResult.FILE_DATE_TIME_FORMAT);
@@ -106,7 +106,7 @@ public class BenchmarkExecution {
      * @param queryMap
      * @return
      */
-    public static final void runCold(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
+    public static final void runCold(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, TreeMap<String, String> queryMap) {
 
         String testSystemName = testSystemFactory.getTestSystemName();
         String testTimestamp = LocalDateTime.now().format(IterationResult.FILE_DATE_TIME_FORMAT);
@@ -155,7 +155,7 @@ public class BenchmarkExecution {
         LOGGER.info("------Cold Run - System: {}, Folder: {} - Completed------", testSystemFactory.getTestSystemName(), testSystemFactory.getResultsFolder());
     }
 
-    public static final List<DatasetLoadResult> runDatasetLoad(TestSystemFactory testSystemFactory, Integer iterations, HashMap<String, File> datasetMap) {
+    public static final List<DatasetLoadResult> runDatasetLoad(TestSystemFactory testSystemFactory, Integer iterations, TreeMap<String, File> datasetMap) {
 
         List<DatasetLoadResult> datasetLoadResults = new ArrayList<>();
         File resultsFolder = testSystemFactory.getResultsFolder();

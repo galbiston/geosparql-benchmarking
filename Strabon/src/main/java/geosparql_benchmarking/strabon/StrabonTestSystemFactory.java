@@ -15,9 +15,9 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -169,12 +169,12 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
     }
 
     @Override
-    public DatasetLoadResult loadDataset(HashMap<String, File> datasetMap, Integer iteration) {
+    public DatasetLoadResult loadDataset(TreeMap<String, File> datasetMap, Integer iteration) {
         return loadDataset(datasetMap, this, iteration);
     }
 
     @Override
-    public Boolean clearLoadDataset(HashMap<String, File> datasetMap) {
+    public Boolean clearLoadDataset(TreeMap<String, File> datasetMap) {
 
         Boolean isClear = clearDataset();
         if (isClear) {
@@ -210,11 +210,11 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
      * @param testSystemFactory
      * @return
      */
-    public static DatasetLoadResult loadDataset(HashMap<String, File> datasetMap, StrabonTestSystemFactory testSystemFactory) {
+    public static DatasetLoadResult loadDataset(TreeMap<String, File> datasetMap, StrabonTestSystemFactory testSystemFactory) {
         return loadDataset(datasetMap, testSystemFactory, 0);
     }
 
-    private static DatasetLoadResult loadDataset(HashMap<String, File> datasetMap, StrabonTestSystemFactory testSystemFactory, Integer iteration) {
+    private static DatasetLoadResult loadDataset(TreeMap<String, File> datasetMap, StrabonTestSystemFactory testSystemFactory, Integer iteration) {
         LOGGER.info("Strabon Loading: Started");
         List<DatasetLoadTimeResult> datasetLoadTimeResults = new ArrayList<>();
         Boolean isCompleted = true;

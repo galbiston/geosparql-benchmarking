@@ -6,7 +6,7 @@
 package geosparql_benchmarking.experiments;
 
 import java.io.File;
-import java.util.HashMap;
+import java.util.TreeMap;
 
 /**
  *
@@ -28,7 +28,7 @@ public interface TestSystemFactory {
      * @param iteration
      * @return
      */
-    public DatasetLoadResult loadDataset(HashMap<String, File> datasetMap, Integer iteration);
+    public DatasetLoadResult loadDataset(TreeMap<String, File> datasetMap, Integer iteration);
 
     /**
      * Clears the entire contents of the dataset.
@@ -43,5 +43,5 @@ public interface TestSystemFactory {
      * @param datasetMap
      * @return
      */
-    public Boolean clearLoadDataset(HashMap<String, File> datasetMap);
+    public Boolean clearLoadDataset(TreeMap<String, File> datasetMap);
 }

@@ -12,7 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
-import java.util.HashMap;
+import java.util.TreeMap;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.QueryExecution;
@@ -41,10 +41,10 @@ public class Main {
      */
     public static void main(String[] args) {
 
-        //HashMap<String, File> datasetMap = DatasetSources.getCRS84TestDatasets();
-        HashMap<String, File> datasetMap = DatasetSources.getCRS84Datasets();
-        //HashMap<String, File> datasetMap = DatasetSources.getWGS84LegacyDatasets();
-        //HashMap<String, File> datasetMap = DatasetSources.getWGS84LegacyTestDatasets();
+        //TreeMap<String, File> datasetMap = DatasetSources.getCRS84TestDatasets();
+        TreeMap<String, File> datasetMap = DatasetSources.getCRS84Datasets();
+        //TreeMap<String, File> datasetMap = DatasetSources.getWGS84LegacyDatasets();
+        //TreeMap<String, File> datasetMap = DatasetSources.getWGS84LegacyTestDatasets();
         Boolean inferenceEnabled = true;
 
         //TDB
@@ -69,11 +69,11 @@ public class Main {
         //rdfsJenaMemTest(memDataset);
     }
 
-    public static void runDatasetLoad(TestSystemFactory testSystemFactory, Integer iterations, HashMap<String, File> datasetMap) {
+    public static void runDatasetLoad(TestSystemFactory testSystemFactory, Integer iterations, TreeMap<String, File> datasetMap) {
         BenchmarkExecution.runDatasetLoad(testSystemFactory, iterations, datasetMap);
     }
 
-    public static void runJena(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, HashMap<String, String> queryMap) {
+    public static void runJena(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, TreeMap<String, String> queryMap) {
         BenchmarkExecution.runWarm(testSystemFactory, iterations, timeout, queryMap);
         BenchmarkExecution.runCold(testSystemFactory, iterations, timeout, queryMap);
     }

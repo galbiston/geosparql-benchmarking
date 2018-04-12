@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,21 +38,21 @@ public class QueryLoader {
     private static final String GIVEN_LINESTRING_3 = QueryLoader.readFile(GIVEN_FOLDER + "/givenLineString3.txt");
     private static final String GIVEN_POLYGON = QueryLoader.readFile(GIVEN_FOLDER + "/givenPolygon.txt");
 
-    public static HashMap<String, String> loadSpatialSelectionsQuery_14() {
+    public static TreeMap<String, String> loadSpatialSelectionsQuery_14() {
 
-        HashMap<String, String> queryMap = new HashMap<>();
+        TreeMap<String, String> queryMap = new TreeMap<>();
         queryMap.put("SpatialSelections#Query14", readFile(SPATIAL_SELECTIONS + "/Query14.spl").replace("GIVEN_POINT_IN_WKT", GIVEN_POINT).replace("GIVEN_RADIUS", GIVEN_RADIUS));
         return queryMap;
     }
 
-    public static HashMap<String, String> loadNonTopologicalFunctionsQuery_3() {
-        HashMap<String, String> queryMap = new HashMap<>();
+    public static TreeMap<String, String> loadNonTopologicalFunctionsQuery_3() {
+        TreeMap<String, String> queryMap = new TreeMap<>();
         queryMap.put("NonTopologicalFunctions#Query3", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query3.spl"));
         return queryMap;
     }
 
-    public static HashMap<String, String> loadNonTopologicalFunctionsQuery_4() {
-        HashMap<String, String> queryMap = new HashMap<>();
+    public static TreeMap<String, String> loadNonTopologicalFunctionsQuery_4() {
+        TreeMap<String, String> queryMap = new TreeMap<>();
         queryMap.put("NonTopologicalFunctions#Query4", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query4.spl"));
         return queryMap;
     }
@@ -63,9 +63,9 @@ public class QueryLoader {
      *
      * @return
      */
-    public static HashMap<String, String> loadMainQuerySet() {
+    public static TreeMap<String, String> loadMainQuerySet() {
 
-        HashMap<String, String> queryMap = new HashMap<>();
+        TreeMap<String, String> queryMap = new TreeMap<>();
         queryMap.putAll(loadNonTopologicalFunctionsQueries());
         queryMap.putAll(loadSpatialSelectionsQueries());
         queryMap.putAll(loadSpatialJoinsQueries());
@@ -78,9 +78,9 @@ public class QueryLoader {
      *
      * @return
      */
-    public static HashMap<String, String> loadNonTopologicalFunctionsQueries() {
+    public static TreeMap<String, String> loadNonTopologicalFunctionsQueries() {
 
-        HashMap<String, String> queryMap = new HashMap<>();
+        TreeMap<String, String> queryMap = new TreeMap<>();
         queryMap.put("NonTopologicalFunctions#Query1", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query1.spl"));
         queryMap.put("NonTopologicalFunctions#Query2", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query2.spl"));
         queryMap.put("NonTopologicalFunctions#Query3", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query3.spl"));
@@ -95,9 +95,9 @@ public class QueryLoader {
      *
      * @return
      */
-    public static HashMap<String, String> loadNonTopologicalFunctionsQuery_6() {
+    public static TreeMap<String, String> loadNonTopologicalFunctionsQuery_6() {
 
-        HashMap<String, String> queryMap = new HashMap<>();
+        TreeMap<String, String> queryMap = new TreeMap<>();
         queryMap.put("NonTopologicalFunctions#Query6", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query6.spl"));
         return queryMap;
     }
@@ -108,9 +108,9 @@ public class QueryLoader {
      *
      * @return
      */
-    public static HashMap<String, String> loadSpatialSelectionsQueries() {
+    public static TreeMap<String, String> loadSpatialSelectionsQueries() {
 
-        HashMap<String, String> queryMap = new HashMap<>();
+        TreeMap<String, String> queryMap = new TreeMap<>();
         queryMap.put("SpatialSelections#Query7", readFile(SPATIAL_SELECTIONS + "/Query7.spl").replace("GIVEN_LINE_IN_WKT", GIVEN_LINESTRING_1));
         queryMap.put("SpatialSelections#Query8", readFile(SPATIAL_SELECTIONS + "/Query8.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON));
         queryMap.put("SpatialSelections#Query9", readFile(SPATIAL_SELECTIONS + "/Query9.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON));
@@ -126,9 +126,9 @@ public class QueryLoader {
         return queryMap;
     }
 
-    public static HashMap<String, String> loadSpatialJoinsQueries() {
+    public static TreeMap<String, String> loadSpatialJoinsQueries() {
 
-        HashMap<String, String> queryMap = new HashMap<>();
+        TreeMap<String, String> queryMap = new TreeMap<>();
         queryMap.put("SpatialJoins#Query18", readFile(SPATIAL_JOINS + "/Query18.spl"));
         queryMap.put("SpatialJoins#Query19", readFile(SPATIAL_JOINS + "/Query19.spl"));
         queryMap.put("SpatialJoins#Query20", readFile(SPATIAL_JOINS + "/Query20.spl"));
@@ -148,9 +148,9 @@ public class QueryLoader {
      *
      * @return
      */
-    public static HashMap<String, String> loadAggregationsQueries() {
+    public static TreeMap<String, String> loadAggregationsQueries() {
 
-        HashMap<String, String> queryMap = new HashMap<>();
+        TreeMap<String, String> queryMap = new TreeMap<>();
         queryMap.put("Aggregations#Query28", readFile(AGGREGATIONS + "/Query28.spl"));
         queryMap.put("Aggregations#Query29", readFile(AGGREGATIONS + "/Query29.spl"));
         return queryMap;
