@@ -182,7 +182,7 @@ public class IterationResult {
 
         if (!iterationResults.isEmpty()) {
             IterationResult firstIterationResult = iterationResults.get(0);
-            String filename = firstIterationResult.getResultFileLabel() + "-results-" + LocalDateTime.now().format(FILE_DATE_TIME_FORMAT) + " .csv";
+            String filename = firstIterationResult.getResultFileLabel() + "-results-" + LocalDateTime.now().format(FILE_DATE_TIME_FORMAT) + ".csv";
             File resultsFile = new File(resultsFolder, filename);
             try (CSVWriter writer = new CSVWriter(new FileWriter(resultsFile))) {
                 writer.writeNext(firstIterationResult.getResultHeader());
