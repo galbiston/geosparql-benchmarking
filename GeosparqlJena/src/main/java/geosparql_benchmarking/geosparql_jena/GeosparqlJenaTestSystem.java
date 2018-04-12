@@ -95,6 +95,8 @@ public class GeosparqlJenaTestSystem implements TestSystem {
     @Override
     public void close() {
         dataset.close();
+        GeoSPARQLSupport.clearAllIndexesAndRegistries();
+        LOGGER.debug("GeosparqlJena closed");
     }
 
     @Override
