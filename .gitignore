@@ -19,6 +19,8 @@ datasets_WGS84Legacy
 datasets_CRS84
 datasets_fixed
 geosparql_jena_tdb
+geosparql_jena_tdb CRS84
+geosparql_jena_tdb WGS84
 geosparql_jena_tdb - NO RDFS
 logs
 parliament_kb
