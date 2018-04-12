@@ -191,6 +191,14 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
         }
     }
 
+    /**
+     * Loads the dataset into the target location. No clearing of the dataset is
+     * done before this and may be recommended.
+     *
+     * @param datasetMap
+     * @param testSystemFactory
+     * @return
+     */
     public static DatasetLoadResult loadDataset(HashMap<String, File> datasetMap, StrabonTestSystemFactory testSystemFactory) {
         return loadDataset(datasetMap, testSystemFactory, 0);
     }

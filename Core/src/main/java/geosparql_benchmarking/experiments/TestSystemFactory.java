@@ -20,6 +20,14 @@ public interface TestSystemFactory {
 
     public File getResultsFolder();
 
+    /**
+     * Loads the dataset into the target location. No clearing of the dataset is
+     * done before this and may be recommended.
+     *
+     * @param datasetMap
+     * @param iteration
+     * @return
+     */
     public DatasetLoadResult loadDataset(HashMap<String, File> datasetMap, Integer iteration);
 
     public Boolean clearDataset();

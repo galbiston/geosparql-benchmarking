@@ -80,6 +80,13 @@ public class ParliamentTestSystemFactory implements TestSystemFactory {
         return loadDatasetStatic(datasetMap, iteration);
     }
 
+    /**
+     * Loads the dataset into the target location. No clearing of the dataset is
+     * done before this and may be recommended.
+     *
+     * @param datasetMap
+     * @return
+     */
     public static DatasetLoadResult loadDataset(HashMap<String, File> datasetMap) {
         return loadDatasetStatic(datasetMap, 0);
     }
