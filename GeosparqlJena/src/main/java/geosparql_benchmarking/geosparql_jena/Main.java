@@ -1,5 +1,6 @@
 package geosparql_benchmarking.geosparql_jena;
 
+import geosparql_benchmarking.BenchmarkParameters;
 import geosparql_benchmarking.DatasetSources;
 import geosparql_benchmarking.GraphURI;
 import geosparql_benchmarking.experiments.BenchmarkExecution;
@@ -15,12 +16,13 @@ import java.util.HashMap;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.tdb2.TDB2Factory;
+import org.apache.jena.tdb.TDBFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,16 +40,18 @@ public class Main {
      */
     public static void main(String[] args) {
 
+        //HashMap<String, File> datasetMap = DatasetSources.getCRS84TestDatasets();
+        HashMap<String, File> datasetMap = DatasetSources.getCRS84Datasets();
+        //HashMap<String, File> datasetMap = DatasetSources.getWGS84LegacyDatasets();
         //HashMap<String, File> datasetMap = DatasetSources.getWGS84LegacyTestDatasets();
-        HashMap<String, File> datasetMap = DatasetSources.getWGS84LegacyDatasets();
         Boolean inferenceEnabled = true;
-
+        //GeosparqlJenaTDBTestSystemFactory.optimiseTDB(GEOSPARQL_JENA_TDB_FOLDER);
         //TDB
-        //GeosparqlJenaTDBTestSystemFactory.clearDataset(GEOSPARQL_JENA_TDB_FOLDER);
-        //GeosparqlJenaTDBTestSystemFactory.loadDataset(GEOSPARQL_JENA_TDB_FOLDER, datasetMap, inferenceEnabled);
-        //GeosparqlJenaTDBTestSystemFactory testSystemFactory = new GeosparqlJenaTDBTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_TDB_RESULTS_FOLDER_NAME, inferenceEnabled);
-        //runDatasetLoad(testSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
-        //runJena(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
+        GeosparqlJenaTDBTestSystemFactory.clearDataset(GEOSPARQL_JENA_TDB_FOLDER);
+        GeosparqlJenaTDBTestSystemFactory.loadDataset(GEOSPARQL_JENA_TDB_FOLDER, datasetMap, inferenceEnabled);
+        GeosparqlJenaTDBTestSystemFactory testSystemFactory = new GeosparqlJenaTDBTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_TDB_RESULTS_FOLDER_NAME, inferenceEnabled);
+        //rdfsGeosparqlJenaTest();
+        runJena(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
         //Memory
         /*
         Dataset memDataset = DatasetFactory.createTxnMem();
@@ -56,6 +60,9 @@ public class Main {
         //runDatasetLoad(memTestSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
         runJena(memTestSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
          */
+        //Data Loading
+        //runDatasetLoad(testSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
+        //runDatasetLoad(memTestSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
     }
 
     public static void runDatasetLoad(TestSystemFactory testSystemFactory, Integer iterations, HashMap<String, File> datasetMap) {
@@ -69,22 +76,25 @@ public class Main {
 
     private static void rdfsGeosparqlJenaTest() {
 
-        Dataset dataset = TDB2Factory.connectDataset(GEOSPARQL_JENA_TDB_FOLDER.getAbsolutePath());
+        Dataset dataset = TDBFactory.createDataset(GEOSPARQL_JENA_TDB_FOLDER.getAbsolutePath());
 
         String property = "<http://www.opengis.net/ont/geosparql#asWKT>";
         //String property = "<http://linkedgeodata.org/ontology/asWKT>";
         String queryString = "SELECT ?sub ?obj WHERE{ GRAPH <" + GraphURI.LGD_URI + "> { ?sub " + property + " ?obj}}LIMIT 1";
         //String queryString = "SELECT ?sub ?obj WHERE{ ?sub " + property +  " ?obj}LIMIT 1";
 
+        dataset.begin(ReadWrite.READ);
         try (QueryExecution qe = QueryExecutionFactory.create(queryString, dataset)) {
             ResultSet rs = qe.execSelect();
             ResultSetFormatter.outputAsCSV(rs);
         }
+        dataset.end();
+        dataset.close();
 
     }
 
     private static void exportGeosparqlJenaTest() {
-        Dataset dataset = TDB2Factory.connectDataset(GEOSPARQL_JENA_TDB_FOLDER.getAbsolutePath());
+        Dataset dataset = TDBFactory.createDataset(GEOSPARQL_JENA_TDB_FOLDER.getAbsolutePath());
         Model model = dataset.getNamedModel(GraphURI.LGD_URI);
         try (FileOutputStream out = new FileOutputStream(new File("lgd-jena.ttl"))) {
             RDFDataMgr.write(out, model, Lang.TTL);
@@ -104,7 +114,7 @@ public class Main {
         Lang inputLanguage = Lang.NTRIPLES;
         File outputFolder = DatasetSources.DATASET_CRS84_FOLDER;
         Lang outputLanguage = Lang.NTRIPLES;
-        String outputSrsURI = CRSRegistry.DEFAULT_WKT_CRS;
+        String outputSrsURI = CRSRegistry.DEFAULT_WKT_CRS84;
         ConvertCRS.convertFolder(inputFolder, inputLanguage, outputFolder, outputLanguage, outputSrsURI);
     }
 }

@@ -28,14 +28,14 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.core.DatasetGraph;
-import org.apache.jena.tdb2.TDB2Factory;
-import org.apache.jena.tdb2.solver.stats.Stats;
-import org.apache.jena.tdb2.solver.stats.StatsResults;
-import org.apache.jena.tdb2.store.DatasetGraphTDB;
-import org.apache.jena.tdb2.sys.TDBInternal;
+import org.apache.jena.tdb.TDBFactory;
+import org.apache.jena.tdb.solver.stats.Stats;
+import org.apache.jena.tdb.solver.stats.StatsResults;
+import org.apache.jena.tdb.store.DatasetGraphTDB;
+import org.apache.jena.tdb.sys.TDBInternal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tdb2.tdbstats;
+import tdb.tdbstats;
 
 /**
  *
@@ -122,7 +122,7 @@ public class GeosparqlJenaTDBTestSystemFactory implements TestSystemFactory {
         Boolean isCompleted = true;
         long startNanoTime = System.nanoTime();
 
-        Dataset dataset = TDB2Factory.connectDataset(datasetFolder.getAbsolutePath());
+        Dataset dataset = TDBFactory.createDataset(datasetFolder.getAbsolutePath());
         Model geosparqlSchema = RDFDataMgr.loadModel(Main.GEOSPARQL_SCHEMA_FILE.getAbsolutePath());
 
         for (Map.Entry<String, File> entry : datasetMap.entrySet()) {
@@ -166,7 +166,7 @@ public class GeosparqlJenaTDBTestSystemFactory implements TestSystemFactory {
 
         dataset.close();
 
-        optimiseTDB(datasetFolder);
+        //optimiseTDB(datasetFolder);
         long endNanoTime = System.nanoTime();
         LOGGER.info("Geosparql Jena Loading: Completed");
         return new DatasetLoadResult(TEST_SYSTEM_NAME, isCompleted, iteration, startNanoTime, endNanoTime, datasetLoadTimeResults);
@@ -176,14 +176,15 @@ public class GeosparqlJenaTDBTestSystemFactory implements TestSystemFactory {
         //TDB Optimisation file generation based on:
         //https://jena.apache.org/documentation/tdb/optimizer.html#generating-statistics-for-union-graphs
         //https://github.com/apache/jena/blob/master/jena-cmds/src/main/java/tdb2/tdbstats.java
-        //Throws Exception that datasetGraphTDB is closed.
+        //Throws Exception that dataset is closed if run immediately after running the dataset.
+        //Can run afterwards without any issue.
 
-        Dataset dataset = TDB2Factory.connectDataset(datasetFolder.getAbsolutePath());
+        Dataset dataset = TDBFactory.createDataset(datasetFolder.getAbsolutePath());
 
         DatasetGraph datasetGraph = dataset.asDatasetGraph();
         File statsFile = new File(datasetFolder, "stats.opt");
         try (FileOutputStream outputStream = new FileOutputStream(statsFile)) {
-            DatasetGraphTDB datasetGraphTDB = TDBInternal.getDatasetGraphTDB(datasetGraph);
+            DatasetGraphTDB datasetGraphTDB = TDBInternal.getDatasetGraphTDB(dataset);
 
             Node unionGraph = NodeFactory.createURI("urn:x-arq:UnionGraph");
             tdbstats.init();
