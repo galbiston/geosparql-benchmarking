@@ -13,7 +13,6 @@ import java.lang.invoke.MethodHandles;
 import java.time.Duration;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,10 +52,10 @@ public class IterationResult {
         this.startQueryDuration = queryResult.getStartQueryDuration();
         this.queryResultsDuration = queryResult.getQueryResultsDuration();
         this.startResultsDuration = queryResult.getStartResultsDuration();
-        this.resultsFileLabel = testSystemName + "-" + queryType + "-" + queryName + "-" + iteration;
+        this.resultsFileLabel = testSystemName + "-" + queryType + "-" + queryName + "-Iter#" + iteration;
 
         Integer nonEmptyCount = 0;
-        for (HashMap<String, String> result : queryResult.getResults()) {
+        for (List<VarValue> result : queryResult.getResults()) {
             if (!result.isEmpty()) {
                 nonEmptyCount++;
             }
@@ -134,7 +133,7 @@ public class IterationResult {
 
     public static final String[] SUMMARY_HEADER = {"TestSystem", "QueryType", "QueryName", "Iteration", "Completed", "ResultsCount", "NonEmptyResultsCount", "InitStartEndDuration", "StartQueryDuration", "QueryResultsDuration", "StartResultsDuration"};
 
-    public String[] writeSummary() {
+    public String[] writeSummaryLine() {
         List<String> line = new ArrayList<>(SUMMARY_HEADER.length);
         line.add(testSystemName);
         line.add(queryType);
@@ -150,12 +149,13 @@ public class IterationResult {
         return line.toArray(new String[line.size()]);
     }
 
-    public static final DateTimeFormatter FILE_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
+    public static final DateTimeFormatter FILE_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
 
-    public static final void writeSummaryFile(File systemResultsFolder, List<IterationResult> allIterationResults, String testTimestamp) {
+    public static final void writeSummaryFile(File runResultsFolder, List<IterationResult> allIterationResults, String testTimestamp) {
 
+        runResultsFolder.mkdir();
         String filename = "summary-" + testTimestamp + ".csv";
-        File summaryFile = new File(systemResultsFolder, filename);
+        File summaryFile = new File(runResultsFolder, filename);
         boolean summaryFileAlreadyExists = summaryFile.exists();
 
         try (CSVWriter writer = new CSVWriter(new FileWriter(summaryFile, true))) {
@@ -163,7 +163,7 @@ public class IterationResult {
                 writer.writeNext(SUMMARY_HEADER);
             }
             for (IterationResult iterationResult : allIterationResults) {
-                writer.writeNext(iterationResult.writeSummary());
+                writer.writeNext(iterationResult.writeSummaryLine());
             }
 
         } catch (IOException ex) {
@@ -182,40 +182,49 @@ public class IterationResult {
         return header.toArray(new String[header.size()]);
     }
 
-    public static final List<String[]> writeResults(IterationResult iterationResult, QueryResult queryResult) {
+    public static final List<String[]> writeResultLines(IterationResult iterationResult, List<List<VarValue>> varValuesList) {
 
         List<String[]> lines = new ArrayList<>();
-        List<String> resultsLabels = queryResult.getResultsVariableLabels();
-        for (HashMap<String, String> result : queryResult.getResults()) {
 
-            List<String> line = new ArrayList<>(4 + resultsLabels.size());
+        for (List<VarValue> varValues : varValuesList) {
+
+            List<String> line = new ArrayList<>(4 + varValues.size());
             line.add(iterationResult.testSystemName);
             line.add(iterationResult.queryType);
             line.add(iterationResult.queryName);
             line.add(iterationResult.iteration);
-            for (String label : resultsLabels) {
-                if (result.containsKey(label)) {
-                    String value = result.get(label);
-                    line.add(value);
-                } else {
-                    LOGGER.error("System: {}, Type: {}, Query: {}, Iteration: {} - Query Result does not contain expected label {}. Only different iterations of the same query should be used to write results file.", iterationResult.testSystemName, iterationResult.queryType, iterationResult.queryName, iterationResult.iteration, label);
-                }
+            for (VarValue varValue : varValues) {
+                line.add(varValue.getValue());
             }
-
             lines.add(line.toArray(new String[line.size()]));
         }
         return lines;
     }
 
-    public static final void writeResultsFile(File resultsFolder, IterationResult iterationResult, QueryResult queryResult, String testTimestamp) {
+    public static final void writeResultsFile(File resultsFolder, IterationResult iterationResult, QueryResult queryResult, String testTimestamp, Integer resultLineLimit) {
 
-        String filename = iterationResult.getResultFileLabel() + "-results-" + testTimestamp + ".csv";
-        File resultsFile = new File(resultsFolder, filename);
-        try (CSVWriter writer = new CSVWriter(new FileWriter(resultsFile))) {
-            writer.writeNext(IterationResult.getResultHeader(queryResult));
-            writer.writeAll(IterationResult.writeResults(iterationResult, queryResult));
-        } catch (IOException ex) {
-            LOGGER.error("IOException: {}", ex.getMessage());
+        if (resultLineLimit > 0) {
+            resultsFolder.mkdir();
+            Integer resultsSize = queryResult.getResultsCount();
+            int iterationCount = (resultsSize / resultLineLimit) + 1;
+            List<List<VarValue>> results = queryResult.getResults();
+            for (int i = 0; i < iterationCount; i++) {
+
+                int startIndex = i * resultLineLimit;
+                int endIndex = startIndex + resultLineLimit;
+                if (endIndex > resultsSize) {
+                    endIndex = resultsSize;
+                }
+                int fileCount = i + 1;
+                String filename = iterationResult.resultsFileLabel + "-File#" + fileCount + "-results-" + testTimestamp + ".csv";
+                File resultsFile = new File(resultsFolder, filename);
+                try (CSVWriter writer = new CSVWriter(new FileWriter(resultsFile))) {
+                    writer.writeNext(IterationResult.getResultHeader(queryResult));
+                    writer.writeAll(IterationResult.writeResultLines(iterationResult, results.subList(startIndex, endIndex)));
+                } catch (IOException ex) {
+                    LOGGER.error("IOException: {}", ex.getMessage());
+                }
+            }
         }
     }
 

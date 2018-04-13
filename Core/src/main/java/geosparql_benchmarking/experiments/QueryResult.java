@@ -7,7 +7,6 @@ package geosparql_benchmarking.experiments;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -22,7 +21,7 @@ public class QueryResult {
     private final Duration startQueryDuration;
     private final Duration queryResultsDuration;
     private final Duration startResultsDuration;
-    private final List<HashMap<String, String>> results;
+    private final List<List<VarValue>> results;
     private final Boolean isCompleted;
     private final Integer resultsVariableCount;
     private final List<String> resultsVariableLabels;
@@ -37,7 +36,7 @@ public class QueryResult {
      * @param results
      * @param isCompleted
      */
-    public QueryResult(long startNanoTime, long queryNanoTime, long resultsNanoTime, List<HashMap<String, String>> results, Boolean isCompleted) {
+    public QueryResult(long startNanoTime, long queryNanoTime, long resultsNanoTime, List<List<VarValue>> results, Boolean isCompleted) {
         this.startNanoTime = startNanoTime;
         this.queryNanoTime = queryNanoTime;
         this.resultsNanoTime = resultsNanoTime;
@@ -48,9 +47,13 @@ public class QueryResult {
         this.isCompleted = isCompleted;
 
         if (!results.isEmpty()) {
-            HashMap<String, String> result = results.get(0);
+            List<VarValue> result = results.get(0);
             this.resultsVariableCount = result.size();
-            this.resultsVariableLabels = new ArrayList<>(result.keySet());
+            this.resultsVariableLabels = new ArrayList<>(resultsVariableCount);
+            for (VarValue varValue : result) {
+                this.resultsVariableLabels.add(varValue.getVar());
+            }
+
         } else {
             this.resultsVariableCount = 0;
             this.resultsVariableLabels = new ArrayList<>();
@@ -103,7 +106,7 @@ public class QueryResult {
         return startResultsDuration;
     }
 
-    public List<HashMap<String, String>> getResults() {
+    public List<List<VarValue>> getResults() {
         return results;
     }
 

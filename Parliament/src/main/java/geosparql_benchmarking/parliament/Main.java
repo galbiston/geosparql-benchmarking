@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.time.Duration;
 import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,8 +34,8 @@ public class Main {
         //ParliamentTestSystemFactory.clearDataset(PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
         //ParliamentTestSystemFactory.loadDataset(datasetMap);
         ParliamentTestSystemFactory testSystemFactory = new ParliamentTestSystemFactory(PARLIAMENT_RESULTS_FOLDER_NAME, PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
-        runParliament(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP, BenchmarkParameters.OUTPUT_QUERY_RESULTS);
-        //runParliament(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, QueryLoader.loadNonTopologicalFunctionsQuery_3(), BenchmarkParameters.OUTPUT_QUERY_RESULTS);
+        BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP, BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
+        //runParliament(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, QueryLoader.loadNonTopologicalFunctionsQuery_3(), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
         //Data Loading
         //runDatasetLoad(testSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
 
@@ -44,11 +43,6 @@ public class Main {
 
     public static void runDatasetLoad(ParliamentTestSystemFactory testSystemFactory, Integer iterations, TreeMap<String, File> datasetMap) {
         BenchmarkExecution.runDatasetLoad(testSystemFactory, iterations, datasetMap);
-    }
-
-    public static void runParliament(ParliamentTestSystemFactory testSystemFactory, Integer iterations, Duration timeout, TreeMap<String, String> queryMap, Boolean isOutputQueryResults) {
-        BenchmarkExecution.runWarm(testSystemFactory, iterations, timeout, queryMap, isOutputQueryResults);
-        BenchmarkExecution.runCold(testSystemFactory, iterations, timeout, queryMap, isOutputQueryResults);
     }
 
     private static void rdfsParliamentTest() {

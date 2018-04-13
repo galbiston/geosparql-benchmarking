@@ -10,7 +10,6 @@ import geosparql_benchmarking.experiments.TestSystemFactory;
 import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.time.Duration;
 import java.util.TreeMap;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
@@ -56,17 +55,12 @@ public class Main {
         //StrabonTestSystemFactory.loadDataset(datasetMap, testSystemFactory);
         //Back up made: https://www.postgresql.org/docs/10/static/backup-dump.html
         //rdfsStrabonTest(testSystemFactory);
-        runStrabon(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP, BenchmarkParameters.OUTPUT_QUERY_RESULTS);
-        //runStrabon(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, QueryLoader.loadNonTopologicalFunctionsQuery_3(), BenchmarkParameters.OUTPUT_QUERY_RESULTS);
+        BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP, BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
+        //BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, QueryLoader.loadNonTopologicalFunctionsQuery_3(), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
     }
 
     public static void runDatasetLoad(TestSystemFactory testSystemFactory, Integer iterations, TreeMap<String, File> datasetMap) {
         BenchmarkExecution.runDatasetLoad(testSystemFactory, iterations, datasetMap);
-    }
-
-    public static void runStrabon(StrabonTestSystemFactory testSystemFactory, Integer iterations, Duration timeout, TreeMap<String, String> queryMap, Boolean isOutputQueryResults) {
-        BenchmarkExecution.runWarm(testSystemFactory, iterations, timeout, queryMap, isOutputQueryResults);
-        BenchmarkExecution.runCold(testSystemFactory, iterations, timeout, queryMap, isOutputQueryResults);
     }
 
     private static void rdfsStrabonTest(StrabonTestSystemFactory testSystemFactory) {

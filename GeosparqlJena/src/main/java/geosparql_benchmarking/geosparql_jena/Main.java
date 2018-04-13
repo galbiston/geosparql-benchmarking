@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.time.Duration;
 import java.util.TreeMap;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
@@ -51,17 +50,19 @@ public class Main {
         //GeosparqlJenaTDBTestSystemFactory.clearDataset(GEOSPARQL_JENA_TDB_FOLDER);
         //GeosparqlJenaTDBTestSystemFactory.loadDataset(GEOSPARQL_JENA_TDB_FOLDER, datasetMap, inferenceEnabled);
         GeosparqlJenaTDBTestSystemFactory testSystemFactory = new GeosparqlJenaTDBTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_TDB_RESULTS_FOLDER_NAME, inferenceEnabled);
-        runJena(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP, BenchmarkParameters.OUTPUT_QUERY_RESULTS);
+        BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP, BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
 
-        //runJena(testSystemFactory, 1, BenchmarkParameters.TIMEOUT, QueryLoader.loadNonTopologicalFunctionsQuery_3(), BenchmarkParameters.OUTPUT_QUERY_RESULTS);
+        //BenchmarkExecution.runBoth(testSystemFactory, 1, BenchmarkParameters.TIMEOUT, QueryLoader.loadNonTopologicalFunctionsQuery_3(), BenchmarkParameters.RESULT_LINE_LIMIT_5000);
         //rdfsJenaTDBTest();
+        //
         //Memory
         Dataset memDataset = DatasetFactory.createTxnMem();
         GeosparqlJenaMemTestSystemFactory.loadDataset(datasetMap, inferenceEnabled, memDataset);
         GeosparqlJenaMemTestSystemFactory memTestSystemFactory = new GeosparqlJenaMemTestSystemFactory(memDataset, GEOSPARL_JENA_MEM_RESULTS_FOLDER_NAME, inferenceEnabled);
-        runJena(memTestSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP, BenchmarkParameters.OUTPUT_QUERY_RESULTS);
+        BenchmarkExecution.runBoth(memTestSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP, BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
 
-        //runJena(memTestSystemFactory, 1, BenchmarkParameters.TIMEOUT, QueryLoader.loadNonTopologicalFunctionsQuery_3(), BenchmarkParameters.OUTPUT_QUERY_RESULTS);
+        //
+        //runJena(memTestSystemFactory, 1, BenchmarkParameters.TIMEOUT, QueryLoader.loadNonTopologicalFunctionsQuery_3(), , BenchmarkParameters.RESULT_LINE_LIMIT_5000);
         //Data Loading
         //runDatasetLoad(testSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
         //runDatasetLoad(memTestSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
@@ -71,11 +72,6 @@ public class Main {
 
     public static void runDatasetLoad(TestSystemFactory testSystemFactory, Integer iterations, TreeMap<String, File> datasetMap) {
         BenchmarkExecution.runDatasetLoad(testSystemFactory, iterations, datasetMap);
-    }
-
-    public static void runJena(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, TreeMap<String, String> queryMap, Boolean isOutputQueryResults) {
-        BenchmarkExecution.runWarm(testSystemFactory, iterations, timeout, queryMap, isOutputQueryResults);
-        BenchmarkExecution.runCold(testSystemFactory, iterations, timeout, queryMap, isOutputQueryResults);
     }
 
     private static void rdfsJenaTDBTest() {

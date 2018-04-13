@@ -7,11 +7,11 @@ import eu.earthobservatory.runtime.postgis.Strabon;
 import eu.earthobservatory.utils.Format;
 import geosparql_benchmarking.experiments.QueryResult;
 import geosparql_benchmarking.experiments.TestSystem;
+import geosparql_benchmarking.experiments.VarValue;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -349,7 +349,7 @@ public class StrabonTestSystem implements TestSystem {
 
             LOGGER.info("Query Evaluation: Started");
             Boolean isComplete = true;
-            List<HashMap<String, String>> results = new ArrayList<>();
+            List<List<VarValue>> results = new ArrayList<>();
             long startNanoTime = System.nanoTime();
             long queryNanoTime;
             try {
@@ -363,11 +363,12 @@ public class StrabonTestSystem implements TestSystem {
 
                     BindingSet bindingSet = tupleQueryResult.next();
                     List<String> bindingNames = tupleQueryResult.getBindingNames();
-                    HashMap<String, String> result = new HashMap<>();
+                    List<VarValue> result = new ArrayList<>();
                     for (String binding : bindingNames) {
                         Value value = bindingSet.getValue(binding);
                         String valueStr = value.stringValue();
-                        result.put(binding, valueStr);
+                        VarValue varValue = new VarValue(binding, valueStr);
+                        result.add(varValue);
                     }
                     results.add(result);
                 }

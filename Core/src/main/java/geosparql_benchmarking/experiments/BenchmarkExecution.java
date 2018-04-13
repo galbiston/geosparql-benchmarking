@@ -25,6 +25,19 @@ public class BenchmarkExecution {
     public static final String COLD_RUN_RESULTS_FOLDER_NAME = "cold_run";
 
     /**
+     *
+     * @param testSystemFactory
+     * @param iterations
+     * @param timeout
+     * @param queryMap
+     * @param resultsLineLimit Set to zero for no detailed results output.
+     */
+    public static void runBoth(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, TreeMap<String, String> queryMap, Integer resultsLineLimit) {
+        BenchmarkExecution.runWarm(testSystemFactory, iterations, timeout, queryMap, resultsLineLimit);
+        BenchmarkExecution.runCold(testSystemFactory, iterations, timeout, queryMap, resultsLineLimit);
+    }
+
+    /**
      * Iterate through each query for the test system.<br>
      * An new instance of the test system will be obtained for each query.<br>
      * It is initialised, warmed up by a single query execution that is ignored,
@@ -34,9 +47,9 @@ public class BenchmarkExecution {
      * @param iterations
      * @param timeout
      * @param queryMap
-     * @param isOutputQueryResults
+     * @param resultsLineLimit Set to zero for no detailed results output.
      */
-    public static final void runWarm(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, TreeMap<String, String> queryMap, Boolean isOutputQueryResults) {
+    public static final void runWarm(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, TreeMap<String, String> queryMap, Integer resultsLineLimit) {
 
         String testSystemName = testSystemFactory.getTestSystemName();
         String testTimestamp = LocalDateTime.now().format(IterationResult.FILE_DATE_TIME_FORMAT);
@@ -50,11 +63,7 @@ public class BenchmarkExecution {
             String[] queryLabel = entry.getKey().split("#");
             String queryType = queryLabel[0];
             String queryName = queryLabel[1];
-            File resultsFolder = null;
-            if (isOutputQueryResults) {
-                resultsFolder = new File(runResultsFolder, queryType);
-                resultsFolder.mkdir();
-            }
+            File resultsFolder = new File(runResultsFolder, queryType);
             String queryString = entry.getValue();
 
             long initStartNanoTime = System.nanoTime();
@@ -76,10 +85,8 @@ public class BenchmarkExecution {
                     iterationResults.add(iterationResult);
 
                     if (queryResult.isCompleted()) {
-                        if (isOutputQueryResults) {
-                            //Write results for all iterations for each query to own file.
-                            IterationResult.writeResultsFile(resultsFolder, iterationResult, queryResult, testTimestamp);
-                        }
+                        //Write results for all iterations for each query to own file.
+                        IterationResult.writeResultsFile(resultsFolder, iterationResult, queryResult, testTimestamp, resultsLineLimit);
                     } else {
                         LOGGER.warn("System: {}, Query: {}, Type: {},  Iteration: {} - Did not complete.", testSystemName, queryName, queryType, i);
                         break;
@@ -108,9 +115,9 @@ public class BenchmarkExecution {
      * @param iterations
      * @param timeout
      * @param queryMap
-     * @param isOutputQueryResults
+     * @param resultsLineLimit Set to zero for no detailed results output.
      */
-    public static final void runCold(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, TreeMap<String, String> queryMap, Boolean isOutputQueryResults) {
+    public static final void runCold(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, TreeMap<String, String> queryMap, Integer resultsLineLimit) {
 
         String testSystemName = testSystemFactory.getTestSystemName();
         String testTimestamp = LocalDateTime.now().format(IterationResult.FILE_DATE_TIME_FORMAT);
@@ -124,11 +131,8 @@ public class BenchmarkExecution {
             String[] queryLabel = entry.getKey().split("#");
             String queryType = queryLabel[0];
             String queryName = queryLabel[1];
-            File resultsFolder = null;
-            if (isOutputQueryResults) {
-                resultsFolder = new File(runResultsFolder, queryType);
-                resultsFolder.mkdir();
-            }
+            File resultsFolder = new File(runResultsFolder, queryType);
+
             String queryString = entry.getValue();
 
             //Benchmark executions.
@@ -146,10 +150,10 @@ public class BenchmarkExecution {
 
                     iterationResults.add(iterationResult);
                     if (queryResult.isCompleted()) {
-                        if (isOutputQueryResults) {
-                            //Write results for all iterations for each query to own file.
-                            IterationResult.writeResultsFile(resultsFolder, iterationResult, queryResult, testTimestamp);
-                        }
+
+                        //Write results for all iterations for each query to own file.
+                        IterationResult.writeResultsFile(resultsFolder, iterationResult, queryResult, testTimestamp, resultsLineLimit);
+
                     } else {
                         LOGGER.warn("System: {}, Query: {}, Type: {}, Iteration: {} - Did not complete.", testSystemName, queryName, queryType, i);
                         break;
@@ -183,7 +187,7 @@ public class BenchmarkExecution {
             LOGGER.info("------Dataset Load Run- System: {}, Iteration: {} - Completed------", testSystemName, i);
         }
 
-        DatasetLoadResult.writeResultsFile(resultsFolder, datasetLoadResults);
+        DatasetLoadResult.writeSummaryFile(resultsFolder, datasetLoadResults);
 
         return datasetLoadResults;
     }

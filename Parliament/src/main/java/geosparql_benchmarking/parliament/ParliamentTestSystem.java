@@ -29,10 +29,10 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
 import geosparql_benchmarking.experiments.QueryResult;
 import geosparql_benchmarking.experiments.TestSystem;
+import geosparql_benchmarking.experiments.VarValue;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -189,7 +189,7 @@ public class ParliamentTestSystem implements TestSystem {
 
             LOGGER.info("Query Evaluation: Started");
             Boolean isComplete = true;
-            List<HashMap<String, String>> results = new ArrayList<>();
+            List<List<VarValue>> results = new ArrayList<>();
             long startNanoTime = System.nanoTime();
             long queryNanoTime;
             QueryExecution qexec = null;
@@ -200,7 +200,7 @@ public class ParliamentTestSystem implements TestSystem {
                 while (rs.hasNext()) {
                     QuerySolution querySolution = rs.next();
                     Iterator<String> varNames = querySolution.varNames();
-                    HashMap<String, String> result = new HashMap<>();
+                    List<VarValue> result = new ArrayList<>();
                     while (varNames.hasNext()) {
                         String varName = varNames.next();
                         String valueStr;
@@ -216,7 +216,8 @@ public class ParliamentTestSystem implements TestSystem {
                             valueStr = anon.getBlankNodeLabel();
                             LOGGER.error("Anon Node result: " + valueStr);
                         }
-                        result.put(varName, valueStr);
+                        VarValue varValue = new VarValue(varName, valueStr);
+                        result.add(varValue);
                     }
                     results.add(result);
                 }

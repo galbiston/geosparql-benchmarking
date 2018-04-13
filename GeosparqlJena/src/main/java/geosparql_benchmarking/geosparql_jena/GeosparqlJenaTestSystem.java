@@ -7,12 +7,12 @@ package geosparql_benchmarking.geosparql_jena;
 
 import geosparql_benchmarking.experiments.QueryResult;
 import geosparql_benchmarking.experiments.TestSystem;
+import geosparql_benchmarking.experiments.VarValue;
 import implementation.GeoSPARQLSupport;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -136,7 +136,7 @@ public class GeosparqlJenaTestSystem implements TestSystem {
         public void runQuery() {
 
             Boolean isComplete = true;
-            List<HashMap<String, String>> results = new ArrayList<>();
+            List<List<VarValue>> results = new ArrayList<>();
             long startNanoTime = System.nanoTime();
             long queryNanoTime;
             dataset.begin(ReadWrite.READ);
@@ -146,7 +146,7 @@ public class GeosparqlJenaTestSystem implements TestSystem {
                 while (rs.hasNext()) {
                     QuerySolution querySolution = rs.next();
                     Iterator<String> varNames = querySolution.varNames();
-                    HashMap<String, String> result = new HashMap<>();
+                    List<VarValue> result = new ArrayList<>();
 
                     while (varNames.hasNext()) {
                         String varName = varNames.next();
@@ -163,12 +163,11 @@ public class GeosparqlJenaTestSystem implements TestSystem {
                             valueStr = anon.getBlankNodeLabel();
                             LOGGER.error("Anon Node result: {}", valueStr);
                         }
-                        result.put(varName, valueStr);
-
+                        VarValue varValue = new VarValue(varName, valueStr);
+                        result.add(varValue);
                     }
                     results.add(result);
                 }
-
             } catch (Exception ex) {
                 LOGGER.error("Exception: {}", ex.getMessage());
                 queryNanoTime = startNanoTime;
