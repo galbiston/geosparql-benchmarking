@@ -38,3 +38,9 @@ dependencies {
     //SLF4J Logback
     compile "ch.qos.logback:logback-classic:$logbackVersion"
 }
+
+//Ensure the environment has the required variable paths set. Otherwise UnsatisfiedLinkError will occur.
+run.doFirst {
+    environment 'PARLIAMENT_CONFIG_PATH', 'parliament-release\\ParliamentConfig.txt'
+    environment 'Path', 'parliament-release'
+}
