@@ -7,7 +7,6 @@ import geosparql_benchmarking.BenchmarkParameters;
 import geosparql_benchmarking.DatasetSources;
 import geosparql_benchmarking.GraphURI;
 import geosparql_benchmarking.experiments.BenchmarkExecution;
-import geosparql_benchmarking.experiments.QueryLoader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,8 +35,8 @@ public class Main {
         //ParliamentTestSystemFactory.clearDataset(PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
         //ParliamentTestSystemFactory.loadDataset(datasetMap);
         ParliamentTestSystemFactory testSystemFactory = new ParliamentTestSystemFactory(PARLIAMENT_RESULTS_FOLDER_NAME, PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
-        //runParliament(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP);
-        runParliament(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, QueryLoader.loadNonTopologicalFunctionsQuery_3());
+        runParliament(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP, BenchmarkParameters.OUTPUT_QUERY_RESULTS);
+        //runParliament(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, QueryLoader.loadNonTopologicalFunctionsQuery_3(), BenchmarkParameters.OUTPUT_QUERY_RESULTS);
         //Data Loading
         //runDatasetLoad(testSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
 
@@ -47,9 +46,9 @@ public class Main {
         BenchmarkExecution.runDatasetLoad(testSystemFactory, iterations, datasetMap);
     }
 
-    public static void runParliament(ParliamentTestSystemFactory testSystemFactory, Integer iterations, Duration timeout, TreeMap<String, String> queryMap) {
-        BenchmarkExecution.runWarm(testSystemFactory, iterations, timeout, queryMap);
-        BenchmarkExecution.runCold(testSystemFactory, iterations, timeout, queryMap);
+    public static void runParliament(ParliamentTestSystemFactory testSystemFactory, Integer iterations, Duration timeout, TreeMap<String, String> queryMap, Boolean isOutputQueryResults) {
+        BenchmarkExecution.runWarm(testSystemFactory, iterations, timeout, queryMap, isOutputQueryResults);
+        BenchmarkExecution.runCold(testSystemFactory, iterations, timeout, queryMap, isOutputQueryResults);
     }
 
     private static void rdfsParliamentTest() {

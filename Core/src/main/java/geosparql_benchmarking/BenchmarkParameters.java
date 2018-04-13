@@ -15,8 +15,9 @@ import java.util.TreeMap;
  */
 public class BenchmarkParameters {
 
-    public static final Integer ITERATIONS = 10; //1;
+    public static final Integer ITERATIONS = 5; //1;
     public static final Duration TIMEOUT = Duration.ofSeconds(3600);
+    public static final Boolean OUTPUT_QUERY_RESULTS = false;
 
     //public static final TreeMap<String, String> QUERY_MAP = QueryLoader.loadSpatialSelectionsQuery_14();
     //public static final TreeMap<String, String> QUERY_MAP = QueryLoader.loadNonTopologicalFunctionsQueries();

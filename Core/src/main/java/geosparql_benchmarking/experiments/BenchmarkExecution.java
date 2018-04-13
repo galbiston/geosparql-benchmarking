@@ -34,9 +34,9 @@ public class BenchmarkExecution {
      * @param iterations
      * @param timeout
      * @param queryMap
-     * @return
+     * @param isOutputQueryResults
      */
-    public static final void runWarm(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, TreeMap<String, String> queryMap) {
+    public static final void runWarm(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, TreeMap<String, String> queryMap, Boolean isOutputQueryResults) {
 
         String testSystemName = testSystemFactory.getTestSystemName();
         String testTimestamp = LocalDateTime.now().format(IterationResult.FILE_DATE_TIME_FORMAT);
@@ -50,8 +50,11 @@ public class BenchmarkExecution {
             String[] queryLabel = entry.getKey().split("#");
             String queryType = queryLabel[0];
             String queryName = queryLabel[1];
-            File resultsFolder = new File(runResultsFolder, queryType);
-            resultsFolder.mkdir();
+            File resultsFolder = null;
+            if (isOutputQueryResults) {
+                resultsFolder = new File(runResultsFolder, queryType);
+                resultsFolder.mkdir();
+            }
             String queryString = entry.getValue();
 
             long initStartNanoTime = System.nanoTime();
@@ -70,10 +73,14 @@ public class BenchmarkExecution {
                     LOGGER.info("------Query Iteration - System: {}, Query: {}, Type: {}, Iteration: {} - Completed------", testSystemName, queryName, queryType, i);
 
                     IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, i, queryResult, initStartNanoTime, initEndNanoTime);
-                    //Write results for all iterations for each query to own file.
-                    IterationResult.writeResultsFile(resultsFolder, iterationResult, queryResult, testTimestamp);
                     iterationResults.add(iterationResult);
-                    if (!queryResult.isCompleted()) {
+
+                    if (queryResult.isCompleted()) {
+                        if (isOutputQueryResults) {
+                            //Write results for all iterations for each query to own file.
+                            IterationResult.writeResultsFile(resultsFolder, iterationResult, queryResult, testTimestamp);
+                        }
+                    } else {
                         LOGGER.warn("System: {}, Query: {}, Type: {},  Iteration: {} - Did not complete.", testSystemName, queryName, queryType, i);
                         break;
                     }
@@ -101,9 +108,9 @@ public class BenchmarkExecution {
      * @param iterations
      * @param timeout
      * @param queryMap
-     * @return
+     * @param isOutputQueryResults
      */
-    public static final void runCold(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, TreeMap<String, String> queryMap) {
+    public static final void runCold(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, TreeMap<String, String> queryMap, Boolean isOutputQueryResults) {
 
         String testSystemName = testSystemFactory.getTestSystemName();
         String testTimestamp = LocalDateTime.now().format(IterationResult.FILE_DATE_TIME_FORMAT);
@@ -117,8 +124,11 @@ public class BenchmarkExecution {
             String[] queryLabel = entry.getKey().split("#");
             String queryType = queryLabel[0];
             String queryName = queryLabel[1];
-            File resultsFolder = new File(runResultsFolder, queryType);
-            resultsFolder.mkdir();
+            File resultsFolder = null;
+            if (isOutputQueryResults) {
+                resultsFolder = new File(runResultsFolder, queryType);
+                resultsFolder.mkdir();
+            }
             String queryString = entry.getValue();
 
             //Benchmark executions.
@@ -133,10 +143,14 @@ public class BenchmarkExecution {
                     LOGGER.info("------Cold Iteration - System: {}, Query: {}, Type: {}, Iteration: {} - Completed------", testSystemName, queryName, queryType, i);
 
                     IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, i, queryResult, initStartNanoTime, initEndNanoTime);
-                    //Write results for all iterations for each query to own file.
-                    IterationResult.writeResultsFile(resultsFolder, iterationResult, queryResult, testTimestamp);
+
                     iterationResults.add(iterationResult);
-                    if (!queryResult.isCompleted()) {
+                    if (queryResult.isCompleted()) {
+                        if (isOutputQueryResults) {
+                            //Write results for all iterations for each query to own file.
+                            IterationResult.writeResultsFile(resultsFolder, iterationResult, queryResult, testTimestamp);
+                        }
+                    } else {
                         LOGGER.warn("System: {}, Query: {}, Type: {}, Iteration: {} - Did not complete.", testSystemName, queryName, queryType, i);
                         break;
                     }
