@@ -151,7 +151,7 @@ public class IterationResult {
 
     public static final DateTimeFormatter FILE_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
 
-    public static final void writeSummaryFile(File runResultsFolder, List<IterationResult> allIterationResults, String testTimestamp) {
+    public static final void writeSummaryFile(File runResultsFolder, IterationResult iterationResult, String testTimestamp) {
 
         runResultsFolder.mkdir();
         String filename = "summary-" + testTimestamp + ".csv";
@@ -162,9 +162,7 @@ public class IterationResult {
             if (!summaryFileAlreadyExists) {
                 writer.writeNext(SUMMARY_HEADER);
             }
-            for (IterationResult iterationResult : allIterationResults) {
-                writer.writeNext(iterationResult.writeSummaryLine());
-            }
+            writer.writeNext(iterationResult.writeSummaryLine());
 
         } catch (IOException ex) {
             LOGGER.error("IOException: {}", ex.getMessage());

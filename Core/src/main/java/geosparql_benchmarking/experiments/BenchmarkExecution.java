@@ -58,7 +58,6 @@ public class BenchmarkExecution {
         LOGGER.info("------Warm Run - System: {}, Folder: {} - Started------", testSystemName, runResultsFolder);
 
         for (QueryCase queryCase : queryCases) {
-            List<IterationResult> iterationResults = new ArrayList<>(iterations);
             String queryName = queryCase.getQueryName();
             String queryType = queryCase.getQueryType();
             String queryString = queryCase.getQueryString();
@@ -81,7 +80,8 @@ public class BenchmarkExecution {
                     LOGGER.info("------Query Iteration - System: {}, Query: {}, Type: {}, Iteration: {} - Completed------", testSystemName, queryName, queryType, i);
 
                     IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, i, queryResult, initStartNanoTime, initEndNanoTime);
-                    iterationResults.add(iterationResult);
+                    //Write summary for all queries and iterations performed to a single file. Reduce footprint by writing immediately.
+                    IterationResult.writeSummaryFile(runResultsFolder, iterationResult, testTimestamp);
 
                     if (queryResult.isCompleted()) {
                         //Write results for all iterations for each query to own file.
@@ -95,9 +95,6 @@ public class BenchmarkExecution {
             } catch (Exception ex) {
                 LOGGER.error("Exception: {}", ex.getMessage());
             }
-
-            //Write summary for all queries and iterations performed to a single file.
-            IterationResult.writeSummaryFile(runResultsFolder, iterationResults, testTimestamp);
         }
 
         LOGGER.info("------Warm Run - System: {}, Folder: {} - Completed------", testSystemFactory.getTestSystemName(), testSystemFactory.getResultsFolder());
@@ -126,7 +123,6 @@ public class BenchmarkExecution {
         LOGGER.info("------Cold Run - System: {}, Folder: {} - Started------", testSystemName, runResultsFolder);
 
         for (QueryCase queryCase : queryCases) {
-            List<IterationResult> iterationResults = new ArrayList<>(iterations);
             String queryName = queryCase.getQueryName();
             String queryType = queryCase.getQueryType();
             String queryString = queryCase.getQueryString();
@@ -144,13 +140,12 @@ public class BenchmarkExecution {
                     LOGGER.info("------Cold Iteration - System: {}, Query: {}, Type: {}, Iteration: {} - Completed------", testSystemName, queryName, queryType, i);
 
                     IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, i, queryResult, initStartNanoTime, initEndNanoTime);
+                    //Write summary for all queries and iterations performed to a single file. Reduce footprint by writing immediately.
+                    IterationResult.writeSummaryFile(runResultsFolder, iterationResult, testTimestamp);
 
-                    iterationResults.add(iterationResult);
                     if (queryResult.isCompleted()) {
-
                         //Write results for all iterations for each query to own file.
                         IterationResult.writeResultsFile(resultsFolder, iterationResult, queryResult, testTimestamp, resultsLineLimit);
-
                     } else {
                         LOGGER.warn("System: {}, Query: {}, Type: {}, Iteration: {} - Did not complete.", testSystemName, queryName, queryType, i);
                         break;
@@ -159,9 +154,6 @@ public class BenchmarkExecution {
                     LOGGER.error("Exception: {}", ex.getMessage());
                 }
             }
-
-            //Write summary for all queries and iterations performed to a single file.
-            IterationResult.writeSummaryFile(runResultsFolder, iterationResults, testTimestamp);
         }
 
         LOGGER.info("------Cold Run - System: {}, Folder: {} - Completed------", testSystemFactory.getTestSystemName(), testSystemFactory.getResultsFolder());
