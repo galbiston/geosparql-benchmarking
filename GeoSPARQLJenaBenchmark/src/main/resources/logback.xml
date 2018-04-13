@@ -2,6 +2,7 @@
 
     <logger name="hsqldb.db.HSQLDB4AD417742A.ENGINE" level="ERROR" />
     <logger name="org.apache.jena" level="WARN" />
+    <logger name="TDB" level="WARN" />
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 
