@@ -1,9 +1,5 @@
 <configuration>
 
-    <logger name="support.NetworkUtils" level="ERROR" />
-    <logger name="hsqldb.db.HSQLDB4AD417742A.ENGINE" level="ERROR" />
-    <logger name="org.apache.jena.riot" level="ERROR" />
-
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -16,20 +12,24 @@
     </appender>
 
     <property name="LOG_FOLDER" value="./logs" />
-    <timestamp key="TIME_STAMP" datePattern="yyyyMMdd'T'HHmmss"/>
-    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>${LOG_FOLDER}/GeoSPARQL_Benchmarking-${TIME_STAMP}.log</file>
-        <append>false</append>
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_FOLDER}/Strabon_Benchmarking-%d{yyyy-MM-dd'T'HHmmss}.log</fileNamePattern>
+            <maxHistory>5</maxHistory>
+            <totalSizeCap>50MB</totalSizeCap>
+        </rollingPolicy>
         <!-- set immediateFlush to false for much higher logging throughput -->
-        <immediateFlush>false</immediateFlush>
-
+        <immediateFlush>true</immediateFlush>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>10MB</maxFileSize>
+        </triggeringPolicy>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg%n</pattern>
             <!--<pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>-->
         </encoder>
     </appender>
 
-    <root level="info">
+    <root level="debug">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
     </root>
