@@ -34,5 +34,5 @@ postgresql.conf - Tuning of Postgres requires modification of this file in Postr
 Benchmarking Versions
 
 GeosparqlJena - 1.0.0 (Apache Jena 3.7.0)
-Parliament - 2.7.10
-Strabon - 3.3.2-SNAPSHOT (PostgreSQL 10.3, PostGIS 2.4) 
+Parliament - 2.7.10 released 2016-01-06
+Strabon - 3.3.2-SNAPSHOT on 2018-03-22 (PostgreSQL 10.3, PostGIS 2.4) - No releases could be found.
