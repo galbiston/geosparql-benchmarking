@@ -59,29 +59,26 @@ public class BenchmarkExecution {
                 long initEndNanoTime = System.nanoTime();
                 queryString = testSystem.translateQuery(queryString);
                 //Warm Up execution.
-                LOGGER.info("------Warmup Query - System: {}, Type: {}, Query: {}, Started------", testSystemName, queryType, queryName);
-                QueryResult queryResult = testSystem.runQueryWithTimeout(queryString, timeout);
-                LOGGER.info("------Warmup Query - System: {}, Type: {}, Query: {},Completed------", testSystemName, queryType, queryName);
+                LOGGER.info("------Warmup Query - System: {}, Query: {}, Type: {} - Started------", testSystemName, queryName, queryType);
+                testSystem.runQueryWithTimeout(queryString, timeout);
+                LOGGER.info("------Warmup Query - System: {}, Query: {}, Type: {} - Completed------", testSystemName, queryName, queryType);
 
-                if (queryResult.isCompleted()) {
-                    //Benchmark executions.
-                    for (int i = 1; i <= iterations; i++) {
-                        LOGGER.info("------Query Iteration - System: {}, Type: {}, Query: {}, Iteration: {} - Started------", testSystemName, queryType, queryName, i);
-                        queryResult = testSystem.runQueryWithTimeout(queryString, timeout);
-                        LOGGER.info("------Query Iteration - System: {}, Type: {}, Query: {}, Iteration: {} - Completed------", testSystemName, queryType, queryName, i);
-                        if (queryResult.isCompleted()) {
-                            IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, i, queryResult, initStartNanoTime, initEndNanoTime);
-                            //Write results for all iterations for each query to own file.
-                            IterationResult.writeResultsFile(resultsFolder, iterationResult, queryResult, testTimestamp);
-                            iterationResults.add(iterationResult);
-                        } else {
-                            LOGGER.error("System: {}, Type: {}, Query: {}, Iteration: {} - Did not complete. Skipping remaining iterations.", testSystemName, queryType, queryName, i);
-                            break;
-                        }
+                //Benchmark executions.
+                for (int i = 1; i <= iterations; i++) {
+                    LOGGER.info("------Query Iteration - System: {}, Query: {}, Type: {}, Iteration: {} - Started------", testSystemName, queryName, queryType, i);
+                    QueryResult queryResult = testSystem.runQueryWithTimeout(queryString, timeout);
+                    LOGGER.info("------Query Iteration - System: {}, Query: {}, Type: {}, Iteration: {} - Completed------", testSystemName, queryName, queryType, i);
+
+                    IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, i, queryResult, initStartNanoTime, initEndNanoTime);
+                    //Write results for all iterations for each query to own file.
+                    IterationResult.writeResultsFile(resultsFolder, iterationResult, queryResult, testTimestamp);
+                    iterationResults.add(iterationResult);
+                    if (!queryResult.isCompleted()) {
+                        LOGGER.warn("System: {}, Query: {}, Type: {},  Iteration: {} - Did not complete.", testSystemName, queryName, queryType, i);
+                        break;
                     }
-                } else {
-                    LOGGER.error("System: {}, Query: {} - Did not complete warm up. Skipping all iterations.", testSystemName, queryName);
                 }
+
             } catch (Exception ex) {
                 LOGGER.error("Exception: {}", ex.getMessage());
             }
@@ -131,16 +128,16 @@ public class BenchmarkExecution {
                     long initEndNanoTime = System.nanoTime();
                     queryString = testSystem.translateQuery(queryString);
 
-                    LOGGER.info("------Cold Iteration - System: {}, Type: {}, Query: {}, Iteration: {} - Started------", testSystemName, queryType, queryName, i);
+                    LOGGER.info("------Cold Iteration - System: {}, Query: {}, Type: {}, Iteration: {} - Started------", testSystemName, queryName, queryType, i);
                     QueryResult queryResult = testSystem.runQueryWithTimeout(queryString, timeout);
-                    LOGGER.info("------Cold Iteration - System: {}, Type: {}, Query: {}, Iteration: {} - Completed------", testSystemName, queryType, queryName, i);
-                    if (queryResult.isCompleted()) {
-                        IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, i, queryResult, initStartNanoTime, initEndNanoTime);
-                        //Write results for all iterations for each query to own file.
-                        IterationResult.writeResultsFile(resultsFolder, iterationResult, queryResult, testTimestamp);
-                        iterationResults.add(iterationResult);
-                    } else {
-                        LOGGER.error("System: {}, Type: {}, Query: {}, Iteration: {} - Did not complete. Skipping remaining iterations.", testSystemName, queryType, queryName, i);
+                    LOGGER.info("------Cold Iteration - System: {}, Query: {}, Type: {}, Iteration: {} - Completed------", testSystemName, queryName, queryType, i);
+
+                    IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, i, queryResult, initStartNanoTime, initEndNanoTime);
+                    //Write results for all iterations for each query to own file.
+                    IterationResult.writeResultsFile(resultsFolder, iterationResult, queryResult, testTimestamp);
+                    iterationResults.add(iterationResult);
+                    if (!queryResult.isCompleted()) {
+                        LOGGER.warn("System: {}, Query: {}, Type: {}, Iteration: {} - Did not complete.", testSystemName, queryName, queryType, i);
                         break;
                     }
                 } catch (Exception ex) {
@@ -159,14 +156,17 @@ public class BenchmarkExecution {
 
         List<DatasetLoadResult> datasetLoadResults = new ArrayList<>();
         File resultsFolder = testSystemFactory.getResultsFolder();
+        String testSystemName = testSystemFactory.getTestSystemName();
         for (int i = 1; i <= iterations; i++) {
-            LOGGER.info("------Dataset Load Run- System: {}, Iteration: {} - Started------", testSystemFactory.getTestSystemName(), i);
+            LOGGER.info("------Dataset Load Run- System: {}, Iteration: {} - Started------", testSystemName, i);
             boolean isClear = testSystemFactory.clearDataset();
             if (isClear) {
                 DatasetLoadResult datasetLoadResult = testSystemFactory.loadDataset(datasetMap, i);
                 datasetLoadResults.add(datasetLoadResult);
+            } else {
+                LOGGER.error("------Dataset Load Run- System: {}, Iteration: {} - Did not clear.------", testSystemName, i);
             }
-            LOGGER.info("------Dataset Load Run- System: {}, Iteration: {} - Completed------", testSystemFactory.getTestSystemName(), i);
+            LOGGER.info("------Dataset Load Run- System: {}, Iteration: {} - Completed------", testSystemName, i);
         }
 
         DatasetLoadResult.writeResultsFile(resultsFolder, datasetLoadResults);
