@@ -45,18 +45,20 @@ public class Main {
         //Built using PGAdmin tool to create a PostGIS template.
         String databaseTemplate = "template_postgis";
 
-        StrabonTestSystemFactory testSystemFactory = new StrabonTestSystemFactory(dbName, user, password, port, host, resultsFolder, inferenceEnabled, baseURI, format, postgresBinPath, postgresDataPath, databaseTemplate);
-
         TreeMap<String, File> datasetMap = DatasetSources.getCRS84Datasets();
         //TreeMap<String, File> datasetMap = DatasetSources.getWGS84LegacyDatasets();
 
+        StrabonTestSystemFactory testSystemFactory = new StrabonTestSystemFactory(dbName, user, password, port, host, resultsFolder, inferenceEnabled, baseURI, format, postgresBinPath, postgresDataPath, databaseTemplate);
         //runDatasetLoad(testSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
+
+        //Strabon
+        BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP, BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
+        //BenchmarkExecution.runBoth(testSystemFactory, 1, BenchmarkParameters.TIMEOUT, QueryLoader.loadNonTopologicalFunctionsQuery_3(), BenchmarkParameters.RESULT_LINE_LIMIT_5000);
+        //rdfsStrabonTest(testSystemFactory);
+
+        //Data Loading
         //StrabonTestSystemFactory.clearDataset(testSystemFactory);
         //StrabonTestSystemFactory.loadDataset(datasetMap, testSystemFactory);
-        //Back up made: https://www.postgresql.org/docs/10/static/backup-dump.html
-        //rdfsStrabonTest(testSystemFactory);
-        BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_MAP, BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
-        //BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, QueryLoader.loadNonTopologicalFunctionsQuery_3(), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
     }
 
     public static void runDatasetLoad(TestSystemFactory testSystemFactory, Integer iterations, TreeMap<String, File> datasetMap) {
