@@ -12,7 +12,7 @@ sourceCompatibility = '1.8'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 repositories {
-   maven {
+    maven {
         url "http://download.osgeo.org/webdav/geotools/"
     }
 
@@ -26,10 +26,10 @@ repositories {
 dependencies {
     //SLF4J - Logback Classic
     ext.logbackVersion = "1.2.3"
-    
+
     //SLF4J
     ext.slf4jVersion = "1.7.25"
-    
+
     //JUnit
     ext.junitVersion = "4.12"
     testCompile "junit:junit:$junitVersion"
