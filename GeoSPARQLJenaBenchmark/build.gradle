@@ -23,7 +23,7 @@ dependencies {
 
     //GeoSPARQL Extension
     ext.geosparqlVersion = "1.0.0"
-    implementation "org.ntu:GeoSPARQL:$geosparqlVersion"
+    implementation "org.ntu:GeoSPARQLJena:$geosparqlVersion"
 
     compile ('org.apache.jena:jena-cmds:3.7.0'){
         exclude group: "org.apache.jena", module: "apache-jena-libs"
