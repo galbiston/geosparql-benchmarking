@@ -35,8 +35,8 @@ public class DatasetLoadResult {
     private final Duration startEndDuration;
     private final List<DatasetLoadTimeResult> datasetLoadTimeResults;
     private static Integer DATASET_COUNT = 0;
-    private static final String[] RESULT_DEFAULT_HEADER = {"TestSystem", "Completed", "Iteration", "StartEndDuration"};
-    private static String[] RESULTS_HEADER = RESULT_DEFAULT_HEADER;
+    private static final String[] SUMMARY_DEFAULT_HEADER = {"TestSystem", "Completed", "Iteration", "StartEndDuration"};
+    private static String[] SUMMARY_HEADER = SUMMARY_DEFAULT_HEADER;
 
     public DatasetLoadResult(String testSystemName, Boolean isCompleted, Integer iteration, long startNanoTime, long endNanoTime, List<DatasetLoadTimeResult> datasetLoadTimeResults) {
         this.testSystemName = testSystemName;
@@ -54,7 +54,7 @@ public class DatasetLoadResult {
             for (DatasetLoadTimeResult result : datasetLoadTimeResults) {
                 datasetNames.add(result.getDatasetName());
             }
-            RESULTS_HEADER = ArrayUtils.addAll(RESULT_DEFAULT_HEADER, datasetNames.toArray(new String[datasetNames.size()]));
+            SUMMARY_HEADER = ArrayUtils.addAll(SUMMARY_DEFAULT_HEADER, datasetNames.toArray(new String[datasetNames.size()]));
         }
     }
 
@@ -91,8 +91,8 @@ public class DatasetLoadResult {
         return "DatasetLoadResult{" + "testSystemName=" + testSystemName + ", isCompleted=" + isCompleted + ", iteration=" + iteration + ", startNanoTime=" + startNanoTime + ", endNanoTime=" + endNanoTime + ", startEndDuration=" + startEndDuration + ", datasetLoadTimeResults=" + datasetLoadTimeResults + '}';
     }
 
-    public String[] writeResult() {
-        List<String> line = new ArrayList<>(RESULT_DEFAULT_HEADER.length + DATASET_COUNT);
+    public String[] writeSummaryLine() {
+        List<String> line = new ArrayList<>(SUMMARY_DEFAULT_HEADER.length + DATASET_COUNT);
         line.add(testSystemName);
         line.add(isCompleted.toString());
         line.add(iteration.toString());
@@ -106,18 +106,18 @@ public class DatasetLoadResult {
 
     private static final DateTimeFormatter FILE_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
 
-    public static final void writeResultsFile(File datasetLoadResultsFolder, DatasetLoadResult datasetLoadResult) {
-        writeResultsFile(datasetLoadResultsFolder, Arrays.asList(datasetLoadResult));
+    public static final void writeSummaryFile(File datasetLoadResultsFolder, DatasetLoadResult datasetLoadResult) {
+        DatasetLoadResult.writeSummaryFile(datasetLoadResultsFolder, Arrays.asList(datasetLoadResult));
     }
 
-    public static final void writeResultsFile(File datasetLoadResultsFolder, List<DatasetLoadResult> datasetLoadResults) {
+    public static final void writeSummaryFile(File datasetLoadResultsFolder, List<DatasetLoadResult> datasetLoadResults) {
         datasetLoadResultsFolder.mkdir();
         String filename = "datasetload-" + LocalDateTime.now().format(FILE_DATE_TIME_FORMAT) + ".csv";
         File summaryFile = new File(datasetLoadResultsFolder, filename);
         try (CSVWriter writer = new CSVWriter(new FileWriter(summaryFile))) {
-            writer.writeNext(RESULTS_HEADER);
+            writer.writeNext(SUMMARY_HEADER);
             for (DatasetLoadResult datasetLoadResult : datasetLoadResults) {
-                writer.writeNext(datasetLoadResult.writeResult());
+                writer.writeNext(datasetLoadResult.writeSummaryLine());
             }
 
         } catch (IOException ex) {
