@@ -97,7 +97,7 @@ public class BenchmarkExecution {
             }
         }
 
-        LOGGER.info("------Warm Run - System: {}, Folder: {} - Completed------", testSystemFactory.getTestSystemName(), testSystemFactory.getResultsFolder());
+        LOGGER.info("------Warm Run - System: {}, Folder: {} - Completed------", testSystemName, runResultsFolder);
 
     }
 
@@ -156,7 +156,7 @@ public class BenchmarkExecution {
             }
         }
 
-        LOGGER.info("------Cold Run - System: {}, Folder: {} - Completed------", testSystemFactory.getTestSystemName(), testSystemFactory.getResultsFolder());
+        LOGGER.info("------Cold Run - System: {}, Folder: {} - Completed------", testSystemName, runResultsFolder);
     }
 
     public static final List<DatasetLoadResult> runDatasetLoad(TestSystemFactory testSystemFactory, Integer iterations, TreeMap<String, File> datasetMap) {
