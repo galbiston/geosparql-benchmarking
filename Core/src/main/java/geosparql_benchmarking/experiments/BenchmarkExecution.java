@@ -6,7 +6,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,12 +28,12 @@ public class BenchmarkExecution {
      * @param testSystemFactory
      * @param iterations
      * @param timeout
-     * @param queryMap
+     * @param queryCases
      * @param resultsLineLimit Set to zero for no detailed results output.
      */
-    public static void runBoth(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, TreeMap<String, String> queryMap, Integer resultsLineLimit) {
-        BenchmarkExecution.runWarm(testSystemFactory, iterations, timeout, queryMap, resultsLineLimit);
-        BenchmarkExecution.runCold(testSystemFactory, iterations, timeout, queryMap, resultsLineLimit);
+    public static void runBoth(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, List<QueryCase> queryCases, Integer resultsLineLimit) {
+        BenchmarkExecution.runWarm(testSystemFactory, iterations, timeout, queryCases, resultsLineLimit);
+        BenchmarkExecution.runCold(testSystemFactory, iterations, timeout, queryCases, resultsLineLimit);
     }
 
     /**
@@ -46,10 +45,10 @@ public class BenchmarkExecution {
      * @param testSystemFactory
      * @param iterations
      * @param timeout
-     * @param queryMap
+     * @param queryCases
      * @param resultsLineLimit Set to zero for no detailed results output.
      */
-    public static final void runWarm(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, TreeMap<String, String> queryMap, Integer resultsLineLimit) {
+    public static final void runWarm(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, List<QueryCase> queryCases, Integer resultsLineLimit) {
 
         String testSystemName = testSystemFactory.getTestSystemName();
         String testTimestamp = LocalDateTime.now().format(IterationResult.FILE_DATE_TIME_FORMAT);
@@ -58,13 +57,13 @@ public class BenchmarkExecution {
         runResultsFolder.mkdir();
         LOGGER.info("------Warm Run - System: {}, Folder: {} - Started------", testSystemName, runResultsFolder);
 
-        for (Entry<String, String> entry : queryMap.entrySet()) {
+        for (QueryCase queryCase : queryCases) {
             List<IterationResult> iterationResults = new ArrayList<>(iterations);
-            String[] queryLabel = entry.getKey().split("#");
-            String queryType = queryLabel[0];
-            String queryName = queryLabel[1];
+            String queryName = queryCase.getQueryName();
+            String queryType = queryCase.getQueryType();
+            String queryString = queryCase.getQueryString();
+
             File resultsFolder = new File(runResultsFolder, queryType);
-            String queryString = entry.getValue();
 
             long initStartNanoTime = System.nanoTime();
             try (TestSystem testSystem = testSystemFactory.getTestSystem()) {
@@ -114,10 +113,10 @@ public class BenchmarkExecution {
      * @param testSystemFactory
      * @param iterations
      * @param timeout
-     * @param queryMap
+     * @param queryCases
      * @param resultsLineLimit Set to zero for no detailed results output.
      */
-    public static final void runCold(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, TreeMap<String, String> queryMap, Integer resultsLineLimit) {
+    public static final void runCold(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, List<QueryCase> queryCases, Integer resultsLineLimit) {
 
         String testSystemName = testSystemFactory.getTestSystemName();
         String testTimestamp = LocalDateTime.now().format(IterationResult.FILE_DATE_TIME_FORMAT);
@@ -126,14 +125,12 @@ public class BenchmarkExecution {
         runResultsFolder.mkdir();
         LOGGER.info("------Cold Run - System: {}, Folder: {} - Started------", testSystemName, runResultsFolder);
 
-        for (Entry<String, String> entry : queryMap.entrySet()) {
+        for (QueryCase queryCase : queryCases) {
             List<IterationResult> iterationResults = new ArrayList<>(iterations);
-            String[] queryLabel = entry.getKey().split("#");
-            String queryType = queryLabel[0];
-            String queryName = queryLabel[1];
+            String queryName = queryCase.getQueryName();
+            String queryType = queryCase.getQueryType();
+            String queryString = queryCase.getQueryString();
             File resultsFolder = new File(runResultsFolder, queryType);
-
-            String queryString = entry.getValue();
 
             //Benchmark executions.
             for (int i = 1; i <= iterations; i++) {

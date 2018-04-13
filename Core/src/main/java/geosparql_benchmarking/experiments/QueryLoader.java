@@ -10,7 +10,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.TreeMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,23 +39,23 @@ public class QueryLoader {
     private static final String GIVEN_LINESTRING_3 = QueryLoader.readFile(GIVEN_FOLDER + "/givenLineString3.txt");
     private static final String GIVEN_POLYGON = QueryLoader.readFile(GIVEN_FOLDER + "/givenPolygon.txt");
 
-    public static TreeMap<String, String> loadSpatialSelectionsQuery_14() {
+    public static List<QueryCase> loadSpatialSelectionsQuery_14() {
 
-        TreeMap<String, String> queryMap = new TreeMap<>();
-        queryMap.put("SpatialSelections#Query14", readFile(SPATIAL_SELECTIONS + "/Query14.spl").replace("GIVEN_POINT_IN_WKT", GIVEN_POINT).replace("GIVEN_RADIUS", GIVEN_RADIUS));
-        return queryMap;
+        List<QueryCase> queryCases = new ArrayList<>();
+        queryCases.add(new QueryCase("Query14", "SpatialSelections", readFile(SPATIAL_SELECTIONS + "/Query14.spl").replace("GIVEN_POINT_IN_WKT", GIVEN_POINT).replace("GIVEN_RADIUS", GIVEN_RADIUS)));
+        return queryCases;
     }
 
-    public static TreeMap<String, String> loadNonTopologicalFunctionsQuery_3() {
-        TreeMap<String, String> queryMap = new TreeMap<>();
-        queryMap.put("NonTopologicalFunctions#Query3", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query3.spl"));
-        return queryMap;
+    public static List<QueryCase> loadNonTopologicalFunctionsQuery_3() {
+        List<QueryCase> queryCases = new ArrayList<>();
+        queryCases.add(new QueryCase("Query3", "NonTopologicalFunctions", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query3.spl")));
+        return queryCases;
     }
 
-    public static TreeMap<String, String> loadNonTopologicalFunctionsQuery_4() {
-        TreeMap<String, String> queryMap = new TreeMap<>();
-        queryMap.put("NonTopologicalFunctions#Query4", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query4.spl"));
-        return queryMap;
+    public static List<QueryCase> loadNonTopologicalFunctionsQuery_4() {
+        List<QueryCase> queryCases = new ArrayList<>();
+        queryCases.add(new QueryCase("Query4", "NonTopologicalFunctions", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query4.spl")));
+        return queryCases;
     }
 
     /**
@@ -63,13 +64,13 @@ public class QueryLoader {
      *
      * @return
      */
-    public static TreeMap<String, String> loadMainQuerySet() {
+    public static List<QueryCase> loadMainQuerySet() {
 
-        TreeMap<String, String> queryMap = new TreeMap<>();
-        queryMap.putAll(loadNonTopologicalFunctionsQueries());
-        queryMap.putAll(loadSpatialSelectionsQueries());
-        queryMap.putAll(loadSpatialJoinsQueries());
-        return queryMap;
+        List<QueryCase> queryCases = new ArrayList<>();
+        queryCases.addAll(loadNonTopologicalFunctionsQueries());
+        queryCases.addAll(loadSpatialSelectionsQueries());
+        queryCases.addAll(loadSpatialJoinsQueries());
+        return queryCases;
     }
 
     /**
@@ -78,15 +79,15 @@ public class QueryLoader {
      *
      * @return
      */
-    public static TreeMap<String, String> loadNonTopologicalFunctionsQueries() {
+    public static List<QueryCase> loadNonTopologicalFunctionsQueries() {
 
-        TreeMap<String, String> queryMap = new TreeMap<>();
-        queryMap.put("NonTopologicalFunctions#Query1", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query1.spl"));
-        queryMap.put("NonTopologicalFunctions#Query2", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query2.spl"));
-        queryMap.put("NonTopologicalFunctions#Query3", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query3.spl"));
-        queryMap.put("NonTopologicalFunctions#Query4", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query4.spl"));
-        queryMap.put("NonTopologicalFunctions#Query5", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query5.spl"));
-        return queryMap;
+        List<QueryCase> queryCases = new ArrayList<>();
+        queryCases.add(new QueryCase("Query1", "NonTopologicalFunctions", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query1.spl")));
+        queryCases.add(new QueryCase("Query2", "NonTopologicalFunctions", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query2.spl")));
+        queryCases.add(new QueryCase("Query3", "NonTopologicalFunctions", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query3.spl")));
+        queryCases.add(new QueryCase("Query4", "NonTopologicalFunctions", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query4.spl")));
+        queryCases.add(new QueryCase("Query5", "NonTopologicalFunctions", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query5.spl")));
+        return queryCases;
     }
 
     /**
@@ -95,11 +96,11 @@ public class QueryLoader {
      *
      * @return
      */
-    public static TreeMap<String, String> loadNonTopologicalFunctionsQuery_6() {
+    public static List<QueryCase> loadNonTopologicalFunctionsQuery_6() {
 
-        TreeMap<String, String> queryMap = new TreeMap<>();
-        queryMap.put("NonTopologicalFunctions#Query6", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query6.spl"));
-        return queryMap;
+        List<QueryCase> queryCases = new ArrayList<>();
+        queryCases.add(new QueryCase("Query6", "NonTopologicalFunctions", readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query6.spl")));
+        return queryCases;
     }
 
     /**
@@ -108,38 +109,38 @@ public class QueryLoader {
      *
      * @return
      */
-    public static TreeMap<String, String> loadSpatialSelectionsQueries() {
+    public static List<QueryCase> loadSpatialSelectionsQueries() {
 
-        TreeMap<String, String> queryMap = new TreeMap<>();
-        queryMap.put("SpatialSelections#Query7", readFile(SPATIAL_SELECTIONS + "/Query7.spl").replace("GIVEN_LINE_IN_WKT", GIVEN_LINESTRING_1));
-        queryMap.put("SpatialSelections#Query8", readFile(SPATIAL_SELECTIONS + "/Query8.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON));
-        queryMap.put("SpatialSelections#Query9", readFile(SPATIAL_SELECTIONS + "/Query9.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON));
-        queryMap.put("SpatialSelections#Query10", readFile(SPATIAL_SELECTIONS + "/Query10.spl").replace("GIVEN_LINE_IN_WKT", GIVEN_LINESTRING_2));
-        queryMap.put("SpatialSelections#Query11", readFile(SPATIAL_SELECTIONS + "/Query11.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON));
-        queryMap.put("SpatialSelections#Query12", readFile(SPATIAL_SELECTIONS + "/Query12.spl").replace("GIVEN_LINE_IN_WKT", GIVEN_LINESTRING_3));
-        queryMap.put("SpatialSelections#Query13", readFile(SPATIAL_SELECTIONS + "/Query13.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON));
-        queryMap.put("SpatialSelections#Query14", readFile(SPATIAL_SELECTIONS + "/Query14.spl").replace("GIVEN_POINT_IN_WKT", GIVEN_POINT).replace("GIVEN_RADIUS", GIVEN_RADIUS));
-        queryMap.put("SpatialSelections#Query15", readFile(SPATIAL_SELECTIONS + "/Query15.spl").replace("GIVEN_POINT_IN_WKT", GIVEN_POINT).replace("GIVEN_RADIUS", GIVEN_RADIUS));
-        queryMap.put("SpatialSelections#Query16", readFile(SPATIAL_SELECTIONS + "/Query16.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON));
-        queryMap.put("SpatialSelections#Query17", readFile(SPATIAL_SELECTIONS + "/Query17.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON));
+        List<QueryCase> queryCases = new ArrayList<>();
+        queryCases.add(new QueryCase("Query7", "SpatialSelections", readFile(SPATIAL_SELECTIONS + "/Query7.spl").replace("GIVEN_LINE_IN_WKT", GIVEN_LINESTRING_1)));
+        queryCases.add(new QueryCase("Query8", "SpatialSelections", readFile(SPATIAL_SELECTIONS + "/Query8.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON)));
+        queryCases.add(new QueryCase("Query9", "SpatialSelections", readFile(SPATIAL_SELECTIONS + "/Query9.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON)));
+        queryCases.add(new QueryCase("Query10", "SpatialSelections", readFile(SPATIAL_SELECTIONS + "/Query10.spl").replace("GIVEN_LINE_IN_WKT", GIVEN_LINESTRING_2)));
+        queryCases.add(new QueryCase("Query11", "SpatialSelections", readFile(SPATIAL_SELECTIONS + "/Query11.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON)));
+        queryCases.add(new QueryCase("Query12", "SpatialSelections", readFile(SPATIAL_SELECTIONS + "/Query12.spl").replace("GIVEN_LINE_IN_WKT", GIVEN_LINESTRING_3)));
+        queryCases.add(new QueryCase("Query13", "SpatialSelections", readFile(SPATIAL_SELECTIONS + "/Query13.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON)));
+        queryCases.add(new QueryCase("Query14", "SpatialSelections", readFile(SPATIAL_SELECTIONS + "/Query14.spl").replace("GIVEN_POINT_IN_WKT", GIVEN_POINT).replace("GIVEN_RADIUS", GIVEN_RADIUS)));
+        queryCases.add(new QueryCase("Query15", "SpatialSelections", readFile(SPATIAL_SELECTIONS + "/Query15.spl").replace("GIVEN_POINT_IN_WKT", GIVEN_POINT).replace("GIVEN_RADIUS", GIVEN_RADIUS)));
+        queryCases.add(new QueryCase("Query16", "SpatialSelections", readFile(SPATIAL_SELECTIONS + "/Query16.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON)));
+        queryCases.add(new QueryCase("Query17", "SpatialSelections", readFile(SPATIAL_SELECTIONS + "/Query17.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON)));
 
-        return queryMap;
+        return queryCases;
     }
 
-    public static TreeMap<String, String> loadSpatialJoinsQueries() {
+    public static List<QueryCase> loadSpatialJoinsQueries() {
 
-        TreeMap<String, String> queryMap = new TreeMap<>();
-        queryMap.put("SpatialJoins#Query18", readFile(SPATIAL_JOINS + "/Query18.spl"));
-        queryMap.put("SpatialJoins#Query19", readFile(SPATIAL_JOINS + "/Query19.spl"));
-        queryMap.put("SpatialJoins#Query20", readFile(SPATIAL_JOINS + "/Query20.spl"));
-        queryMap.put("SpatialJoins#Query21", readFile(SPATIAL_JOINS + "/Query21.spl"));
-        queryMap.put("SpatialJoins#Query22", readFile(SPATIAL_JOINS + "/Query22.spl"));
-        queryMap.put("SpatialJoins#Query23", readFile(SPATIAL_JOINS + "/Query23.spl"));
-        queryMap.put("SpatialJoins#Query24", readFile(SPATIAL_JOINS + "/Query24.spl"));
-        queryMap.put("SpatialJoins#Query25", readFile(SPATIAL_JOINS + "/Query25.spl"));
-        queryMap.put("SpatialJoins#Query26", readFile(SPATIAL_JOINS + "/Query26.spl"));
-        queryMap.put("SpatialJoins#Query27", readFile(SPATIAL_JOINS + "/Query27.spl"));
-        return queryMap;
+        List<QueryCase> queryCases = new ArrayList<>();
+        queryCases.add(new QueryCase("Query18", "SpatialJoins", readFile(SPATIAL_JOINS + "/Query18.spl")));
+        queryCases.add(new QueryCase("Query19", "SpatialJoins", readFile(SPATIAL_JOINS + "/Query19.spl")));
+        queryCases.add(new QueryCase("Query20", "SpatialJoins", readFile(SPATIAL_JOINS + "/Query20.spl")));
+        queryCases.add(new QueryCase("Query21", "SpatialJoins", readFile(SPATIAL_JOINS + "/Query21.spl")));
+        queryCases.add(new QueryCase("Query22", "SpatialJoins", readFile(SPATIAL_JOINS + "/Query22.spl")));
+        queryCases.add(new QueryCase("Query23", "SpatialJoins", readFile(SPATIAL_JOINS + "/Query23.spl")));
+        queryCases.add(new QueryCase("Query24", "SpatialJoins", readFile(SPATIAL_JOINS + "/Query24.spl")));
+        queryCases.add(new QueryCase("Query25", "SpatialJoins", readFile(SPATIAL_JOINS + "/Query25.spl")));
+        queryCases.add(new QueryCase("Query26", "SpatialJoins", readFile(SPATIAL_JOINS + "/Query26.spl")));
+        queryCases.add(new QueryCase("Query27", "SpatialJoins", readFile(SPATIAL_JOINS + "/Query27.spl")));
+        return queryCases;
     }
 
     /**
@@ -148,12 +149,12 @@ public class QueryLoader {
      *
      * @return
      */
-    public static TreeMap<String, String> loadAggregationsQueries() {
+    public static List<QueryCase> loadAggregationsQueries() {
 
-        TreeMap<String, String> queryMap = new TreeMap<>();
-        queryMap.put("Aggregations#Query28", readFile(AGGREGATIONS + "/Query28.spl"));
-        queryMap.put("Aggregations#Query29", readFile(AGGREGATIONS + "/Query29.spl"));
-        return queryMap;
+        List<QueryCase> queryCases = new ArrayList<>();
+        queryCases.add(new QueryCase("Query28", "Aggregations", readFile(AGGREGATIONS + "/Query28.spl")));
+        queryCases.add(new QueryCase("Query29", "Aggregations", readFile(AGGREGATIONS + "/Query29.spl")));
+        return queryCases;
     }
 
     public static String readFile(String filepath) {

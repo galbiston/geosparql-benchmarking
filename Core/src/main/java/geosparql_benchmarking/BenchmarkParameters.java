@@ -5,9 +5,10 @@
  */
 package geosparql_benchmarking;
 
+import geosparql_benchmarking.experiments.QueryCase;
 import geosparql_benchmarking.experiments.QueryLoader;
 import java.time.Duration;
-import java.util.TreeMap;
+import java.util.List;
 
 /**
  *
@@ -28,8 +29,8 @@ public class BenchmarkParameters {
      */
     public static final Integer RESULT_LINE_LIMIT_5000 = 5000;
 
-    //public static final TreeMap<String, String> QUERY_MAP = QueryLoader.loadSpatialSelectionsQuery_14();
-    //public static final TreeMap<String, String> QUERY_MAP = QueryLoader.loadNonTopologicalFunctionsQueries();
-    public static final TreeMap<String, String> QUERY_MAP = QueryLoader.loadMainQuerySet();
+    //public static final List<QueryCase> QUERY_CASES = QueryLoader.loadSpatialSelectionsQuery_14();
+    //public static final List<QueryCase> QUERY_CASES = QueryLoader.loadNonTopologicalFunctionsQueries();
+    public static final List<QueryCase> QUERY_CASES = QueryLoader.loadMainQuerySet();
 
 }
