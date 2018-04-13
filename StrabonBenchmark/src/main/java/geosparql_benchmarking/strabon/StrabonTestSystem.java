@@ -211,40 +211,6 @@ public class StrabonTestSystem implements TestSystem {
         return postgresDataPath;
     }
 
-    /*
-    //Default service name according to: https://www.postgresql.org/docs/10/static/app-pg-ctl.html
-    private static final String POSTGRESQL_SERVICE = "PostgreSQL";
-
-    String osName = System.getProperty("os.name").toLowerCase();
-
-    if (osName.contains (
-        "win")) {
-                //Stop and start the service only.
-                new ProcessExecutor().command("net", "stop", POSTGRESQL_SERVICE)
-                .command("net", "start", POSTGRESQL_SERVICE)
-                .redirectOutput(Slf4jStream.ofCaller().asInfo())
-                .timeout(5, TimeUnit.SECONDS).execute();
-
-    }
-
-    else if (osName.contains (
-        "nix") | osName.contains("nux") | osName.contains("aux") | osName.contains("mac")) {
-                //Stop, drop caches and start the service. No documentation found to clear the OS caches.
-
-                new ProcessExecutor().command("/bin/sh", "-c", "service postgresql stop")
-                .command("/bin/sh", "-c", "sync && echo 3 > /proc/sys/vm/drop_caches")
-                .command("/bin/sh", "-c", "service postgresql start")
-                .redirectOutput(Slf4jStream.ofCaller().asInfo())
-                .timeout(5, TimeUnit.SECONDS).execute();
-
-    }
-
-
-        else {
-                LOGGER.error("Unrecognised OS name for Strabon Cache Clearing: {}", osName);
-    }
-
-     */
     @Override
     public QueryResult runQueryWithTimeout(String query, Duration timeout) {
 
@@ -265,8 +231,6 @@ public class StrabonTestSystem implements TestSystem {
         }
 
         QueryResult queryResult = runnable.getQueryResult();
-        LOGGER.debug("Strabon Query: {}", queryResult);
-
         return queryResult;
     }
 

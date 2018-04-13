@@ -78,8 +78,6 @@ public class GeosparqlJenaTestSystem implements TestSystem {
         }
 
         QueryResult queryResult = runnable.getQueryResult();
-        LOGGER.debug("GeoSPARQL Jena Query: {}", queryResult);
-
         return queryResult;
 
     }

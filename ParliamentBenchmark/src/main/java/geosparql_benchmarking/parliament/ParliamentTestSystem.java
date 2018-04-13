@@ -124,8 +124,6 @@ public class ParliamentTestSystem implements TestSystem {
         }
 
         QueryResult queryResult = runnable.getQueryResult();
-        LOGGER.debug("Parliament Query: {}", queryResult);
-
         return queryResult;
     }
 
