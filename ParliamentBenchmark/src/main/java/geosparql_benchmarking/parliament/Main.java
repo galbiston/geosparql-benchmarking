@@ -7,7 +7,6 @@ import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.rdf.model.Model;
 import geosparql_benchmarking.BenchmarkParameters;
 import geosparql_benchmarking.DatasetSources;
 import geosparql_benchmarking.GraphURI;
@@ -44,9 +43,9 @@ public class Main {
         //runDatasetLoad(testSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
 
         //Parliament
-        BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_CASES, BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
+        //BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_CASES, BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
         //BenchmarkExecution.runBoth(testSystemFactory, 1, BenchmarkParameters.TIMEOUT, QueryLoader.loadNonTopologicalFunctionsQuery_3(), BenchmarkParameters.RESULT_LINE_LIMIT_5000);
-        //rdfsParliamentTest();
+        rdfsParliamentTest();
         //bufferQueryTest();
 
         //Data Loading
@@ -63,7 +62,7 @@ public class Main {
         KbGraphStore graphStore = new KbGraphStore(KbGraphFactory.createDefaultGraph());
         graphStore.initialize();
         Dataset dataSource = com.hp.hpl.jena.query.DatasetFactory.create(graphStore);
-        Model unionModel = com.hp.hpl.jena.rdf.model.ModelFactory.createModelForGraph(graphStore.getMasterGraph());
+        //Model unionModel = com.hp.hpl.jena.rdf.model.ModelFactory.createModelForGraph(graphStore.getMasterGraph());
         String property = "<http://www.opengis.net/ont/geosparql#asWKT>";
         //String property = "<http://www.opengis.net/ont/sf#>";
         //String property = "<http://linkedgeodata.org/ontology/asWKT>";
