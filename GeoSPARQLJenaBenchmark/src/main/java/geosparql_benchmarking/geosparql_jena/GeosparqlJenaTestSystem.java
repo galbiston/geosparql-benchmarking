@@ -51,7 +51,7 @@ public class GeosparqlJenaTestSystem implements TestSystem {
     public GeosparqlJenaTestSystem(Dataset dataset) {
         this.dataset = dataset;
         try {
-            GeoSPARQLSupport.loadFunctions();
+            GeoSPARQLSupport.loadFunctionsMemoryIndex();
             GeoSPARQLSupport.clearAllIndexesAndRegistries();
         } catch (Exception ex) {
             throw new AssertionError("Issue accessing GeosparqlJena library. " + ex.getMessage());

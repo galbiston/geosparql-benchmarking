@@ -6,7 +6,7 @@ import geosparql_benchmarking.GraphURI;
 import geosparql_benchmarking.experiments.BenchmarkExecution;
 import geosparql_benchmarking.experiments.QueryLoader;
 import geosparql_benchmarking.experiments.TestSystemFactory;
-import implementation.CRSRegistry;
+import implementation.index.CRSRegistry;
 import implementation.ConvertCRS;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -57,7 +57,6 @@ public class Main {
         //Memory
         runMem(datasetMap, inferenceEnabled);
         //runMemTest(datasetMap, inferenceEnabled);
-
         //Data Loading
         //runDatasetLoad(testSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
         //runDatasetLoad(memTestSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
