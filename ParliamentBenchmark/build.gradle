@@ -27,8 +27,8 @@ dependencies {
     //Apache Jena for Parliament - stated version in parliament\jena\SpatialIndexProcessor\ivy.xml
     compile (group: 'org.apache.jena', name: 'jena-arq', version: '2.9.4'){
         exclude group: 'org.slf4j', module: 'slf4j-log4j12'
-        exclude group: 'httpcomponents', module: 'httpclient'
-        exclude group: 'httpcomponents', module: 'httpcore'
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+        exclude group: 'org.apache.httpcomponents', module: 'httpcore'
     }
 
     //Apache HTTP Components - stated version in parliament\ivy\ivysettings.xml
