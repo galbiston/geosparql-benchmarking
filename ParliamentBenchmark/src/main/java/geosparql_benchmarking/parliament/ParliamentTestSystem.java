@@ -152,6 +152,11 @@ public class ParliamentTestSystem implements TestSystem {
             graphStore.close();
         }
         System.gc();
+        try {
+            Thread.sleep(5000); //Sleep for 5s to allow any Operating System clearing.
+        } catch (InterruptedException ex) {
+            LOGGER.error("Exception closing Parliament: {}", ex.getMessage());
+        }
         LOGGER.debug("Parliament closed");
 
     }

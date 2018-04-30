@@ -101,6 +101,11 @@ public class GeosparqlJenaTestSystem implements TestSystem {
             TDBFactory.release(dataset);
         }
         GeoSPARQLSupport.clearAllIndexesAndRegistries();
+        try {
+            Thread.sleep(5000); //Sleep for 5s to allow any Operating System clearing.
+        } catch (InterruptedException ex) {
+            LOGGER.error("Exception closing Jena: {}", ex.getMessage());
+        }
         LOGGER.debug("GeosparqlJena closed");
     }
 

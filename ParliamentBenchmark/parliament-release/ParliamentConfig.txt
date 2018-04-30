@@ -74,11 +74,11 @@ SymmetricPropRule      = on
 
 # Sets up the following rule:
 # * "P is a functional property" ^ "P(Z, X)" ^ "P(Z, Y)" ==> "owl:sameAs(X, Y)"
-FunctionalPropRule     = on
+FunctionalPropRule     = off
 
 # Sets up the following rule:
 # * "P is an inverse functional property" ^ "P(X, Z)" ^ "P(Y, Z)" ==> "owl:sameAs(X, Y)"
-InvFunctionalPropRule  = on
+InvFunctionalPropRule  = off
 
 # Sets up the following rule:
 # * "P is a transitive property" ^ "P(X, Y)" ^ "P(Y, Z)" ==> "P(X, Z)"

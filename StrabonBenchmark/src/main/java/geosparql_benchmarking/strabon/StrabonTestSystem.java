@@ -253,6 +253,7 @@ public class StrabonTestSystem implements TestSystem {
             strabon.close();
             stopPostgres();
             System.gc();
+            Thread.sleep(5000); //Sleep for 5s to allow any Operating System clearing.
             LOGGER.debug("Strabon Closed");
         } catch (IOException | InterruptedException | RuntimeException ex) {
             LOGGER.error("Exception closing Strabon: {}", ex.getMessage());
