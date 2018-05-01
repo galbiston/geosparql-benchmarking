@@ -10,6 +10,7 @@ import geosparql_benchmarking.experiments.DatasetLoadResult;
 import geosparql_benchmarking.experiments.DatasetLoadTimeResult;
 import geosparql_benchmarking.experiments.TestSystem;
 import geosparql_benchmarking.experiments.TestSystemFactory;
+import implementation.index.IndexOption;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public class GeosparqlJenaMemTestSystemFactory implements TestSystemFactory {
 
     @Override
     public TestSystem getTestSystem() {
-        return new GeosparqlJenaTestSystem(dataset);
+        return new GeosparqlJenaTestSystem(dataset, IndexOption.MEMORY);
     }
 
     @Override

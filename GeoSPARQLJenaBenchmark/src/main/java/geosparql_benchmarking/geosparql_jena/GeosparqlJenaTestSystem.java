@@ -9,6 +9,7 @@ import geosparql_benchmarking.experiments.QueryResult;
 import geosparql_benchmarking.experiments.TestSystem;
 import geosparql_benchmarking.experiments.VarValue;
 import implementation.GeoSPARQLSupport;
+import implementation.index.IndexOption;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
@@ -44,14 +45,14 @@ public class GeosparqlJenaTestSystem implements TestSystem {
 
     private final Dataset dataset;
 
-    public GeosparqlJenaTestSystem(File datasetFolder) {
-        this(TDBFactory.createDataset(datasetFolder.getAbsolutePath()));
+    public GeosparqlJenaTestSystem(File datasetFolder, IndexOption indexOption) {
+        this(TDBFactory.createDataset(datasetFolder.getAbsolutePath()), indexOption);
     }
 
-    public GeosparqlJenaTestSystem(Dataset dataset) {
+    public GeosparqlJenaTestSystem(Dataset dataset, IndexOption indexOption) {
         this.dataset = dataset;
         try {
-            GeoSPARQLSupport.loadFunctionsMemoryIndex();
+            GeoSPARQLSupport.loadFunctions(indexOption);
             GeoSPARQLSupport.clearAllIndexesAndRegistries();
         } catch (Exception ex) {
             throw new AssertionError("Issue accessing GeosparqlJena library. " + ex.getMessage());
