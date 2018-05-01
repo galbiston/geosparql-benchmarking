@@ -4,14 +4,18 @@ import geosparql_benchmarking.BenchmarkParameters;
 import geosparql_benchmarking.DatasetSources;
 import geosparql_benchmarking.GraphURI;
 import geosparql_benchmarking.experiments.BenchmarkExecution;
+import geosparql_benchmarking.experiments.QueryCase;
 import geosparql_benchmarking.experiments.QueryLoader;
 import geosparql_benchmarking.experiments.TestSystemFactory;
+import implementation.data_conversion.ConvertCRS;
+import implementation.data_conversion.GeoSPARQLPredicates;
 import implementation.index.CRSRegistry;
-import implementation.ConvertCRS;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeMap;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
@@ -47,6 +51,8 @@ public class Main {
         //TreeMap<String, File> datasetMap = DatasetSources.getWGS84LegacyTestDatasets();
         Boolean inferenceEnabled = true;
 
+        //applyPredicates();
+        //indexTest();
         //TDB
         //GeosparqlJenaTDBTestSystemFactory.clearDataset(GEOSPARQL_JENA_TDB_FOLDER);
         //GeosparqlJenaTDBTestSystemFactory.loadDataset(GEOSPARQL_JENA_TDB_FOLDER, datasetMap, inferenceEnabled);
@@ -151,5 +157,34 @@ public class Main {
         Lang outputLanguage = Lang.NTRIPLES;
         String outputSrsURI = CRSRegistry.DEFAULT_WKT_CRS84;
         ConvertCRS.convertFolder(inputFolder, inputLanguage, outputFolder, outputLanguage, outputSrsURI);
+    }
+
+    public static void indexTest() {
+        TreeMap<String, File> datasetMap = DatasetSources.getCRS84TestDatasets();
+        Boolean inferenceEnabled = true;
+        Dataset memDataset = DatasetFactory.createTxnMem();
+        GeosparqlJenaMemTestSystemFactory.loadDataset(datasetMap, inferenceEnabled, memDataset);
+        GeosparqlJenaMemTestSystemFactory memTestSystemFactory = new GeosparqlJenaMemTestSystemFactory(memDataset, GEOSPARL_JENA_MEM_RESULTS_FOLDER_NAME, inferenceEnabled);
+        List<QueryCase> queryCases = new ArrayList<>();
+
+        String queryString = "PREFIX geo: <http://www.opengis.net/ont/geosparql#>\n"
+                + "PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>\n"
+                + "PREFIX lgd: <http://linkedgeodata.org/ontology/>\n"
+                + "SELECT ?object\n"
+                + "WHERE{ \n"
+                + "GRAPH dataset:lgd {<http://linkedgeodata.org/triplify/way14342611> geo:sfContains ?object}\n"
+                + "}";
+        queryCases.add(new QueryCase("MemoryIndex", "IndexTesting", queryString));
+        BenchmarkExecution.runBoth(memTestSystemFactory, 1, BenchmarkParameters.TIMEOUT, queryCases, BenchmarkParameters.RESULT_LINE_LIMIT_5000);
+    }
+
+    public static void applyPredicates() {
+
+        TreeMap<String, File> datasetMap = DatasetSources.getCRS84TestDatasets();
+        for (File datasetFile : datasetMap.values()) {
+
+            File outputFile = new File(datasetFile.getName());
+            GeoSPARQLPredicates.applyFile(datasetFile, Lang.NT, outputFile, Lang.NT);
+        }
     }
 }
