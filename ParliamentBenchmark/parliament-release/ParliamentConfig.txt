@@ -58,19 +58,19 @@ RangeRule              = on
 
 # Sets up the following rule:
 # * "A is equivalent to B" ==> "A is a subclass of B" ^ "B is a subclass of A"
-EquivalentClassRule    = on
+EquivalentClassRule    = off
 
 # Sets up the following rule:
 # * "P is equivalent to Q" ==> "P is a subproperty of Q" ^ "Q is a subproperty of P"
-EquivalentPropRule     = on
+EquivalentPropRule     = off
 
 # Sets up the following rule:
 # * "P is the inverse of Q" ^ "P(X, Y)" ==> "Q(Y, X)"
-InverseOfRule          = on
+InverseOfRule          = off
 
 # Sets up the following rule:
 # * "P is symmetric" ^ "P(X, Y)" ==> "P(Y, X)"
-SymmetricPropRule      = on
+SymmetricPropRule      = off
 
 # Sets up the following rule:
 # * "P is a functional property" ^ "P(Z, X)" ^ "P(Z, Y)" ==> "owl:sameAs(X, Y)"
@@ -82,4 +82,4 @@ InvFunctionalPropRule  = off
 
 # Sets up the following rule:
 # * "P is a transitive property" ^ "P(X, Y)" ^ "P(Y, Z)" ==> "P(X, Z)"
-TransitivePropRule     = on
+TransitivePropRule     = off
