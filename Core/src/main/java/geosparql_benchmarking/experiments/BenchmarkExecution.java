@@ -20,8 +20,8 @@ public class BenchmarkExecution {
         RESULTS_FOLDER.mkdir();
     }
 
-    public static final String WARM_RUN_RESULTS_FOLDER_NAME = "warm_run";
     public static final String COLD_RUN_RESULTS_FOLDER_NAME = "cold_run";
+    public static final String WARM_RUN_RESULTS_FOLDER_NAME = "warm_run";
 
     /**
      *
@@ -32,8 +32,8 @@ public class BenchmarkExecution {
      * @param resultsLineLimit Set to zero for no detailed results output.
      */
     public static void runBoth(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, List<QueryCase> queryCases, Integer resultsLineLimit) {
-        BenchmarkExecution.runWarm(testSystemFactory, iterations, timeout, queryCases, resultsLineLimit);
         BenchmarkExecution.runCold(testSystemFactory, iterations, timeout, queryCases, resultsLineLimit);
+        BenchmarkExecution.runWarm(testSystemFactory, iterations, timeout, queryCases, resultsLineLimit);
     }
 
     /**
