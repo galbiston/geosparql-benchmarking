@@ -31,16 +31,16 @@ import org.slf4j.LoggerFactory;
  *
  * @author Gerg
  */
-public class GeosparqlJenaMemTestSystemFactory implements TestSystemFactory {
+public class GeosparqlJenaInMemoryTestSystemFactory implements TestSystemFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    public static final String TEST_SYSTEM_NAME = "GeoSparqlJenaMem";
+    public static final String TEST_SYSTEM_NAME = "GeoSparqlJenaInMemory";
 
-    private Dataset dataset;
-    private final File resultsFolder;
-    private final Boolean inferenceEnabled;
+    protected Dataset dataset;
+    protected final File resultsFolder;
+    protected final Boolean inferenceEnabled;
 
-    public GeosparqlJenaMemTestSystemFactory(Dataset dataset, String resultsFolder, Boolean inferenceEnabled) {
+    public GeosparqlJenaInMemoryTestSystemFactory(Dataset dataset, String resultsFolder, Boolean inferenceEnabled) {
         this.dataset = dataset;
         this.resultsFolder = new File(BenchmarkExecution.RESULTS_FOLDER, resultsFolder);
         this.resultsFolder.mkdir();
@@ -88,7 +88,7 @@ public class GeosparqlJenaMemTestSystemFactory implements TestSystemFactory {
         return loadDataset(datasetMap, inferenceEnabled, dataset, 0);
     }
 
-    private static DatasetLoadResult loadDataset(TreeMap<String, File> datasetMap, Boolean inferenceEnabled, Dataset dataset, Integer iteration) {
+    protected static DatasetLoadResult loadDataset(TreeMap<String, File> datasetMap, Boolean inferenceEnabled, Dataset dataset, Integer iteration) {
         LOGGER.info("Geosparql Jena Memory Loading: Started");
         List<DatasetLoadTimeResult> datasetLoadTimeResults = new ArrayList<>();
         Boolean isCompleted = true;
