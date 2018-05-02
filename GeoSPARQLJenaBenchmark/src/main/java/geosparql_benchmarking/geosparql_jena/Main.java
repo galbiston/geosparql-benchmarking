@@ -202,7 +202,7 @@ public class Main {
     public static void indexTDBTest() {
         TreeMap<String, File> datasetMap = DatasetSources.getCRS84TestDatasets();
         Boolean inferenceEnabled = true;
-        File datasetFolder = new File("tdb_test");
+        File datasetFolder = new File("geosparql_jena_tdb_test");
         FileUtils.deleteQuietly(datasetFolder);
         File indexFolder = new File("geosparql_indexes");
         FileUtils.deleteQuietly(indexFolder);
