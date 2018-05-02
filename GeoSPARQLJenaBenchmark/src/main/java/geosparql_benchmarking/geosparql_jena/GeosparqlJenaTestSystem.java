@@ -24,12 +24,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.apache.jena.graph.Node;
 import org.apache.jena.query.Dataset;
+import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Literal;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.tdb.TDBFactory;
@@ -42,15 +45,32 @@ import org.slf4j.LoggerFactory;
 public class GeosparqlJenaTestSystem implements TestSystem {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-    private final Dataset dataset;
+    private Dataset dataset;
+    private IndexOption indexOption;
 
     public GeosparqlJenaTestSystem(File datasetFolder, IndexOption indexOption) {
-        this(TDBFactory.createDataset(datasetFolder.getAbsolutePath()), indexOption);
+        //Access the datset from the folder.
+        setup(TDBFactory.createDataset(datasetFolder.getAbsolutePath()), indexOption);
     }
 
     public GeosparqlJenaTestSystem(Dataset dataset, IndexOption indexOption) {
+
+        //Copy the contents of the dataset to a new memory dataset.
+        Dataset memDataset = DatasetFactory.createTxnMem();
+        Iterator<String> graphNames = dataset.listNames();
+        while (graphNames.hasNext()) {
+            String graphName = graphNames.next();
+            Model model = ModelFactory.createDefaultModel();
+            model.add(dataset.getNamedModel(graphName));
+            memDataset.addNamedModel(graphName, model);
+        }
+
+        setup(memDataset, indexOption);
+    }
+
+    private void setup(Dataset dataset, IndexOption indexOption) {
         this.dataset = dataset;
+        this.indexOption = indexOption;
         try {
             GeoSPARQLSupport.loadFunctions(indexOption);
             GeoSPARQLSupport.clearAllIndexesAndRegistries();
