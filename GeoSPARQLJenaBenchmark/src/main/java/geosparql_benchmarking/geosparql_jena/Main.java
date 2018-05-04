@@ -9,7 +9,7 @@ import geosparql_benchmarking.experiments.QueryLoader;
 import geosparql_benchmarking.experiments.TestSystemFactory;
 import implementation.data_conversion.ConvertCRS;
 import implementation.data_conversion.GeoSPARQLPredicates;
-import implementation.index.CRSRegistry;
+import implementation.vocabulary.SRS_URI;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -176,7 +176,7 @@ public class Main {
         Lang inputLanguage = Lang.NTRIPLES;
         File outputFolder = DatasetSources.DATASET_CRS84_FOLDER;
         Lang outputLanguage = Lang.NTRIPLES;
-        String outputSrsURI = CRSRegistry.DEFAULT_WKT_CRS84;
+        String outputSrsURI = SRS_URI.DEFAULT_WKT_CRS84;
         ConvertCRS.convertFolder(inputFolder, inputLanguage, outputFolder, outputLanguage, outputSrsURI);
     }
 
