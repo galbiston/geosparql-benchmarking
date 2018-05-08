@@ -7,6 +7,7 @@ package geosparql_benchmarking;
 
 import geosparql_benchmarking.experiments.QueryCase;
 import geosparql_benchmarking.experiments.QueryLoader;
+import geosparql_benchmarking.geographica.MicroBenchmark;
 import java.time.Duration;
 import java.util.List;
 
@@ -31,6 +32,6 @@ public class BenchmarkParameters {
 
     //public static final List<QueryCase> QUERY_CASES = QueryLoader.loadSpatialSelectionsQuery_14();
     //public static final List<QueryCase> QUERY_CASES = QueryLoader.loadNonTopologicalFunctionsQueries();
-    public static final List<QueryCase> QUERY_CASES = QueryLoader.loadMainQuerySet();
+    public static final List<QueryCase> QUERY_CASES = MicroBenchmark.loadMainQuerySet();
 
 }
