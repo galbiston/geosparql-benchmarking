@@ -4,6 +4,7 @@ import geosparql_benchmarking.BenchmarkParameters;
 import geosparql_benchmarking.DatasetSources;
 import geosparql_benchmarking.GraphURI;
 import geosparql_benchmarking.experiments.BenchmarkExecution;
+import geosparql_benchmarking.experiments.DataGeneration;
 import geosparql_benchmarking.experiments.QueryCase;
 import geosparql_benchmarking.experiments.QueryLoader;
 import geosparql_benchmarking.experiments.TestSystemFactory;
@@ -54,7 +55,7 @@ public class Main {
         Boolean inferenceEnabled = true;
 
         //applyPredicates();
-        indexInMemoryTest();
+        //indexInMemoryTest();
         //indexTDBTest();
         //TDB
         //GeosparqlJenaTDBTestSystemFactory.clearDataset(GEOSPARQL_JENA_TDB_FOLDER);
@@ -62,7 +63,6 @@ public class Main {
         //runTDB(inferenceEnabled);
         //runTestTDB(inferenceEnabled);
         //rdfsJenaTDBTest();
-
         //In Memory
         //runInMemory(datasetMap, inferenceEnabled);
         //runTestInMemory(datasetMap, inferenceEnabled);
@@ -75,6 +75,8 @@ public class Main {
         //runDatasetLoad(noIndexTestSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
         //GeosparqlJenaMemTestSystemFactory.loadDataset(DatasetSources.getCRS84TestDatasets(), inferenceEnabled, memDataset);
         //rdfsJenaMemTest(memDataset);
+        //generateGeonamesFile();
+        //generatePoints();
     }
 
     public static void runTDB(Boolean inferenceEnabled) {
@@ -230,4 +232,18 @@ public class Main {
             GeoSPARQLPredicates.applyFile(datasetFile, Lang.NT, outputFile, Lang.NT);
         }
     }
+
+    public static void generateGeonamesFile() {
+        Dataset memDataset = DatasetFactory.createTxnMem();
+        Boolean inferenceEnabled = true;
+        GeosparqlJenaInMemoryTestSystemFactory.loadDataset(DatasetSources.getWGS84LegacyDataset_Geonames(), inferenceEnabled, memDataset);
+        GeosparqlJenaInMemoryTestSystemFactory memTestSystemFactory = new GeosparqlJenaInMemoryTestSystemFactory(memDataset, GEOSPARL_JENA_IN_MEMORY_RESULTS_FOLDER_NAME, inferenceEnabled);
+        DataGeneration.storeAllGeonamePoints(memTestSystemFactory.getTestSystem(), new File("geonames.txt"));
+
+    }
+
+    public static void generatePoints() {
+        DataGeneration.generateGeographicaPoint(100, new File("points.txt"));
+    }
+
 }
