@@ -7,11 +7,8 @@ package geosparql_benchmarking.geographica;
 
 import geosparql_benchmarking.experiments.QueryCase;
 import geosparql_benchmarking.experiments.QueryLoader;
-import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -19,9 +16,7 @@ import org.slf4j.LoggerFactory;
  */
 public class MicroBenchmark {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-    public static final String BASE_FOLDER = "../Core/benchmarking_files/micro_benchmark_queries";
+    public static final String BASE_FOLDER = "../Core/geographica_benchmarking/micro_benchmark_queries";
 
     //Query Folders
     public static final String NON_TOPOLOGICAL_FUNCTIONS = BASE_FOLDER + "/non_topological_functions";

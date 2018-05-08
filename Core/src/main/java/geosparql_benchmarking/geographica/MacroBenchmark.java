@@ -8,11 +8,8 @@ package geosparql_benchmarking.geographica;
 import geosparql_benchmarking.experiments.QueryCase;
 import geosparql_benchmarking.experiments.QueryLoader;
 import geosparql_benchmarking.experiments.QueryPair;
-import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -20,9 +17,7 @@ import org.slf4j.LoggerFactory;
  */
 public class MacroBenchmark {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-    public static final String BASE_FOLDER = "../Core/benchmarking_files/macro_benchmark_queries";
+    public static final String BASE_FOLDER = "../Core/geographica_benchmarking/macro_benchmark_queries";
 
     //Query Folders
     private static final String REVERSE_GEOCODING = BASE_FOLDER + "/reverse_geocoding";
