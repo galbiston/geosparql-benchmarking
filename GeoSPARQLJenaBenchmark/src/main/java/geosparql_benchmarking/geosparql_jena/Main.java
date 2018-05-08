@@ -238,7 +238,7 @@ public class Main {
         Boolean inferenceEnabled = true;
         GeosparqlJenaInMemoryTestSystemFactory.loadDataset(DatasetSources.getWGS84LegacyDataset_Geonames(), inferenceEnabled, memDataset);
         GeosparqlJenaInMemoryTestSystemFactory memTestSystemFactory = new GeosparqlJenaInMemoryTestSystemFactory(memDataset, GEOSPARL_JENA_IN_MEMORY_RESULTS_FOLDER_NAME, inferenceEnabled);
-        DataGeneration.storeAllGeonamePoints(memTestSystemFactory.getTestSystem(), new File("geonames.txt"));
+        DataGeneration.storeAllGeonames(memTestSystemFactory.getTestSystem(), new File("geonames.txt"));
 
     }
 
