@@ -57,4 +57,11 @@ public class DatasetSources {
         return datasetMap;
     }
 
+    public static TreeMap<String, File> getWGS84LegacyDataset_Geonames() {
+        TreeMap<String, File> datasetMap = new TreeMap<>();
+        datasetMap.put(GraphURI.GEONAMES_URI, new File(DATASET_WGS84_LEGACY_FOLDER, "geonames.nt"));
+
+        return datasetMap;
+    }
+
 }

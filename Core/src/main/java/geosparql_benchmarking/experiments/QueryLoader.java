@@ -41,6 +41,9 @@ public class QueryLoader {
     private static final String GIVEN_LINESTRING_2 = QueryLoader.readFile(GIVEN_FOLDER + "/givenLineString2.txt");
     private static final String GIVEN_LINESTRING_3 = QueryLoader.readFile(GIVEN_FOLDER + "/givenLineString3.txt");
     private static final String GIVEN_POLYGON = QueryLoader.readFile(GIVEN_FOLDER + "/givenPolygon.txt");
+    private static final List<QueryPair> GEONAMES = QueryLoader.readQueryPairs(GIVEN_POINT + "/geonames.txt");
+    private static final List<QueryPair> TIMESTAMPS = QueryLoader.readQueryPairs(GIVEN_POINT + "/timestamps.txt");
+    private static final List<QueryPair> POINTS = QueryLoader.readQueryPairs(GIVEN_POINT + "/points.txt");
 
     public static List<QueryCase> loadSpatialSelectionsQuery_14() {
 
@@ -169,6 +172,76 @@ public class QueryLoader {
             LOGGER.error("Could not open query file: {}#{}", file, ex.getMessage());
             return null;
         }
+    }
+
+    public static List<QueryPair> readQueryPairs(String filepath) {
+
+        List<QueryPair> queryPairs = new ArrayList<>();
+        File file = new File(filepath);
+        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
+
+            while (buffer.ready()) {
+                String line = buffer.readLine();
+                String[] parts = line.split("/t");
+                QueryPair queryPair = new QueryPair(parts[0], parts[1]);
+                queryPairs.add(queryPair);
+            }
+
+        } catch (NullPointerException | IOException ex) {
+            LOGGER.error("Could not open query file: {}#{}", file, ex.getMessage());
+            return null;
+        }
+
+        return queryPairs;
+    }
+
+    public static List<QueryCase> loadMapSearchAndBrowsingQueries(int index) {
+
+        String name = GEONAMES.get(index).getLabel();
+        String box = GEONAMES.get(index).getGeometry();
+        List<QueryCase> queryCases = new ArrayList<>();
+        queryCases.add(new QueryCase("MS0", "MapSearchAndBrowsing", readFile(MAP_SEARCH_AND_BROWSING + "/Query0.spl").replace("TOPONYME", name)));
+        queryCases.add(new QueryCase("MS1", "MapSearchAndBrowsing", readFile(MAP_SEARCH_AND_BROWSING + "/Query1.spl").replace("GIVEN_RECTANGLE_IN_WKT", box)));
+        queryCases.add(new QueryCase("MS2", "MapSearchAndBrowsing", readFile(MAP_SEARCH_AND_BROWSING + "/Query2.spl").replace("GIVEN_RECTANGLE_IN_WKT", box)));
+
+        return queryCases;
+    }
+
+    public static List<QueryCase> loadRapidMappingQueries(int index) {
+
+        String timestamp = TIMESTAMPS.get(index).getLabel();
+        String polygon = TIMESTAMPS.get(index).getGeometry();
+        List<QueryCase> queryCases = new ArrayList<>();
+        queryCases.add(new QueryCase("RM0", "RapidMapping", readFile(RAPID_MAPPING + "/Query0.spl").replace("GIVEN_POLYGON_IN_WKT", polygon)));
+        queryCases.add(new QueryCase("RM1", "RapidMapping", readFile(RAPID_MAPPING + "/Query1.spl").replace("GIVEN_POLYGON_IN_WKT", polygon)));
+        queryCases.add(new QueryCase("RM2", "RapidMapping", readFile(RAPID_MAPPING + "/Query2.spl").replace("GIVEN_POLYGON_IN_WKT", polygon)));
+        queryCases.add(new QueryCase("RM3", "RapidMapping", readFile(RAPID_MAPPING + "/Query3.spl").replace("TIMESTAMP", timestamp).replace("GIVEN_POLYGON_IN_WKT", polygon)));
+        queryCases.add(new QueryCase("RM4", "RapidMapping", readFile(RAPID_MAPPING + "/Query4.spl").replace("TIMESTAMP", timestamp).replace("GIVEN_POLYGON_IN_WKT", polygon)));
+        queryCases.add(new QueryCase("RM5", "RapidMapping", readFile(RAPID_MAPPING + "/Query5.spl").replace("GIVEN_POLYGON_IN_WKT", polygon)));
+
+        return queryCases;
+    }
+
+    public static List<QueryCase> loadReverseGeocodingQueries(int index) {
+
+        String point = POINTS.get(index).getGeometry();
+        List<QueryCase> queryCases = new ArrayList<>();
+        queryCases.add(new QueryCase("RG0", "ReverseGeocoding", readFile(REVERSE_GEOCODING + "/Query0.spl").replace("GIVEN_POINT_IN_WKT", point)));
+        queryCases.add(new QueryCase("RG1", "ReverseGeocoding", readFile(REVERSE_GEOCODING + "/Query1.spl").replace("GIVEN_POINT_IN_WKT", point)));
+
+        return queryCases;
+    }
+
+    public static int getMapSearchAndBrowsingIndexSize() {
+        return GEONAMES.size();
+    }
+
+    public static int getRapidMappingIndexSize() {
+        return TIMESTAMPS.size();
+    }
+
+    public static int getReverseGeocodingIndexSize() {
+        return POINTS.size();
     }
 
 }

@@ -7,13 +7,14 @@ PREFIX opengis: <http://www.opengis.net/def/uom/OGC/1.0/>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX lgd: <http://linkedgeodata.org/ontology/>
 
-SELECT ?c ?type ?label (geof:distance(?cGeoWKT, "GIVEN_POINT_IN_WKT"^^geo:wktLiteral, opengis:metre) as ?distance) ?cGeoWKT
+SELECT ?c ?type ?label ?distance ?cGeoWKT
 WHERE {
 	GRAPH dataset:lgd {
-	?c rdf:type lgd:Motorway.
-	?c rdfs:label ?label.
-	?c lgd:hasGeometry ?cGeo.
-	?cGeo lgd:asWKT ?cGeoWKT.
+		?c rdf:type lgd:Motorway.
+		?c rdfs:label ?label.
+		?c lgd:hasGeometry ?cGeo.
+		?cGeo lgd:asWKT ?cGeoWKT.
+		BIND(geof:distance(?cGeoWKT, "GIVEN_POINT_IN_WKT"^^geo:wktLiteral, opengis:metre) as ?distance)
 	}
 }
 ORDER BY ASC(?distance)

@@ -6,12 +6,13 @@ PREFIX geo: <http://www.opengis.net/ont/geosparql#>
 PREFIX opengis: <http://www.opengis.net/def/uom/OGC/1.0/>
 PREFIX geonames: <http://www.geonames.org/ontology#>
 
-SELECT ?f (geof:distance(?cGeoWKT, "GIVEN_POINT_IN_WKT"^^geo:wktLiteral, opengis:metre) as ?distance)
+SELECT ?f ?distance
 WHERE {
 	GRAPH dataset:geonames {
 		?f geonames:featureCode geonames:P.PPL.
 		?f geonames:hasGeometry ?cGeo.
 		?cGeo geonames:asWKT ?cGeoWKT.
+		BIND(geof:distance(?cGeoWKT, "GIVEN_POINT_IN_WKT"^^geo:wktLiteral, opengis:metre) as ?distance)
 	}
 }
 ORDER BY ASC(?distance)
