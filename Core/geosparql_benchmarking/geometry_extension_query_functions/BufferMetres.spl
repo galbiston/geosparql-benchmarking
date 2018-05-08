@@ -1,0 +1,14 @@
+#Query 2a - Buffer_Metres_CLC:
+
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX uom: <http://www.opengis.net/def/uom/OGC/1.0/>
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+
+SELECT ?buffer
+WHERE {
+	GRAPH dataset:clc {
+		?geometry geo:hasSerialization ?aWKT .		
+		BIND(geof:buffer(?aWKT, 10, uom:metre) AS ?buffer)
+	}
+}

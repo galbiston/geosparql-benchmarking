@@ -1,4 +1,4 @@
-#Query 2 - Distance_CLC:
+#Query 2a - Distance_Metres_CLC:
 
 PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
 PREFIX uom: <http://www.opengis.net/def/uom/OGC/1.0/>
