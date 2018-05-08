@@ -29,6 +29,9 @@ public class QueryLoader {
     private static final String SPATIAL_JOINS = "../Core/benchmarking_files/micro_benchmark_queries/spatial_joins";
     private static final String SPATIAL_SELECTIONS = "../Core/benchmarking_files/micro_benchmark_queries/spatial_selections";
     private static final String AGGREGATIONS = "../Core/benchmarking_files/micro_benchmark_queries/aggregations";
+    private static final String MAP_SEARCH_AND_BROWSING = "../Core/benchmarking_files/macro_benchmark_queries/map_search_and_browsing";
+    private static final String RAPID_MAPPING = "../Core/benchmarking_files/macro_benchmark_queries/rapid_mapping";
+    private static final String REVERSE_GEOCODING = "../Core/benchmarking_files/macro_benchmark_queries/reverse_geocoding";
 
     //Given Shapes Files
     private static final String GIVEN_FOLDER = "../Core/benchmarking_files/given_files";
