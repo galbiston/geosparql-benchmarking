@@ -3,7 +3,7 @@ package geosparql_benchmarking.geosparql_jena;
 import data_setup.BenchmarkParameters;
 import data_setup.DataGeneration;
 import data_setup.Dataset_CRS84;
-import data_setup.Dataset_WGS84;
+import data_setup.Dataset_Greek_Grid;
 import data_setup.Dataset_WGS84_Legacy;
 import data_setup.GraphURI;
 import execution.BenchmarkExecution;
@@ -56,6 +56,7 @@ public class Main {
         //TreeMap<String, File> datasetMap = Dataset_WGS84_Legacy.getLinkedGeodata();
         Boolean inferenceEnabled = true;
 
+        //convertDatasetCRS();
         //applyPredicates();
         //indexInMemoryTest();
         //indexTDBTest();
@@ -178,9 +179,9 @@ public class Main {
 
         File inputFolder = Dataset_WGS84_Legacy.FOLDER;
         Lang inputLanguage = Lang.NTRIPLES;
-        File outputFolder = Dataset_WGS84.FOLDER;
+        File outputFolder = Dataset_Greek_Grid.FOLDER;
         Lang outputLanguage = Lang.NTRIPLES;
-        String outputSrsURI = SRS_URI.WGS84_CRS;
+        String outputSrsURI = SRS_URI.GREEK_GRID_CRS;
         ConvertCRS.convertFolder(inputFolder, inputLanguage, outputFolder, outputLanguage, outputSrsURI);
     }
 
