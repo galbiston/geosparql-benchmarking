@@ -18,6 +18,7 @@ import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.query.resultio.text.csv.SPARQLResultsCSVWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import queries.geographica.MicroBenchmark;
 
 public class Main {
 
@@ -51,7 +52,7 @@ public class Main {
         //runDatasetLoad(testSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
 
         //Strabon
-        BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_CASES, BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
+        BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadMainQuerySet(), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
         //BenchmarkExecution.runBoth(testSystemFactory, 1, BenchmarkParameters.TIMEOUT, QueryLoader.loadNonTopologicalFunctionsQuery_3(), BenchmarkParameters.RESULT_LINE_LIMIT_5000);
         //rdfsStrabonTest(testSystemFactory);
 

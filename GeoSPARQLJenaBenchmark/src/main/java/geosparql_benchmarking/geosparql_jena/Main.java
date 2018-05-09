@@ -83,21 +83,22 @@ public class Main {
 
     public static void runTDB(Boolean inferenceEnabled) {
         GeosparqlJenaTDBTestSystemFactory testSystemFactory = new GeosparqlJenaTDBTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_TDB_RESULTS_FOLDER_NAME, inferenceEnabled);
-        BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_CASES, BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
+        BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadMainQuerySet(), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
+
     }
 
     public static void runInMemory(TreeMap<String, File> datasetMap, Boolean inferenceEnabled) {
         Dataset memDataset = DatasetFactory.createTxnMem();
         GeosparqlJenaInMemoryTestSystemFactory.loadDataset(datasetMap, inferenceEnabled, memDataset);
-        GeosparqlJenaInMemoryTestSystemFactory memTestSystemFactory = new GeosparqlJenaInMemoryTestSystemFactory(memDataset, GEOSPARL_JENA_IN_MEMORY_RESULTS_FOLDER_NAME, inferenceEnabled);
-        BenchmarkExecution.runBoth(memTestSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_CASES, BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
+        GeosparqlJenaInMemoryTestSystemFactory testSystemFactory = new GeosparqlJenaInMemoryTestSystemFactory(memDataset, GEOSPARL_JENA_IN_MEMORY_RESULTS_FOLDER_NAME, inferenceEnabled);
+        BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadMainQuerySet(), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
     }
 
     public static void runNoIndex(TreeMap<String, File> datasetMap, Boolean inferenceEnabled) {
         Dataset noIndexDataset = DatasetFactory.createTxnMem();
         GeosparqlJenaNoIndexTestSystemFactory.loadDataset(datasetMap, inferenceEnabled, noIndexDataset);
-        GeosparqlJenaNoIndexTestSystemFactory noIndexTestSystemFactory = new GeosparqlJenaNoIndexTestSystemFactory(noIndexDataset, GEOSPARL_JENA_NO_INDEX_RESULTS_FOLDER_NAME, inferenceEnabled);
-        BenchmarkExecution.runBoth(noIndexTestSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_CASES, BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
+        GeosparqlJenaNoIndexTestSystemFactory testSystemFactory = new GeosparqlJenaNoIndexTestSystemFactory(noIndexDataset, GEOSPARL_JENA_NO_INDEX_RESULTS_FOLDER_NAME, inferenceEnabled);
+        BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadMainQuerySet(), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
     }
 
     public static void runTestTDB(Boolean inferenceEnabled) {

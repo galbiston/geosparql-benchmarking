@@ -5,10 +5,7 @@
  */
 package data_setup;
 
-import execution.QueryCase;
-import queries.geographica.MicroBenchmark;
 import java.time.Duration;
-import java.util.List;
 
 /**
  *
@@ -28,9 +25,5 @@ public class BenchmarkParameters {
      * 5000 line limit per query result output file.
      */
     public static final Integer RESULT_LINE_LIMIT_5000 = 5000;
-
-    //public static final List<QueryCase> QUERY_CASES = MicroBenchmark.loadSpatialSelectionsQuery_14();
-    //public static final List<QueryCase> QUERY_CASES = MicroBenchmark.loadNonTopologicalFunctionsQueries();
-    public static final List<QueryCase> QUERY_CASES = MicroBenchmark.loadMainQuerySet();
 
 }

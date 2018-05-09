@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import queries.geographica.MicroBenchmark;
 
 public class Main {
 
@@ -39,15 +40,15 @@ public class Main {
 
         TreeMap<String, File> datasetMap = Dataset_WGS84.getAll();
 
-        //ParliamentTestSystemFactory testSystemFactory = new ParliamentTestSystemFactory(PARLIAMENT_RESULTS_FOLDER_NAME, PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
         //Parliament
-        //BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, BenchmarkParameters.QUERY_CASES, BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
+        ParliamentTestSystemFactory testSystemFactory = new ParliamentTestSystemFactory(PARLIAMENT_RESULTS_FOLDER_NAME, PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
+        BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadMainQuerySet(), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
         //BenchmarkExecution.runBoth(testSystemFactory, 1, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadNonTopologicalFunctionsQuery_3(), BenchmarkParameters.RESULT_LINE_LIMIT_5000);
         //rdfsParliamentTest();
         //bufferQueryTest();
         //Data Loading
-        ParliamentTestSystemFactory.clearDataset(PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
-        ParliamentTestSystemFactory.loadDataset(datasetMap);
+        //ParliamentTestSystemFactory.clearDataset(PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
+        //ParliamentTestSystemFactory.loadDataset(datasetMap);
 
         //Repeated Data Loading
         //runDatasetLoad(testSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
