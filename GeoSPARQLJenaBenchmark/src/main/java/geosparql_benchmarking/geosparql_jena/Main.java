@@ -227,10 +227,18 @@ public class Main {
 
     public static void applyPredicates() {
 
-        TreeMap<String, File> datasetMap = Dataset_CRS84.getLinkedGeodata();
+        TreeMap<String, File> datasetMap = Dataset_WGS84_Legacy.getAll();
         for (File datasetFile : datasetMap.values()) {
 
-            File outputFile = new File(datasetFile.getName());
+            String outputFilename = datasetFile.getName();
+            String parentFoldername = datasetFile.getParentFile().getName();
+            //Create folder in current directory.
+            File outputFolder = new File(parentFoldername);
+            outputFolder.mkdir();
+
+            //Output file will go in the new folder.
+            File outputFile = new File(outputFolder, outputFilename);
+
             GeoSPARQLPredicates.applyFile(datasetFile, Lang.NT, outputFile, Lang.NT);
         }
     }
