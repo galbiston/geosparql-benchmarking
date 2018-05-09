@@ -1,0 +1,18 @@
+#Query 1 - rcc8ec:
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX geonames: <http://www.geonames.org/ontology#>
+PREFIX gag: <http://geo.linkedopendata.gr/gag/ontology/>
+
+SELECT ?s1 ?s2
+WHERE {
+	GRAPH dataset:geonames {
+		?feature1 a geo:Feature .
+	}
+	
+	GRAPH dataset:gag {
+		?geometry2 a geo:Geometry .
+	}
+	
+	?feature1 geo:rcc8ec ?geometry2 .
+}

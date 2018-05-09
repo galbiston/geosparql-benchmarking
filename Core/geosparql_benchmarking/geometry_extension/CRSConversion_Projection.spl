@@ -1,0 +1,15 @@
+#Query 2b - CRSConversion_Projection:
+
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX uom: <http://www.opengis.net/def/uom/OGC/1.0/>
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+
+SELECT ?distance
+WHERE {
+	GRAPH dataset:clc {
+		?geometry geo:hasSerialization ?aWKT .
+		BIND("<http://www.opengis.net/def/crs/EPSG/0/2100> POINT (498338.89034908096 3930053.3590633124)"^^<http://www.opengis.net/ont/geosparql#wktLiteral> AS ?pointWKT)
+		BIND(geof:distance(?aWKT, ?pointWKT, uom:metre) AS ?distance)
+	}
+}
