@@ -8,7 +8,7 @@ import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
 import data_setup.BenchmarkParameters;
-import data_setup.Dataset_WGS84_Legacy;
+import data_setup.Dataset_WGS84;
 import data_setup.GraphURI;
 import execution.BenchmarkExecution;
 import execution.QueryCase;
@@ -37,7 +37,7 @@ public class Main {
      */
     public static void main(String[] args) {
 
-        TreeMap<String, File> datasetMap = Dataset_WGS84_Legacy.getAll();
+        TreeMap<String, File> datasetMap = Dataset_WGS84.getAll();
 
         //ParliamentTestSystemFactory testSystemFactory = new ParliamentTestSystemFactory(PARLIAMENT_RESULTS_FOLDER_NAME, PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
         //Parliament

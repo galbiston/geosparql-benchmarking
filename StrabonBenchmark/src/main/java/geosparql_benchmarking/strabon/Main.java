@@ -1,7 +1,7 @@
 package geosparql_benchmarking.strabon;
 
 import data_setup.BenchmarkParameters;
-import data_setup.Dataset_CRS84;
+import data_setup.Dataset_WGS84;
 import data_setup.GraphURI;
 import eu.earthobservatory.runtime.postgis.Strabon;
 import eu.earthobservatory.utils.Format;
@@ -45,8 +45,7 @@ public class Main {
         //Built using PGAdmin tool to create a PostGIS template.
         String databaseTemplate = "template_postgis";
 
-        TreeMap<String, File> datasetMap = Dataset_CRS84.getAll();
-        //TreeMap<String, File> datasetMap = Dataset_WGS84_Legacy.getAll();
+        TreeMap<String, File> datasetMap = Dataset_WGS84.getAll();
 
         StrabonTestSystemFactory testSystemFactory = new StrabonTestSystemFactory(dbName, user, password, port, host, resultsFolder, inferenceEnabled, baseURI, format, postgresBinPath, postgresDataPath, databaseTemplate);
         //runDatasetLoad(testSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);

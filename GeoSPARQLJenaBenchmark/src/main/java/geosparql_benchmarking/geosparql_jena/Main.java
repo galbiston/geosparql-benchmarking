@@ -4,6 +4,7 @@ import data_setup.BenchmarkParameters;
 import data_setup.DataGeneration;
 import data_setup.Dataset_CRS84;
 import data_setup.Dataset_Greek_Grid;
+import data_setup.Dataset_WGS84;
 import data_setup.Dataset_WGS84_Legacy;
 import data_setup.GraphURI;
 import execution.BenchmarkExecution;
@@ -50,10 +51,8 @@ public class Main {
      */
     public static void main(String[] args) {
 
-        //TreeMap<String, File> datasetMap = Dataset_WGS84_Legacy.getLinkedGeodata();
-        TreeMap<String, File> datasetMap = Dataset_CRS84.getAll();
-        //TreeMap<String, File> datasetMap = Dataset_WGS84_Legacy.getAll();
-        //TreeMap<String, File> datasetMap = Dataset_WGS84_Legacy.getLinkedGeodata();
+        TreeMap<String, File> datasetMap = Dataset_WGS84.getAll();
+
         Boolean inferenceEnabled = true;
 
         //convertDatasetCRS();
