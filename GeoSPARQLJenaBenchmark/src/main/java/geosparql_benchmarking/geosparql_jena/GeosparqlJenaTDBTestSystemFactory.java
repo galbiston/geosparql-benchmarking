@@ -5,11 +5,11 @@
  */
 package geosparql_benchmarking.geosparql_jena;
 
-import geosparql_benchmarking.experiments.BenchmarkExecution;
-import geosparql_benchmarking.experiments.DatasetLoadResult;
-import geosparql_benchmarking.experiments.DatasetLoadTimeResult;
-import geosparql_benchmarking.experiments.TestSystem;
-import geosparql_benchmarking.experiments.TestSystemFactory;
+import execution.BenchmarkExecution;
+import execution_results.DatasetLoadResult;
+import execution_results.DatasetLoadTimeResult;
+import execution.TestSystem;
+import execution.TestSystemFactory;
 import implementation.index.IndexOption;
 import java.io.File;
 import java.io.FileOutputStream;

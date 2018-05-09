@@ -5,7 +5,7 @@
  */
 package geosparql_benchmarking.geosparql_jena;
 
-import geosparql_benchmarking.experiments.TestSystem;
+import execution.TestSystem;
 import implementation.index.IndexOption;
 import java.lang.invoke.MethodHandles;
 import org.apache.jena.query.Dataset;

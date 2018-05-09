@@ -5,9 +5,9 @@
  */
 package geosparql_benchmarking.geosparql_jena;
 
-import geosparql_benchmarking.experiments.QueryResult;
-import geosparql_benchmarking.experiments.TestSystem;
-import geosparql_benchmarking.experiments.VarValue;
+import execution_results.QueryResult;
+import execution.TestSystem;
+import execution_results.VarValue;
 import implementation.GeoSPARQLSupport;
 import implementation.index.IndexOption;
 import java.io.File;

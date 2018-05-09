@@ -6,11 +6,11 @@
 package geosparql_benchmarking.strabon;
 
 import eu.earthobservatory.runtime.postgis.Strabon;
-import geosparql_benchmarking.experiments.BenchmarkExecution;
-import geosparql_benchmarking.experiments.DatasetLoadResult;
-import geosparql_benchmarking.experiments.DatasetLoadTimeResult;
-import geosparql_benchmarking.experiments.TestSystem;
-import geosparql_benchmarking.experiments.TestSystemFactory;
+import execution.BenchmarkExecution;
+import execution_results.DatasetLoadResult;
+import execution_results.DatasetLoadTimeResult;
+import execution.TestSystem;
+import execution.TestSystemFactory;
 import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;

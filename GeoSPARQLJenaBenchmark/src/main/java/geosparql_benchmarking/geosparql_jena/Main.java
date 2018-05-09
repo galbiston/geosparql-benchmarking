@@ -1,14 +1,14 @@
 package geosparql_benchmarking.geosparql_jena;
 
-import geosparql_benchmarking.BenchmarkParameters;
-import geosparql_benchmarking.DatasetSources;
-import geosparql_benchmarking.GraphURI;
-import geosparql_benchmarking.experiments.BenchmarkExecution;
-import geosparql_benchmarking.experiments.DataGeneration;
-import geosparql_benchmarking.experiments.QueryCase;
-import geosparql_benchmarking.experiments.QueryLoader;
-import geosparql_benchmarking.experiments.TestSystemFactory;
-import geosparql_benchmarking.geographica.MicroBenchmark;
+import data_setup.BenchmarkParameters;
+import data_setup.DatasetSources;
+import data_setup.GraphURI;
+import execution.BenchmarkExecution;
+import data_setup.DataGeneration;
+import execution.QueryCase;
+import execution.QueryLoader;
+import execution.TestSystemFactory;
+import queries.geographica.MicroBenchmark;
 import implementation.data_conversion.ConvertCRS;
 import implementation.data_conversion.GeoSPARQLPredicates;
 import implementation.vocabulary.SRS_URI;

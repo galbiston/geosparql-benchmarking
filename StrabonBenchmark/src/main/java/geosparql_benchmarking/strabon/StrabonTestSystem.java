@@ -5,9 +5,9 @@ package geosparql_benchmarking.strabon;
 
 import eu.earthobservatory.runtime.postgis.Strabon;
 import eu.earthobservatory.utils.Format;
-import geosparql_benchmarking.experiments.QueryResult;
-import geosparql_benchmarking.experiments.TestSystem;
-import geosparql_benchmarking.experiments.VarValue;
+import execution_results.QueryResult;
+import execution.TestSystem;
+import execution_results.VarValue;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
