@@ -14,16 +14,9 @@ gradle-app.setting
 .gradletasknamecache
 /.nb-gradle/
 
-datasets
-datasets_WGS84Legacy
-datasets_CRS84
-datasets_fixed
-geosparql_indexes
-geosparql_jena_tdb
-geosparql_jena_tdb_test
-geosparql_jena_tdb CRS84
-geosparql_jena_tdb WGS84
-geosparql_jena_tdb - NO RDFS
+
+datasets_*
+geosparql_*
 logs
 parliament_kb
 lgd-jena.ttl
