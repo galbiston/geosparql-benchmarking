@@ -1,14 +1,14 @@
 package geosparql_benchmarking.geosparql_jena;
 
 import data_setup.BenchmarkParameters;
-import data_setup.DatasetSources;
+import data_setup.DataGeneration;
+import data_setup.Dataset_CRS84;
+import data_setup.Dataset_WGS84;
+import data_setup.Dataset_WGS84_Legacy;
 import data_setup.GraphURI;
 import execution.BenchmarkExecution;
-import data_setup.DataGeneration;
 import execution.QueryCase;
-import execution.QueryLoader;
 import execution.TestSystemFactory;
-import queries.geographica.MicroBenchmark;
 import implementation.data_conversion.ConvertCRS;
 import implementation.data_conversion.GeoSPARQLPredicates;
 import implementation.vocabulary.SRS_URI;
@@ -33,6 +33,7 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.tdb.TDBFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import queries.geographica.MicroBenchmark;
 
 public class Main {
 
@@ -49,10 +50,10 @@ public class Main {
      */
     public static void main(String[] args) {
 
-        //TreeMap<String, File> datasetMap = DatasetSources.getCRS84TestDatasets();
-        TreeMap<String, File> datasetMap = DatasetSources.getCRS84Datasets();
-        //TreeMap<String, File> datasetMap = DatasetSources.getWGS84LegacyDatasets();
-        //TreeMap<String, File> datasetMap = DatasetSources.getWGS84LegacyTestDatasets();
+        //TreeMap<String, File> datasetMap = Dataset_WGS84_Legacy.getLinkedGeodata();
+        TreeMap<String, File> datasetMap = Dataset_CRS84.getAll();
+        //TreeMap<String, File> datasetMap = Dataset_WGS84_Legacy.getAll();
+        //TreeMap<String, File> datasetMap = Dataset_WGS84_Legacy.getLinkedGeodata();
         Boolean inferenceEnabled = true;
 
         //applyPredicates();
@@ -74,7 +75,7 @@ public class Main {
         //runDatasetLoad(tdbTestSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
         //runDatasetLoad(memTestSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
         //runDatasetLoad(noIndexTestSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
-        //GeosparqlJenaMemTestSystemFactory.loadDataset(DatasetSources.getCRS84TestDatasets(), inferenceEnabled, memDataset);
+        //GeosparqlJenaMemTestSystemFactory.loadDataset(Dataset_WGS84_Legacy.getLinkedGeodata(), inferenceEnabled, memDataset);
         //rdfsJenaMemTest(memDataset);
         //generateGeonamesFile();
         //generatePoints();
@@ -175,16 +176,16 @@ public class Main {
      */
     public static void convertDatasetCRS() {
 
-        File inputFolder = DatasetSources.DATASET_WGS84_LEGACY_FOLDER;
+        File inputFolder = Dataset_WGS84_Legacy.FOLDER;
         Lang inputLanguage = Lang.NTRIPLES;
-        File outputFolder = DatasetSources.DATASET_CRS84_FOLDER;
+        File outputFolder = Dataset_WGS84.FOLDER;
         Lang outputLanguage = Lang.NTRIPLES;
-        String outputSrsURI = SRS_URI.DEFAULT_WKT_CRS84;
+        String outputSrsURI = SRS_URI.WGS84_CRS;
         ConvertCRS.convertFolder(inputFolder, inputLanguage, outputFolder, outputLanguage, outputSrsURI);
     }
 
     public static void indexInMemoryTest() {
-        TreeMap<String, File> datasetMap = DatasetSources.getCRS84TestDatasets();
+        TreeMap<String, File> datasetMap = Dataset_CRS84.getLinkedGeodata();
         Boolean inferenceEnabled = true;
         Dataset memDataset = DatasetFactory.createTxnMem();
         GeosparqlJenaInMemoryTestSystemFactory.loadDataset(datasetMap, inferenceEnabled, memDataset);
@@ -203,7 +204,7 @@ public class Main {
     }
 
     public static void indexTDBTest() {
-        TreeMap<String, File> datasetMap = DatasetSources.getCRS84TestDatasets();
+        TreeMap<String, File> datasetMap = Dataset_CRS84.getLinkedGeodata();
         Boolean inferenceEnabled = true;
         File datasetFolder = new File("geosparql_jena_tdb_test");
         FileUtils.deleteQuietly(datasetFolder);
@@ -226,7 +227,7 @@ public class Main {
 
     public static void applyPredicates() {
 
-        TreeMap<String, File> datasetMap = DatasetSources.getCRS84TestDatasets();
+        TreeMap<String, File> datasetMap = Dataset_CRS84.getLinkedGeodata();
         for (File datasetFile : datasetMap.values()) {
 
             File outputFile = new File(datasetFile.getName());
@@ -237,7 +238,7 @@ public class Main {
     public static void generateGeonamesFile() {
         Dataset memDataset = DatasetFactory.createTxnMem();
         Boolean inferenceEnabled = true;
-        GeosparqlJenaInMemoryTestSystemFactory.loadDataset(DatasetSources.getWGS84LegacyDataset_Geonames(), inferenceEnabled, memDataset);
+        GeosparqlJenaInMemoryTestSystemFactory.loadDataset(Dataset_WGS84_Legacy.getGeonames(), inferenceEnabled, memDataset);
         GeosparqlJenaInMemoryTestSystemFactory memTestSystemFactory = new GeosparqlJenaInMemoryTestSystemFactory(memDataset, GEOSPARL_JENA_IN_MEMORY_RESULTS_FOLDER_NAME, inferenceEnabled);
         DataGeneration.storeAllGeonames(memTestSystemFactory.getTestSystem(), new File("geonames.txt"));
 
