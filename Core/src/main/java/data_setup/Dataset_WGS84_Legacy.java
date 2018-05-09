@@ -31,9 +31,9 @@ public class Dataset_WGS84_Legacy {
         return datasetMap;
     }
 
-    public static TreeMap<String, File> getSyntheticDataset() {
+    public static TreeMap<String, File> getSynthetic() {
         TreeMap<String, File> datasetMap = new TreeMap<>();
-        datasetMap.put(GraphURI.DEFAULT, new File(FOLDER, "generator512.nt"));
+        datasetMap.put(GraphURI.DEFAULT, new File(FOLDER, "generator_512.nt"));
         return datasetMap;
     }
 

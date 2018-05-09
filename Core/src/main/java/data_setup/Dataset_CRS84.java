@@ -41,7 +41,7 @@ public class Dataset_CRS84 {
 
     public static TreeMap<String, File> getSynthetic() {
         TreeMap<String, File> datasetMap = new TreeMap<>();
-        datasetMap.put(GraphURI.DEFAULT, new File(FOLDER, "generator512.nt"));
+        datasetMap.put(GraphURI.DEFAULT, new File(FOLDER, "generator_512.nt"));
         return datasetMap;
     }
 
