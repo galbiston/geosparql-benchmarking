@@ -34,6 +34,5 @@ dependencies {
     compile "ch.qos.logback:logback-classic:$logbackVersion"
 
     //System Out Bridge to Logging
-    ext.sysoutBridgeVersion = "1.0.2"
     compile "uk.org.lidalia:sysout-over-slf4j:$sysoutBridgeVersion"
 }

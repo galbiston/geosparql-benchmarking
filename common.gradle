@@ -33,6 +33,9 @@ dependencies {
     //JUnit
     ext.junitVersion = "4.12"
     testCompile "junit:junit:$junitVersion"
+
+    //System Out Bridge to Logging
+    ext.sysoutBridgeVersion = "1.0.2"
 }
 
 String mavenArtifactId = name
