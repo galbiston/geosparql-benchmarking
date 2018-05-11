@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class MacroBenchmark {
 
-    public static final String BASE_FOLDER = "../Core/geographica_benchmarking/macro_benchmark_queries";
+    public static final String BASE_FOLDER = "../queries/geographica_benchmarking/macro_benchmark_queries";
 
     //Query Folders
     private static final String REVERSE_GEOCODING = BASE_FOLDER + "/reverse_geocoding";

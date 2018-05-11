@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class GeometryTopologyExtension_SimpleFeatures {
 
-    public static final String BASE_FOLDER = "../Core/geosparql_benchmarking/geometry_topology_extension/simple_features";
+    public static final String BASE_FOLDER = "../queries/geosparql_benchmarking/geometry_topology_extension/simple_features";
 
     public static List<QueryCase> loadQueries() {
         List<QueryCase> queryCases = new ArrayList<>();

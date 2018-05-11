@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class GeometryTopologyVocabulary_RCC8 {
 
-    public static final String BASE_FOLDER = "../Core/geosparql_benchmarking/topology_vocabulary_extension/rcc8";
+    public static final String BASE_FOLDER = "../queries/geosparql_benchmarking/topology_vocabulary_extension/rcc8";
 
     public static List<QueryCase> loadQueries() {
         List<QueryCase> queryCases = new ArrayList<>();

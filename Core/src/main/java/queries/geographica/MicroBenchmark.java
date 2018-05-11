@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class MicroBenchmark {
 
-    public static final String BASE_FOLDER = "../Core/geographica_benchmarking/micro_benchmark_queries";
+    public static final String BASE_FOLDER = "../queries/geographica_benchmarking/micro_benchmark_queries";
 
     //Query Folders
     public static final String NON_TOPOLOGICAL_FUNCTIONS = BASE_FOLDER + "/non_topological_functions";
