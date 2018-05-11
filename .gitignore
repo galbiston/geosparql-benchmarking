@@ -22,3 +22,4 @@ parliament_kb
 lgd-jena.ttl
 lgd-parliament.ttl
 results
+*.log
