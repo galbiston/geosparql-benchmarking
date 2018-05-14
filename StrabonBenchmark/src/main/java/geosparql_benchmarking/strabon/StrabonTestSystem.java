@@ -5,8 +5,8 @@ package geosparql_benchmarking.strabon;
 
 import eu.earthobservatory.runtime.postgis.Strabon;
 import eu.earthobservatory.utils.Format;
-import execution_results.QueryResult;
 import execution.TestSystem;
+import execution_results.QueryResult;
 import execution_results.VarValue;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -108,7 +108,7 @@ public class StrabonTestSystem implements TestSystem {
                 String stopCommand = StringUtils.join(postgresStop, " ");
                 LOGGER.error("PostgreSQL failed to stop: Exit Value - {}. Absolute path to PostgreSQL bin and data folders may be required. Postgres start command: {}", stopResult, stopCommand);
             } else {
-                LOGGER.debug("Postgres stopped");
+                LOGGER.debug("PostgreSQL stopped");
             }
         }
     }
@@ -122,22 +122,22 @@ public class StrabonTestSystem implements TestSystem {
         String readyMessage;
         switch (readyResult) {
             case 0:
-                readyMessage = "0: Postgres server is already running and accepting connections.";
+                readyMessage = "0: PostgreSQL server is already running and accepting connections.";
                 break;
             case 1:
-                readyMessage = "1: Postgres server is already running but rejected connection. Possibly due to starting up.";
+                readyMessage = "1: PostgreSQL server is already running but rejected connection. Possibly due to starting up.";
                 break;
             case 2:
-                readyMessage = "2: Postgres server did not respond so assumed to be not running.";
+                readyMessage = "2: PostgreSQL server did not respond so assumed to be not running.";
                 break;
             case 3:
                 readyMessage = "3: No attempt made to connect due to invalid parameters. " + isReadyCommand;
                 break;
             default:
-                readyMessage = readyResult + ": Unknown Postgres result. Refer to documentation for version at: https://www.postgresql.org/docs/10/static/app-pg-isready.html";
+                readyMessage = readyResult + ": Unknown PostgreSQL result. Refer to documentation for version at: https://www.postgresql.org/docs/10/static/app-pg-isready.html";
                 break;
         }
-        LOGGER.debug("Postgres Ready Result: {}", readyMessage);
+        LOGGER.warn("PostgreSQL Ready Result: {}", readyMessage);
 
         return readyResult;
     }
@@ -170,6 +170,7 @@ public class StrabonTestSystem implements TestSystem {
         if (startResult > 0) {
             String startCommand = StringUtils.join(postgresStart, " ");
             LOGGER.error("PostgreSQL failed to start: Exit Value - {}. Absolute path to PostgreSQL bin and data folders may be required. Postgres start command: {}", startResult, startCommand);
+            LOGGER.error("If PostgreSQL did not stop or start correctly and the benchmark did not run then try executing again as the issues may clear on second attempt.");
         } else {
             LOGGER.debug("Postgres started");
         }
