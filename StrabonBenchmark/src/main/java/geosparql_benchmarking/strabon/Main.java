@@ -6,10 +6,13 @@ import data_setup.GraphURI;
 import eu.earthobservatory.runtime.postgis.Strabon;
 import eu.earthobservatory.utils.Format;
 import execution.BenchmarkExecution;
+import execution.TestSystem;
 import execution.TestSystemFactory;
+import execution_results.QueryResult;
 import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
+import java.time.Duration;
 import java.util.TreeMap;
 import org.openrdf.query.MalformedQueryException;
 import org.openrdf.query.QueryEvaluationException;
@@ -55,7 +58,7 @@ public class Main {
         BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadMainQuerySet(), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
         //BenchmarkExecution.runBoth(testSystemFactory, 1, BenchmarkParameters.TIMEOUT, QueryLoader.loadNonTopologicalFunctionsQuery_3(), BenchmarkParameters.RESULT_LINE_LIMIT_5000);
         //rdfsStrabonTest(testSystemFactory);
-
+        //equalsTest(testSystemFactory);
         //Data Loading
         //StrabonTestSystemFactory.clearDataset(testSystemFactory);
         //StrabonTestSystemFactory.loadDataset(datasetMap, testSystemFactory);
@@ -81,6 +84,25 @@ public class Main {
             tupleQuery.evaluate(csvWriter);
 
         } catch (MalformedQueryException | QueryEvaluationException | TupleQueryResultHandlerException | IOException ex) {
+            LOGGER.error("Exception: {}", ex.getMessage());
+        }
+
+    }
+
+    private static void equalsTest(StrabonTestSystemFactory testSystemFactory) {
+
+        String queryString = "PREFIX geof: <http://www.opengis.net/def/function/geosparql/> "
+                + "SELECT ?res WHERE{"
+                + "BIND(\"<http://www.opengis.net/def/crs/EPSG/0/2100> POINT (474382.14862145175 4203347.7258966705)\"^^<http://www.opengis.net/ont/geosparql#wktLiteral> AS ?first)"
+                + "BIND(\"<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(37.98 23.71)\"^^<http://www.opengis.net/ont/geosparql#wktLiteral> AS ?second)"
+                + "BIND(geof:sfEquals(?first, ?second) AS ?res) "
+                + "}";
+
+        try (TestSystem testSystem = testSystemFactory.getTestSystem()) {
+            QueryResult qResult = testSystem.runQueryWithTimeout(queryString, Duration.ofHours(1));
+            System.out.println(qResult.getResults());
+
+        } catch (Exception ex) {
             LOGGER.error("Exception: {}", ex.getMessage());
         }
 
