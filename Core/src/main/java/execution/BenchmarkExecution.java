@@ -1,8 +1,8 @@
 package execution;
 
 import execution_results.DatasetLoadResult;
-import execution_results.QueryResult;
 import execution_results.IterationResult;
+import execution_results.QueryResult;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
@@ -84,7 +84,7 @@ public class BenchmarkExecution {
 
                     IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, i, queryResult, initStartNanoTime, initEndNanoTime);
                     //Write summary for all queries and iterations performed to a single file. Reduce footprint by writing immediately.
-                    IterationResult.writeSummaryFile(runResultsFolder, iterationResult, testTimestamp);
+                    IterationResult.writeSummaryFile(runResultsFolder, iterationResult, testSystemName, testTimestamp);
 
                     if (queryResult.isCompleted()) {
                         //Write results for all iterations for each query to own file.
@@ -144,7 +144,7 @@ public class BenchmarkExecution {
 
                     IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, i, queryResult, initStartNanoTime, initEndNanoTime);
                     //Write summary for all queries and iterations performed to a single file. Reduce footprint by writing immediately.
-                    IterationResult.writeSummaryFile(runResultsFolder, iterationResult, testTimestamp);
+                    IterationResult.writeSummaryFile(runResultsFolder, iterationResult, testSystemName, testTimestamp);
 
                     if (queryResult.isCompleted()) {
                         //Write results for all iterations for each query to own file.

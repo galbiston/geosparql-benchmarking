@@ -151,10 +151,10 @@ public class IterationResult {
 
     public static final DateTimeFormatter FILE_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
 
-    public static final void writeSummaryFile(File runResultsFolder, IterationResult iterationResult, String testTimestamp) {
+    public static final void writeSummaryFile(File runResultsFolder, IterationResult iterationResult, String testSystemName, String testTimestamp) {
 
         runResultsFolder.mkdir();
-        String filename = "summary-" + testTimestamp + ".csv";
+        String filename = "summary-" + testSystemName + "-" + testTimestamp + ".csv";
         File summaryFile = new File(runResultsFolder, filename);
         boolean summaryFileAlreadyExists = summaryFile.exists();
 
