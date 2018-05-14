@@ -79,8 +79,8 @@ public class Main {
         //runInMemory(datasetMap, inferenceEnabled);
         //runTestInMemory(datasetMap, inferenceEnabled);
         //No Index
-        //runNoIndex(datasetMap, inferenceEnabled);
-        //runTestNoIndex(datasetMap, inferenceEnabled);
+        //runNoIndexTDB(datasetMap, inferenceEnabled);
+        //runTestNoIndexTDB(datasetMap, inferenceEnabled);
         //Data Loading
         //runDatasetLoad(tdbTestSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
         //runDatasetLoad(memTestSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
@@ -128,10 +128,8 @@ public class Main {
         BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadMainQuerySet(), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
     }
 
-    public static void runNoIndex(TreeMap<String, File> datasetMap, Boolean inferenceEnabled) {
-        Dataset noIndexDataset = DatasetFactory.createTxnMem();
-        GeosparqlJenaNoIndexTestSystemFactory.loadDataset(datasetMap, inferenceEnabled, noIndexDataset);
-        GeosparqlJenaNoIndexTestSystemFactory testSystemFactory = new GeosparqlJenaNoIndexTestSystemFactory(noIndexDataset, GEOSPARL_JENA_NO_INDEX_RESULTS_FOLDER_NAME, inferenceEnabled);
+    public static void runNoIndexTDB(TreeMap<String, File> datasetMap, Boolean inferenceEnabled) {
+        GeosparqlJenaNoIndexTDBTestSystemFactory testSystemFactory = new GeosparqlJenaNoIndexTDBTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_NO_INDEX_RESULTS_FOLDER_NAME, inferenceEnabled);
         BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadMainQuerySet(), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
     }
 
@@ -147,10 +145,8 @@ public class Main {
         BenchmarkExecution.runBoth(memTestSystemFactory, 1, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadNonTopologicalFunctionsQuery_3(), BenchmarkParameters.RESULT_LINE_LIMIT_5000);
     }
 
-    public static void runTestNoIndex(TreeMap<String, File> datasetMap, Boolean inferenceEnabled) {
-        Dataset noIndexDataset = DatasetFactory.createTxnMem();
-        GeosparqlJenaNoIndexTestSystemFactory.loadDataset(datasetMap, inferenceEnabled, noIndexDataset);
-        GeosparqlJenaNoIndexTestSystemFactory noIndexTestSystemFactory = new GeosparqlJenaNoIndexTestSystemFactory(noIndexDataset, GEOSPARL_JENA_NO_INDEX_RESULTS_FOLDER_NAME, inferenceEnabled);
+    public static void runTestNoIndexTDB(TreeMap<String, File> datasetMap, Boolean inferenceEnabled) {
+        GeosparqlJenaNoIndexTDBTestSystemFactory noIndexTestSystemFactory = new GeosparqlJenaNoIndexTDBTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_NO_INDEX_RESULTS_FOLDER_NAME, inferenceEnabled);
         BenchmarkExecution.runBoth(noIndexTestSystemFactory, 1, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadNonTopologicalFunctionsQuery_3(), BenchmarkParameters.RESULT_LINE_LIMIT_5000);
     }
 

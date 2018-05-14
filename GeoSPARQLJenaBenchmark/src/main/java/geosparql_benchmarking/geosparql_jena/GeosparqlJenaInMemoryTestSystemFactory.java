@@ -6,10 +6,10 @@
 package geosparql_benchmarking.geosparql_jena;
 
 import execution.BenchmarkExecution;
-import execution_results.DatasetLoadResult;
-import execution_results.DatasetLoadTimeResult;
 import execution.TestSystem;
 import execution.TestSystemFactory;
+import execution_results.DatasetLoadResult;
+import execution_results.DatasetLoadTimeResult;
 import implementation.index.IndexOption;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  */
 public class GeosparqlJenaInMemoryTestSystemFactory implements TestSystemFactory {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    protected static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     public static final String TEST_SYSTEM_NAME = "GeoSparqlJenaInMemory";
 
     protected Dataset dataset;

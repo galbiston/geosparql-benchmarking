@@ -6,10 +6,10 @@
 package geosparql_benchmarking.geosparql_jena;
 
 import execution.BenchmarkExecution;
-import execution_results.DatasetLoadResult;
-import execution_results.DatasetLoadTimeResult;
 import execution.TestSystem;
 import execution.TestSystemFactory;
+import execution_results.DatasetLoadResult;
+import execution_results.DatasetLoadTimeResult;
 import implementation.index.IndexOption;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -43,12 +43,12 @@ import tdb.tdbstats;
  */
 public class GeosparqlJenaTDBTestSystemFactory implements TestSystemFactory {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    protected static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     public static final String TEST_SYSTEM_NAME = "GeoSparqlJenaTDB";
 
-    private final File datasetFolder;
-    private final File resultsFolder;
-    private final Boolean inferenceEnabled;
+    protected final File datasetFolder;
+    protected final File resultsFolder;
+    protected final Boolean inferenceEnabled;
 
     public GeosparqlJenaTDBTestSystemFactory(File datasetFolder, String resultsFolder, Boolean inferenceEnabled) {
         this.datasetFolder = datasetFolder;
