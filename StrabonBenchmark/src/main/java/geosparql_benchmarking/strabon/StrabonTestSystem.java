@@ -137,8 +137,12 @@ public class StrabonTestSystem implements TestSystem {
                 readyMessage = readyResult + ": Unknown PostgreSQL result. Refer to documentation for version at: https://www.postgresql.org/docs/10/static/app-pg-isready.html";
                 break;
         }
-        LOGGER.warn("PostgreSQL Ready Result: {}", readyMessage);
 
+        if (readyResult < 3) {
+            LOGGER.debug("PostgreSQL Ready Result: {}", readyMessage);
+        } else {
+            LOGGER.warn("PostgreSQL Ready Result: {}", readyMessage);
+        }
         return readyResult;
     }
 
