@@ -106,7 +106,7 @@ public class StrabonTestSystem implements TestSystem {
 
             if (stopResult > 0) {
                 String stopCommand = StringUtils.join(postgresStop, " ");
-                LOGGER.error("PostgreSQL failed to stop: Exit Value - {}. Absolute path to PostgreSQL bin and data folders may be required. Postgres start command: {}", stopResult, stopCommand);
+                LOGGER.error("PostgreSQL failed to stop: Exit Value - {}. Absolute path to PostgreSQL bin and data folders may be required. Postgres stop command: {}", stopResult, stopCommand);
             } else {
                 LOGGER.debug("PostgreSQL stopped");
             }
