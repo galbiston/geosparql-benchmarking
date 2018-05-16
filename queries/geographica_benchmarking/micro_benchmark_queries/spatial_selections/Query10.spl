@@ -8,5 +8,5 @@ PREFIX clc: <http://geo.linkedopendata.gr/corine/ontology#>
 SELECT ?s1 ?o1
 WHERE {
 	GRAPH dataset:clc {?s1 clc:asWKT ?o1}
-	FILTER(geof:sfIntersects(?o1, "GIVEN_LINE_IN_WKT"^^geo:wktLiteral)).
+	FILTER(geof:sfIntersects(?o1, "GIVEN_LINESTRING_2_IN_WKT"^^geo:wktLiteral)).
 }

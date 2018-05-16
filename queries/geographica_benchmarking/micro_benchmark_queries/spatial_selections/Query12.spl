@@ -8,5 +8,5 @@ PREFIX lgd: <http://linkedgeodata.org/ontology/>
 SELECT ?s1 ?o1
 WHERE {
 	GRAPH dataset:lgd {?s1 lgd:asWKT ?o1}
-	FILTER(geof:sfCrosses(?o1, "GIVEN_LINE_IN_WKT"^^geo:wktLiteral)).
+	FILTER(geof:sfCrosses(?o1, "GIVEN_LINESTRING_3_IN_WKT"^^geo:wktLiteral)).
 }

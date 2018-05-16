@@ -91,12 +91,12 @@ public class MicroBenchmark {
      */
     public static List<QueryCase> loadSpatialSelectionsQueries() {
         List<QueryCase> queryCases = new ArrayList<>();
-        queryCases.add(new QueryCase("Query7", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query7.spl").replace("GIVEN_LINE_IN_WKT", GIVEN_LINESTRING_1)));
+        queryCases.add(new QueryCase("Query7", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query7.spl").replace("GIVEN_LINESTRING_1_IN_WKT", GIVEN_LINESTRING_1)));
         queryCases.add(new QueryCase("Query8", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query8.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON)));
         queryCases.add(new QueryCase("Query9", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query9.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON)));
-        queryCases.add(new QueryCase("Query10", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query10.spl").replace("GIVEN_LINE_IN_WKT", GIVEN_LINESTRING_2)));
+        queryCases.add(new QueryCase("Query10", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query10.spl").replace("GIVEN_LINESTRING_2_IN_WKT", GIVEN_LINESTRING_2)));
         queryCases.add(new QueryCase("Query11", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query11.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON)));
-        queryCases.add(new QueryCase("Query12", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query12.spl").replace("GIVEN_LINE_IN_WKT", GIVEN_LINESTRING_3)));
+        queryCases.add(new QueryCase("Query12", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query12.spl").replace("GIVEN_LINESTRING_3_IN_WKT", GIVEN_LINESTRING_3)));
         queryCases.add(new QueryCase("Query13", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query13.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON)));
         queryCases.add(new QueryCase("Query14", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query14.spl").replace("GIVEN_POINT_IN_WKT", GIVEN_POINT).replace("GIVEN_RADIUS", GIVEN_RADIUS)));
         queryCases.add(new QueryCase("Query15", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query15.spl").replace("GIVEN_POINT_IN_WKT", GIVEN_POINT).replace("GIVEN_RADIUS", GIVEN_RADIUS)));
