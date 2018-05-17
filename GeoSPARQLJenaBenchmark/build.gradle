@@ -125,6 +125,6 @@ task runNoIndexGeosparql(type:JavaExec){
     args "no_index", "geosparql"
 }
 
-task runMicroMacro(type: GradleBuild) {
-    tasks = ['runTDBMicro', 'runMemoryMicro', 'runNoIndexMicro', 'runTDBMacro', 'runMemoryMacro', 'runNoIndexMacro']
-}
+//Run sequence of tasks:
+//gradle runTDBMicro runMemoryMicro runNoIndexMicro runTDBMacro runMemoryMacro runNoIndexMacro
+
