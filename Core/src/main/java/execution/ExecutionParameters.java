@@ -77,20 +77,24 @@ public class ExecutionParameters {
         return lineLimit;
     }
 
-    private static final Integer QUERY_CASE_POSITION = 1;
-    private static final Integer BENCHMARK_TYPE_POSITION = 2;
-    private static final Integer INFERENCE_ENABLED_POSITION = 3;
-    private static final Integer DATASET_POSITION = 4;
-    private static final Integer ITERATIONS_POSITION = 5;
-    private static final Integer TIMEOUT_POSITION = 6;
-    private static final Integer LINE_LIMIT_POSITION = 7;
+    private static final Integer QUERY_CASE_POSITION = 0;
+    private static final Integer BENCHMARK_TYPE_POSITION = 1;
+    private static final Integer INFERENCE_ENABLED_POSITION = 2;
+    private static final Integer DATASET_POSITION = 3;
+    private static final Integer ITERATIONS_POSITION = 4;
+    private static final Integer TIMEOUT_POSITION = 5;
+    private static final Integer LINE_LIMIT_POSITION = 6;
 
     public static final ExecutionParameters extract(String[] args) {
+        return extract(args, 0);
+    }
+
+    public static final ExecutionParameters extract(String[] args, Integer argOffset) {
 
         LOGGER.info("---------------------------Bencharmarking Parameters----------------------------");
         List<QueryCase> queryCases;
-        if (args.length > QUERY_CASE_POSITION) {
-            switch (args[QUERY_CASE_POSITION].toLowerCase()) {
+        if (args.length > QUERY_CASE_POSITION + argOffset) {
+            switch (args[QUERY_CASE_POSITION + argOffset].toLowerCase()) {
                 case "geographica_micro":
                     queryCases = MicroBenchmark.loadMainQuerySet();
                     LOGGER.info("Query Set: Geographica Microbenchmark.");
@@ -109,8 +113,8 @@ public class ExecutionParameters {
         }
 
         BenchmarkType benchmarkType;
-        if (args.length > BENCHMARK_TYPE_POSITION) {
-            benchmarkType = BenchmarkExecution.BenchmarkType.valueOf(args[BENCHMARK_TYPE_POSITION].toUpperCase());
+        if (args.length > BENCHMARK_TYPE_POSITION + argOffset) {
+            benchmarkType = BenchmarkExecution.BenchmarkType.valueOf(args[BENCHMARK_TYPE_POSITION + argOffset].toUpperCase());
             LOGGER.info("Benchmark Type: {}", benchmarkType);
         } else {
             benchmarkType = BenchmarkExecution.BenchmarkType.BOTH;
@@ -118,8 +122,8 @@ public class ExecutionParameters {
         }
 
         Boolean inferenceEnabled;
-        if (args.length > INFERENCE_ENABLED_POSITION) {
-            inferenceEnabled = Boolean.valueOf(args[INFERENCE_ENABLED_POSITION]);
+        if (args.length > INFERENCE_ENABLED_POSITION + argOffset) {
+            inferenceEnabled = Boolean.valueOf(args[INFERENCE_ENABLED_POSITION + argOffset]);
             LOGGER.info("Inference Enabled: {}", inferenceEnabled);
         } else {
             inferenceEnabled = true;
@@ -127,8 +131,8 @@ public class ExecutionParameters {
         }
 
         TreeMap<String, File> datasetMap;
-        if (args.length > DATASET_POSITION) {
-            switch (args[DATASET_POSITION].toLowerCase()) {
+        if (args.length > DATASET_POSITION + argOffset) {
+            switch (args[DATASET_POSITION + argOffset].toLowerCase()) {
                 case "GreekGrid":
                     datasetMap = Dataset_Greek_Grid.getAll();
                     LOGGER.info("Dataset: GreekGrid");
@@ -151,8 +155,8 @@ public class ExecutionParameters {
         }
 
         Integer iterations;
-        if (args.length > ITERATIONS_POSITION) {
-            iterations = Integer.parseInt(args[ITERATIONS_POSITION]);
+        if (args.length > ITERATIONS_POSITION + argOffset) {
+            iterations = Integer.parseInt(args[ITERATIONS_POSITION + argOffset]);
             LOGGER.info("Iterations: {}", iterations);
         } else {
             iterations = BenchmarkParameters.ITERATIONS;
@@ -160,8 +164,8 @@ public class ExecutionParameters {
         }
 
         Duration timeout;
-        if (args.length > TIMEOUT_POSITION) {
-            timeout = Duration.ofSeconds(Integer.parseInt(args[TIMEOUT_POSITION]));
+        if (args.length > TIMEOUT_POSITION + argOffset) {
+            timeout = Duration.ofSeconds(Integer.parseInt(args[TIMEOUT_POSITION + argOffset]));
             LOGGER.info("Timout: {}", timeout);
         } else {
             timeout = BenchmarkParameters.TIMEOUT;
@@ -169,8 +173,8 @@ public class ExecutionParameters {
         }
 
         Integer lineLimit;
-        if (args.length > LINE_LIMIT_POSITION) {
-            lineLimit = Integer.parseInt(args[LINE_LIMIT_POSITION]);
+        if (args.length > LINE_LIMIT_POSITION + argOffset) {
+            lineLimit = Integer.parseInt(args[LINE_LIMIT_POSITION + argOffset]);
             LOGGER.info("Line Limit: {}", lineLimit);
         } else {
             lineLimit = BenchmarkParameters.RESULT_LINE_LIMIT_ZERO;
