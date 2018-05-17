@@ -95,11 +95,11 @@ public class ExecutionParameters {
         List<QueryCase> queryCases;
         if (args.length > QUERY_CASE_POSITION + argOffset) {
             switch (args[QUERY_CASE_POSITION + argOffset].toLowerCase()) {
-                case "geographica_micro":
+                case "micro":
                     queryCases = MicroBenchmark.loadMainQuerySet();
                     LOGGER.info("Query Set: Geographica Microbenchmark.");
                     break;
-                case "geographica_macro":
+                case "macro":
                     queryCases = MacroBenchmark.loadAll();
                     LOGGER.info("Query Set: Geographica Macrobenchmark.");
                     break;
