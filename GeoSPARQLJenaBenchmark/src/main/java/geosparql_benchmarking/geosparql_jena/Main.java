@@ -53,6 +53,8 @@ public class Main {
     public static final String GEOSPARL_JENA_NO_INDEX_RESULTS_FOLDER_NAME = "geosparql_jena_no_index";
     public static final File GEOSPARQL_SCHEMA_FILE = new File("geosparql_vocab_all.rdf");
 
+    private static final Integer ARGUMENT_OFFSET = 1;
+
     public static enum SystemType {
         TDB, MEMORY, NO_INDEX
     }
@@ -65,7 +67,7 @@ public class Main {
         try {
             SystemType systemType = SystemType.valueOf(args[0].toUpperCase());
 
-            ExecutionParameters parameters = ExecutionParameters.extract(args);
+            ExecutionParameters parameters = ExecutionParameters.extract(args, ARGUMENT_OFFSET);
 
             TestSystemFactory testSystemFactory;
             switch (systemType) {

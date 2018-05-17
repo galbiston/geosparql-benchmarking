@@ -1,11 +1,10 @@
 package geosparql_benchmarking.strabon;
 
-import data_setup.BenchmarkParameters;
-import data_setup.Dataset_WGS84;
 import data_setup.GraphURI;
 import eu.earthobservatory.runtime.postgis.Strabon;
 import eu.earthobservatory.utils.Format;
 import execution.BenchmarkExecution;
+import execution.ExecutionParameters;
 import execution.TestSystem;
 import execution.TestSystemFactory;
 import execution_results.QueryResult;
@@ -21,7 +20,6 @@ import org.openrdf.query.TupleQueryResultHandlerException;
 import org.openrdf.query.resultio.text.csv.SPARQLResultsCSVWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import queries.geographica.MicroBenchmark;
 
 public class Main {
 
@@ -33,10 +31,10 @@ public class Main {
     public static void main(String[] args) {
 
         String dbName = "endpoint";
-        String user = "postgres"; //String user = "postgres";
-        String password = "postgres"; //String passwd = "postgres";
+        String user = "postgres";
+        String password = "postgres";
         Integer port = 5432;
-        String host = "localhost"; //"localhost"; //"127.0.0.1"
+        String host = "localhost"; //"127.0.0.1"
         String resultsFolder = "strabon";
 
         String postgresBinPath = "\"C:\\Program Files\\PostgreSQL\\10\\bin\\";
@@ -49,19 +47,29 @@ public class Main {
         //Built using PGAdmin tool to create a PostGIS template.
         String databaseTemplate = "template_postgis";
 
-        TreeMap<String, File> datasetMap = Dataset_WGS84.getAll();
+        try {
+            ExecutionParameters parameters = ExecutionParameters.extract(args);
 
-        StrabonTestSystemFactory testSystemFactory = new StrabonTestSystemFactory(dbName, user, password, port, host, resultsFolder, inferenceEnabled, baseURI, format, postgresBinPath, postgresDataPath, databaseTemplate);
+            StrabonTestSystemFactory testSystemFactory = new StrabonTestSystemFactory(dbName, user, password, port, host, resultsFolder, inferenceEnabled, baseURI, format, postgresBinPath, postgresDataPath, databaseTemplate);
+            BenchmarkExecution.runType(testSystemFactory, parameters);
+        } catch (Exception ex) {
+            LOGGER.error("{} for arguments {}", ex.getMessage(), args);
+        }
+        /*
         //runDatasetLoad(testSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
 
         //Strabon
-        BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadMainQuerySet(), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
-        //BenchmarkExecution.runBoth(testSystemFactory, 1, BenchmarkParameters.TIMEOUT, QueryLoader.loadNonTopologicalFunctionsQuery_3(), BenchmarkParameters.RESULT_LINE_LIMIT_5000);
+        //BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadMainQuerySet(), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
+        //List<QueryCase> queryCases = MicroBenchmark.loadMainQuerySet();
+        //BenchmarkExecution.runWarm(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, queryCases.subList(17, queryCases.size()), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
         //rdfsStrabonTest(testSystemFactory);
         //equalsTest(testSystemFactory);
+        equalsTestA(testSystemFactory);
+        //equalsTest2(testSystemFactory);
         //Data Loading
         //StrabonTestSystemFactory.clearDataset(testSystemFactory);
         //StrabonTestSystemFactory.loadDataset(datasetMap, testSystemFactory);
+         */
     }
 
     public static void runDatasetLoad(TestSystemFactory testSystemFactory, Integer iterations, TreeMap<String, File> datasetMap) {
@@ -93,8 +101,46 @@ public class Main {
 
         String queryString = "PREFIX geof: <http://www.opengis.net/def/function/geosparql/> "
                 + "SELECT ?res WHERE{"
-                + "BIND(\"<http://www.opengis.net/def/crs/EPSG/0/2100> POINT (474382.14862145175 4203347.7258966705)\"^^<http://www.opengis.net/ont/geosparql#wktLiteral> AS ?first)"
+                + "BIND(\"<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT (23.71 37.98)\"^^<http://www.opengis.net/ont/geosparql#wktLiteral> AS ?first)"
                 + "BIND(\"<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(37.98 23.71)\"^^<http://www.opengis.net/ont/geosparql#wktLiteral> AS ?second)"
+                + "BIND(geof:sfEquals(?first, ?second) AS ?res) "
+                + "}";
+
+        try (TestSystem testSystem = testSystemFactory.getTestSystem()) {
+            QueryResult qResult = testSystem.runQueryWithTimeout(queryString, Duration.ofHours(1));
+            System.out.println(qResult.getResults());
+
+        } catch (Exception ex) {
+            LOGGER.error("Exception: {}", ex.getMessage());
+        }
+
+    }
+
+    private static void equalsTestA(StrabonTestSystemFactory testSystemFactory) {
+
+        String queryString = "PREFIX geof: <http://www.opengis.net/def/function/geosparql/> "
+                + "SELECT ?res WHERE{"
+                + "BIND(\"<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT (23.71 37.98)\"^^<http://www.opengis.net/ont/geosparql#wktLiteral> AS ?first)"
+                + "BIND(\"<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(23.71 37.98)\"^^<http://www.opengis.net/ont/geosparql#wktLiteral> AS ?second)"
+                + "BIND(geof:sfEquals(?first, ?second) AS ?res) "
+                + "}";
+
+        try (TestSystem testSystem = testSystemFactory.getTestSystem()) {
+            QueryResult qResult = testSystem.runQueryWithTimeout(queryString, Duration.ofHours(1));
+            System.out.println(qResult.getResults());
+
+        } catch (Exception ex) {
+            LOGGER.error("Exception: {}", ex.getMessage());
+        }
+
+    }
+
+    private static void equalsTest2(StrabonTestSystemFactory testSystemFactory) {
+
+        String queryString = "PREFIX geof: <http://www.opengis.net/def/function/geosparql/> "
+                + "SELECT ?res WHERE{"
+                + "BIND(\"<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(0 0, 2 0, 5 0)\"^^<http://www.opengis.net/ont/geosparql#wktLiteral> AS ?first)"
+                + "BIND(\"<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(5 0, 0 0)\"^^<http://www.opengis.net/ont/geosparql#wktLiteral> AS ?second)"
                 + "BIND(geof:sfEquals(?first, ?second) AS ?res) "
                 + "}";
 

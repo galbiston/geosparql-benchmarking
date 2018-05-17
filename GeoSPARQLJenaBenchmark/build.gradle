@@ -35,56 +35,56 @@ dependencies {
 
 }
 
-task runTDB(type:JavaExec){
+task runTDBMicro(type:JavaExec){
     classpath = sourceSets.main.runtimeClasspath
     main = mainClassName
-    args "tdb", "geographica_micro"
+    args "tdb", "micro"
 }
 
-task runTDBWarm(type:JavaExec){
+task runTDBMicroWarm(type:JavaExec){
     classpath = sourceSets.main.runtimeClasspath
     main = mainClassName
-    args "tdb", "geographica_micro", "warm"
+    args "tdb", "micro", "warm"
 }
 
-task runTDBCold(type:JavaExec){
+task runTDBMicroCold(type:JavaExec){
     classpath = sourceSets.main.runtimeClasspath
     main = mainClassName
-    args "tdb", "geographica_micro", "cold"
+    args "tdb", "micro", "cold"
 }
 
-task runMemory(type:JavaExec){
+task runMemoryMicro(type:JavaExec){
     classpath = sourceSets.main.runtimeClasspath
     main = mainClassName
-    args "memory", "geographica_micro"
+    args "memory", "micro"
 }
 
-task runMemoryWarm(type:JavaExec){
+task runMemoryMicroWarm(type:JavaExec){
     classpath = sourceSets.main.runtimeClasspath
     main = mainClassName
-    args "memory", "geographica_micro", "warm"
+    args "memory", "micro", "warm"
 }
 
-task runMemoryCold(type:JavaExec){
+task runMemoryMicroCold(type:JavaExec){
     classpath = sourceSets.main.runtimeClasspath
     main = mainClassName
-    args "memory", "geographica_micro", "cold"
+    args "memory", "micro", "cold"
 }
 
-task runNoIndex(type:JavaExec){
+task runNoIndexMicro(type:JavaExec){
     classpath = sourceSets.main.runtimeClasspath
     main = mainClassName
-    args "no_index", "geographica_micro"
+    args "no_index", "micro"
 }
 
-task runNoIndexWarm(type:JavaExec){
+task runNoIndexMicroWarm(type:JavaExec){
     classpath = sourceSets.main.runtimeClasspath
     main = mainClassName
-    args "no_index", "geographica_micro", "warm"
+    args "no_index", "micro", "warm"
 }
 
-task runNoIndexCold(type:JavaExec){
+task runNoIndexMicroCold(type:JavaExec){
     classpath = sourceSets.main.runtimeClasspath
     main = mainClassName
-    args "no_index", "geographica_micro", "cold"
+    args "no_index", "micro", "cold"
 }

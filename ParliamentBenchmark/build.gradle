@@ -68,3 +68,21 @@ run.doFirst {
     environment 'PARLIAMENT_CONFIG_PATH', 'parliament-release\\ParliamentConfig.txt'
     environment 'Path', 'parliament-release'
 }
+
+task runMicro(type:JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    args "micro"
+}
+
+task runMicroWarm(type:JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    args "micro", "warm"
+}
+
+task runMicroCold(type:JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    args "micro", "cold"
+}
