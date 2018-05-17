@@ -6,7 +6,7 @@ import data_setup.Dataset_CRS84;
 import data_setup.Dataset_WGS84_Legacy;
 import data_setup.GraphURI;
 import execution.BenchmarkExecution;
-import execution.BenchmarkExecution.BenchmarkType;
+import execution.ExecutionParameters;
 import execution.QueryCase;
 import execution.QueryLoader;
 import execution.TestSystem;
@@ -62,39 +62,29 @@ public class Main {
      */
     public static void main(String[] args) {
 
-        TreeMap<String, File> datasetMap = Dataset_CRS84.getAll();
-
-        Boolean inferenceEnabled = true;
-
         try {
             SystemType systemType = SystemType.valueOf(args[0].toUpperCase());
-            BenchmarkType benchmarkType;
 
-            if (args.length == 2) {
-                benchmarkType = BenchmarkType.valueOf(args[1].toUpperCase());
-            } else {
-                benchmarkType = BenchmarkType.BOTH;
-                LOGGER.info("Defaulting to BOTH benchmarks.");
-            }
+            ExecutionParameters parameters = ExecutionParameters.extract(args);
 
             TestSystemFactory testSystemFactory;
             switch (systemType) {
                 case TDB:
-                    testSystemFactory = new GeosparqlJenaTDBTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_TDB_RESULTS_FOLDER_NAME, inferenceEnabled);
+                    testSystemFactory = new GeosparqlJenaTDBTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_TDB_RESULTS_FOLDER_NAME, parameters.getInferenceEnabled());
                     break;
                 case NO_INDEX:
-                    testSystemFactory = new GeosparqlJenaNoIndexTDBTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_NO_INDEX_RESULTS_FOLDER_NAME, inferenceEnabled);
+                    testSystemFactory = new GeosparqlJenaNoIndexTDBTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_NO_INDEX_RESULTS_FOLDER_NAME, parameters.getInferenceEnabled());
                     break;
                 default:
                     Dataset memDataset = DatasetFactory.createTxnMem();
-                    GeosparqlJenaInMemoryTestSystemFactory.loadDataset(datasetMap, inferenceEnabled, memDataset);
-                    testSystemFactory = new GeosparqlJenaInMemoryTestSystemFactory(memDataset, GEOSPARL_JENA_IN_MEMORY_RESULTS_FOLDER_NAME, inferenceEnabled);
+                    GeosparqlJenaInMemoryTestSystemFactory.loadDataset(parameters.getDatasetMap(), parameters.getInferenceEnabled(), memDataset);
+                    testSystemFactory = new GeosparqlJenaInMemoryTestSystemFactory(memDataset, GEOSPARL_JENA_IN_MEMORY_RESULTS_FOLDER_NAME, parameters.getInferenceEnabled());
                     break;
             }
 
-            BenchmarkExecution.runType(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadMainQuerySet(), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO, benchmarkType);
+            BenchmarkExecution.runType(testSystemFactory, parameters);
         } catch (Exception ex) {
-            LOGGER.error("{} for arguments {} {}", ex.getMessage(), args[0], args[1]);
+            LOGGER.error("{} for arguments {}", ex.getMessage(), args);
         }
         //equalsTest();
         //equalsTest2();

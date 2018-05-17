@@ -38,53 +38,53 @@ dependencies {
 task runTDB(type:JavaExec){
     classpath = sourceSets.main.runtimeClasspath
     main = mainClassName
-    args "tdb" "both"
+    args "tdb" "geographica_micro"
 }
 
 task runTDBWarm(type:JavaExec){
     classpath = sourceSets.main.runtimeClasspath
     main = mainClassName
-    args "tdb" "warm"
+    args "tdb" "geographica_micro" "warm"
 }
 
 task runTDBCold(type:JavaExec){
     classpath = sourceSets.main.runtimeClasspath
     main = mainClassName
-    args "tdb" "cold"
+    args "tdb" "geographica_micro" "cold"
 }
 
 task runMemory(type:JavaExec){
     classpath = sourceSets.main.runtimeClasspath
     main = mainClassName
-    args "memory" "both"
+    args "memory" "geographica_micro"
 }
 
 task runMemoryWarm(type:JavaExec){
     classpath = sourceSets.main.runtimeClasspath
     main = mainClassName
-    args "memory" "warm"
+    args "memory" "geographica_micro" "warm"
 }
 
 task runMemoryCold(type:JavaExec){
     classpath = sourceSets.main.runtimeClasspath
     main = mainClassName
-    args "memory" "cold"
+    args "memory" "geographica_micro" "cold"
 }
 
 task runNoIndex(type:JavaExec){
     classpath = sourceSets.main.runtimeClasspath
     main = mainClassName
-    args "no_index" "both"
+    args "no_index" "geographica_micro"
 }
 
 task runNoIndexWarm(type:JavaExec){
     classpath = sourceSets.main.runtimeClasspath
     main = mainClassName
-    args "no_index" "warm"
+    args "no_index" "geographica_micro" "warm"
 }
 
 task runNoIndexCold(type:JavaExec){
     classpath = sourceSets.main.runtimeClasspath
     main = mainClassName
-    args "no_index" "cold"
+    args "no_index" "geographica_micro" "cold"
 }
