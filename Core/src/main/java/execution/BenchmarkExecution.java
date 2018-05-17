@@ -19,12 +19,30 @@ public class BenchmarkExecution {
 
     public static final File RESULTS_FOLDER = new File("../results");
 
+    public static enum BenchmarkType {
+        BOTH, WARM, COLD
+    }
+
     static {
         RESULTS_FOLDER.mkdir();
     }
 
     public static final String COLD_RUN_RESULTS_FOLDER_NAME = "cold_run";
     public static final String WARM_RUN_RESULTS_FOLDER_NAME = "warm_run";
+
+    public static void runType(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, List<QueryCase> queryCases, Integer resultsLineLimit, BenchmarkType benchmarkType) {
+        switch (benchmarkType) {
+            case BOTH:
+                runBoth(testSystemFactory, iterations, timeout, queryCases, resultsLineLimit);
+                break;
+            case WARM:
+                runWarm(testSystemFactory, iterations, timeout, queryCases, resultsLineLimit);
+                break;
+            case COLD:
+                runCold(testSystemFactory, iterations, timeout, queryCases, resultsLineLimit);
+                break;
+        }
+    }
 
     /**
      *
