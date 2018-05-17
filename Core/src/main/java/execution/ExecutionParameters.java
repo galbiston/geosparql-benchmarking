@@ -5,6 +5,7 @@
  */
 package execution;
 
+import data_setup.BenchmarkParameters;
 import data_setup.Dataset_CRS84;
 import data_setup.Dataset_Greek_Grid;
 import data_setup.Dataset_WGS84;
@@ -86,6 +87,7 @@ public class ExecutionParameters {
 
     public static final ExecutionParameters extract(String[] args) {
 
+        LOGGER.info("---------------------------Bencharmarking Parameters----------------------------");
         List<QueryCase> queryCases;
         if (args.length > QUERY_CASE_POSITION) {
             switch (args[QUERY_CASE_POSITION].toLowerCase()) {
@@ -153,7 +155,7 @@ public class ExecutionParameters {
             iterations = Integer.parseInt(args[ITERATIONS_POSITION]);
             LOGGER.info("Iterations: {}", iterations);
         } else {
-            iterations = 5;
+            iterations = BenchmarkParameters.ITERATIONS;
             LOGGER.info("Iterations: Defaulting to {}", iterations);
         }
 
@@ -162,7 +164,7 @@ public class ExecutionParameters {
             timeout = Duration.ofSeconds(Integer.parseInt(args[TIMEOUT_POSITION]));
             LOGGER.info("Timout: {}", timeout);
         } else {
-            timeout = Duration.ofSeconds(3600);
+            timeout = BenchmarkParameters.TIMEOUT;
             LOGGER.info("Timout: Defaulting to {}", timeout.toString());
         }
 
@@ -171,10 +173,11 @@ public class ExecutionParameters {
             lineLimit = Integer.parseInt(args[LINE_LIMIT_POSITION]);
             LOGGER.info("Line Limit: {}", lineLimit);
         } else {
-            lineLimit = 0;
+            lineLimit = BenchmarkParameters.RESULT_LINE_LIMIT_ZERO;
             LOGGER.info("Line Limit: Defaulting to line limit zero, so no detailed results output.");
         }
 
+        LOGGER.info("--------------------------------------------------------------------------------");
         return new ExecutionParameters(queryCases, benchmarkType, inferenceEnabled, datasetMap, iterations, timeout, lineLimit);
     }
 
