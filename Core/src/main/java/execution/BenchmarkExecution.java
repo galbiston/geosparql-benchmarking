@@ -30,6 +30,20 @@ public class BenchmarkExecution {
     public static final String COLD_RUN_RESULTS_FOLDER_NAME = "cold_run";
     public static final String WARM_RUN_RESULTS_FOLDER_NAME = "warm_run";
 
+    public static void runType(TestSystemFactory testSystemFactory, ExecutionParameters parameters) {
+        runType(testSystemFactory, parameters.getIterations(), parameters.getTimeout(), parameters.getQueryCases(), parameters.getLineLimit(), parameters.getBenchmarkType());
+
+    }
+
+    /**
+     *
+     * @param testSystemFactory
+     * @param iterations
+     * @param timeout
+     * @param queryCases
+     * @param resultsLineLimit Set to zero for no detailed results output.
+     * @param benchmarkType Choose both, warm or cold.
+     */
     public static void runType(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, List<QueryCase> queryCases, Integer resultsLineLimit, BenchmarkType benchmarkType) {
         switch (benchmarkType) {
             case BOTH:
