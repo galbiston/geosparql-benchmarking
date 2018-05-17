@@ -86,3 +86,15 @@ task runMicroCold(type:JavaExec){
     main = mainClassName
     args "micro", "cold"
 }
+
+task runMacro(type:JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    args "macro"
+}
+
+task runGeosparql(type:JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    args "geosparql"
+}

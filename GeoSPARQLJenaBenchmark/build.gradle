@@ -88,3 +88,43 @@ task runNoIndexMicroCold(type:JavaExec){
     main = mainClassName
     args "no_index", "micro", "cold"
 }
+
+task runTDBMacro(type:JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    args "tdb", "macro"
+}
+
+task runMemoryMacro(type:JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    args "memory", "macro"
+}
+
+task runNoIndexMacro(type:JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    args "no_index", "macro"
+}
+
+task runTDBGeosparql(type:JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    args "tdb", "geosparql"
+}
+
+task runMemoryGeosparql(type:JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    args "memory", "geosparql"
+}
+
+task runNoIndexGeosparql(type:JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    args "no_index", "geosparql"
+}
+
+task runMicroMacro(type: GradleBuild) {
+    tasks = ['runTDBMicro', 'runMemoryMicro', 'runNoIndexMicro', 'runTDBMacro', 'runMemoryMacro', 'runNoIndexMacro']
+}
