@@ -34,3 +34,57 @@ dependencies {
     compile "ch.qos.logback:logback-classic:$logbackVersion"
 
 }
+
+task runTDB(type:JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    args "tdb" "both"
+}
+
+task runTDBWarm(type:JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    args "tdb" "warm"
+}
+
+task runTDBCold(type:JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    args "tdb" "cold"
+}
+
+task runMemory(type:JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    args "memory" "both"
+}
+
+task runMemoryWarm(type:JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    args "memory" "warm"
+}
+
+task runMemoryCold(type:JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    args "memory" "cold"
+}
+
+task runNoIndex(type:JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    args "no_index" "both"
+}
+
+task runNoIndexWarm(type:JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    args "no_index" "warm"
+}
+
+task runNoIndexCold(type:JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    args "no_index" "cold"
+}

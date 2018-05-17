@@ -3,20 +3,19 @@ package geosparql_benchmarking.geosparql_jena;
 import data_setup.BenchmarkParameters;
 import data_setup.DataGeneration;
 import data_setup.Dataset_CRS84;
-import data_setup.Dataset_Greek_Grid;
-import data_setup.Dataset_WGS84;
 import data_setup.Dataset_WGS84_Legacy;
 import data_setup.GraphURI;
 import execution.BenchmarkExecution;
+import execution.BenchmarkExecution.BenchmarkType;
 import execution.QueryCase;
 import execution.QueryLoader;
 import execution.TestSystem;
 import execution.TestSystemFactory;
 import execution_results.QueryResult;
 import implementation.GeoSPARQLSupport;
-import implementation.data_conversion.ConvertCRS;
+import implementation.data_conversion.ConvertData;
 import implementation.data_conversion.GeoSPARQLPredicates;
-import implementation.support.GeoSerialisationEnum;
+import implementation.datatype.GeoDatatypeEnum;
 import implementation.vocabulary.SRS_URI;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -54,15 +53,52 @@ public class Main {
     public static final String GEOSPARL_JENA_NO_INDEX_RESULTS_FOLDER_NAME = "geosparql_jena_no_index";
     public static final File GEOSPARQL_SCHEMA_FILE = new File("geosparql_vocab_all.rdf");
 
+    public static enum SystemType {
+        TDB, MEMORY, NO_INDEX
+    }
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
 
-        TreeMap<String, File> datasetMap = Dataset_WGS84.getAll();
+        TreeMap<String, File> datasetMap = Dataset_CRS84.getAll();
 
         Boolean inferenceEnabled = true;
+
+        try {
+            SystemType systemType = SystemType.valueOf(args[0].toUpperCase());
+            BenchmarkType benchmarkType;
+
+            if (args.length == 2) {
+                benchmarkType = BenchmarkType.valueOf(args[1].toUpperCase());
+            } else {
+                benchmarkType = BenchmarkType.BOTH;
+                LOGGER.info("Defaulting to BOTH benchmarks.");
+            }
+
+            TestSystemFactory testSystemFactory;
+            switch (systemType) {
+                case TDB:
+                    testSystemFactory = new GeosparqlJenaTDBTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_TDB_RESULTS_FOLDER_NAME, inferenceEnabled);
+                    break;
+                case NO_INDEX:
+                    testSystemFactory = new GeosparqlJenaNoIndexTDBTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_NO_INDEX_RESULTS_FOLDER_NAME, inferenceEnabled);
+                    break;
+                default:
+                    Dataset memDataset = DatasetFactory.createTxnMem();
+                    GeosparqlJenaInMemoryTestSystemFactory.loadDataset(datasetMap, inferenceEnabled, memDataset);
+                    testSystemFactory = new GeosparqlJenaInMemoryTestSystemFactory(memDataset, GEOSPARL_JENA_IN_MEMORY_RESULTS_FOLDER_NAME, inferenceEnabled);
+                    break;
+            }
+
+            BenchmarkExecution.runType(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadMainQuerySet(), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO, benchmarkType);
+        } catch (Exception ex) {
+            LOGGER.error("{} for arguments {} {}", ex.getMessage(), args[0], args[1]);
+        }
         //equalsTest();
+        //equalsTest2();
+        //intersectsTest();
         //runPartsTDB(inferenceEnabled);
         //test();
         //convertDatasetCRS();
@@ -72,7 +108,7 @@ public class Main {
         //TDB
         //GeosparqlJenaTDBTestSystemFactory.clearDataset(GEOSPARQL_JENA_TDB_FOLDER);
         //GeosparqlJenaTDBTestSystemFactory.loadDataset(GEOSPARQL_JENA_TDB_FOLDER, datasetMap, inferenceEnabled);
-        runTDB(inferenceEnabled);
+        //runTDB(inferenceEnabled);
         //runTestTDB(inferenceEnabled);
         //rdfsJenaTDBTest();
         //In Memory
@@ -119,6 +155,7 @@ public class Main {
     public static void runTDB(Boolean inferenceEnabled) {
         GeosparqlJenaTDBTestSystemFactory testSystemFactory = new GeosparqlJenaTDBTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_TDB_RESULTS_FOLDER_NAME, inferenceEnabled);
         BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadMainQuerySet(), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
+        //BenchmarkExecution.runCold(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadMainQuerySet(), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
     }
 
     public static void runInMemory(TreeMap<String, File> datasetMap, Boolean inferenceEnabled) {
@@ -209,10 +246,10 @@ public class Main {
 
         File inputFolder = Dataset_WGS84_Legacy.FOLDER;
         Lang inputLanguage = Lang.NTRIPLES;
-        File outputFolder = Dataset_Greek_Grid.FOLDER;
+        File outputFolder = Dataset_CRS84.FOLDER;
         Lang outputLanguage = Lang.NTRIPLES;
-        String outputSrsURI = SRS_URI.GREEK_GRID_CRS;
-        ConvertCRS.convertFolder(inputFolder, inputLanguage, outputFolder, outputLanguage, outputSrsURI);
+        String outputSrsURI = SRS_URI.DEFAULT_WKT_CRS84;
+        ConvertData.convertFolder(inputFolder, inputLanguage, outputFolder, outputLanguage, outputSrsURI);
     }
 
     public static void indexInMemoryTest() {
@@ -317,9 +354,51 @@ public class Main {
 
         String queryString = "PREFIX geof: <http://www.opengis.net/def/function/geosparql/> "
                 + "SELECT ?res WHERE{"
-                + "BIND(\"<http://www.opengis.net/def/crs/EPSG/0/2100> POINT (474382.14862145175 4203347.7258966705)\"^^<http://www.opengis.net/ont/geosparql#wktLiteral> AS ?first)"
+                + "BIND(\"<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT (23.71 37.98)\"^^<http://www.opengis.net/ont/geosparql#wktLiteral> AS ?first)"
                 + "BIND(\"<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(37.98 23.71)\"^^<http://www.opengis.net/ont/geosparql#wktLiteral> AS ?second)"
                 + "BIND(geof:sfEquals(?first, ?second) AS ?res) "
+                + "}";
+
+        try (TestSystem testSystem = testSystemFactory.getTestSystem()) {
+            QueryResult qResult = testSystem.runQueryWithTimeout(queryString, Duration.ofHours(1));
+            System.out.println(qResult.getResults());
+
+        } catch (Exception ex) {
+            LOGGER.error("Exception: {}", ex.getMessage());
+        }
+
+    }
+
+    private static void equalsTest2() {
+
+        GeosparqlJenaTDBTestSystemFactory testSystemFactory = new GeosparqlJenaTDBTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_TDB_RESULTS_FOLDER_NAME, true);
+
+        String queryString = "PREFIX geof: <http://www.opengis.net/def/function/geosparql/> "
+                + "SELECT ?res WHERE{"
+                + "BIND(\"<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(0 0, 2 0, 5 0)\"^^<http://www.opengis.net/ont/geosparql#wktLiteral> AS ?first)"
+                + "BIND(\"<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(5 0, 0 0)\"^^<http://www.opengis.net/ont/geosparql#wktLiteral> AS ?second)"
+                + "BIND(geof:sfEquals(?first, ?second) AS ?res) "
+                + "}";
+
+        try (TestSystem testSystem = testSystemFactory.getTestSystem()) {
+            QueryResult qResult = testSystem.runQueryWithTimeout(queryString, Duration.ofHours(1));
+            System.out.println(qResult.getResults());
+
+        } catch (Exception ex) {
+            LOGGER.error("Exception: {}", ex.getMessage());
+        }
+
+    }
+
+    private static void intersectsTest() {
+
+        GeosparqlJenaTDBTestSystemFactory testSystemFactory = new GeosparqlJenaTDBTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_TDB_RESULTS_FOLDER_NAME, true);
+
+        String queryString = "PREFIX geof: <http://www.opengis.net/def/function/geosparql/> "
+                + "SELECT ?res WHERE{"
+                + "BIND(\"<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(1 1, 1 -1)\"^^<http://www.opengis.net/ont/geosparql#wktLiteral> AS ?first)"
+                + "BIND(\"<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(5 0, 0 0)\"^^<http://www.opengis.net/ont/geosparql#wktLiteral> AS ?second)"
+                + "BIND(geof:sfIntersects(?first, ?second) AS ?res) "
                 + "}";
 
         try (TestSystem testSystem = testSystemFactory.getTestSystem()) {
@@ -338,7 +417,7 @@ public class Main {
         String geometryLiteral = "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(37.98 23.71)";
         String outputSrsURI = "http://www.opengis.net/def/crs/EPSG/0/2100";
 
-        String convertedGeometryLiteral = ConvertCRS.convertGeometryLiteral(geometryLiteral, outputSrsURI, GeoSerialisationEnum.WKT);
+        String convertedGeometryLiteral = ConvertData.convertGeometryLiteral(geometryLiteral, outputSrsURI, GeoDatatypeEnum.WKT);
         System.out.println("Original: " + geometryLiteral);
         System.out.println("Conversion: " + convertedGeometryLiteral);
     }
