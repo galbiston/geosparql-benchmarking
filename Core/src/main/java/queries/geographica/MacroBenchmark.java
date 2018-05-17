@@ -10,6 +10,7 @@ import execution.QueryLoader;
 import execution.QueryPair;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  *
@@ -28,6 +29,16 @@ public class MacroBenchmark {
     public static final List<QueryPair> TIMESTAMPS = QueryLoader.readQueryPairs(BASE_FOLDER + "/timestamps.txt");
     public static final List<QueryPair> POINTS = QueryLoader.readQueryPairs(BASE_FOLDER + "/points.txt");
     public static final List<QueryPair> GEONAMES = QueryLoader.readQueryPairs(BASE_FOLDER + "/geonames.txt");
+
+    public static List<QueryCase> loadAll() {
+
+        Random rand = new Random();
+        List<QueryCase> queryCases = new ArrayList<>();
+        queryCases.addAll(loadMapSearchAndBrowsingQueries(rand.nextInt(getMapSearchAndBrowsingIndexSize())));
+        queryCases.addAll(loadRapidMappingQueries(rand.nextInt(getRapidMappingIndexSize())));
+        queryCases.addAll(loadReverseGeocodingQueries(rand.nextInt(getReverseGeocodingIndexSize())));
+        return queryCases;
+    }
 
     public static int getMapSearchAndBrowsingIndexSize() {
         return GEONAMES.size();
