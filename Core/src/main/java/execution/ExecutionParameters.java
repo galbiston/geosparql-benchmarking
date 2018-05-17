@@ -91,7 +91,7 @@ public class ExecutionParameters {
 
     public static final ExecutionParameters extract(String[] args, Integer argOffset) {
 
-        LOGGER.info("---------------------------Bencharmarking Parameters----------------------------");
+        LOGGER.info("---------------------------Benchmarking Parameters----------------------------");
         List<QueryCase> queryCases;
         if (args.length > QUERY_CASE_POSITION + argOffset) {
             switch (args[QUERY_CASE_POSITION + argOffset].toLowerCase()) {
