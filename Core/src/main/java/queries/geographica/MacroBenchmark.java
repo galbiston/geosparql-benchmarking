@@ -30,8 +30,8 @@ public class MacroBenchmark {
 
         List<QueryCase> queryCases = new ArrayList<>();
         queryCases.addAll(loadMapSearchAndBrowsingQueries(iterations));
-        //queryCases.addAll(loadRapidMappingQueries(iterations));
-        //queryCases.addAll(loadReverseGeocodingQueries(iterations));
+        queryCases.addAll(loadRapidMappingQueries(iterations));
+        queryCases.addAll(loadReverseGeocodingQueries(iterations));
         return queryCases;
     }
 
