@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -33,6 +34,28 @@ public class QueryLoader {
             LOGGER.error("Could not open query file: {}#{}", file, ex.getMessage());
             return null;
         }
+    }
+
+    public static List<QueryCase> readQuery(String filepath) {
+        return Arrays.asList(readQuery(filepath, 1));
+    }
+
+    public static QueryCase readQuery(String filepath, int count) {
+        return new QueryCase("UQ" + count, "UserQuery", readFile(filepath));
+    }
+
+    public static List<QueryCase> readFolder(File directory) {
+
+        List<QueryCase> queryCases = new ArrayList<>();
+        File[] files = directory.listFiles();
+        int count = 0;
+        for (File file : files) {
+            count++;
+            String filepath = file.getAbsolutePath();
+            QueryCase queryCase = readQuery(filepath, count);
+            queryCases.add(queryCase);
+        }
+        return queryCases;
     }
 
     public static List<QueryPair> readQueryPairs(String filepath) {

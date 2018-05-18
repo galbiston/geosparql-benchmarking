@@ -18,4 +18,5 @@ public class GraphURI {
     public static final String CLC_URI = "http://geographica.di.uoa.gr/dataset/clc";
     public static final String DBPEDIA_URI = "http://geographica.di.uoa.gr/dataset/dbpedia";
     public static final String DEFAULT = "";
+    public static final String USER = "http://example.org/user/dataset#";
 }
