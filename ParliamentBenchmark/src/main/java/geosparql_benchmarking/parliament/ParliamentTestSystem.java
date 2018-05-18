@@ -27,8 +27,8 @@ import com.hp.hpl.jena.update.UpdateProcessor;
 import com.hp.hpl.jena.update.UpdateRequest;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
-import execution_results.QueryResult;
 import execution.TestSystem;
+import execution_results.QueryResult;
 import execution_results.VarValue;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
@@ -151,8 +151,8 @@ public class ParliamentTestSystem implements TestSystem {
         if (graphStore != null) {
             graphStore.close();
         }
-        System.gc();
         try {
+            System.gc();
             Thread.sleep(5000); //Sleep for 5s to allow any Operating System clearing.
         } catch (InterruptedException ex) {
             LOGGER.error("Exception closing Parliament: {}", ex.getMessage());

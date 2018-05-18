@@ -5,8 +5,8 @@
  */
 package geosparql_benchmarking.geosparql_jena;
 
-import execution_results.QueryResult;
 import execution.TestSystem;
+import execution_results.QueryResult;
 import execution_results.VarValue;
 import implementation.GeoSPARQLSupport;
 import implementation.index.IndexOption;
@@ -123,6 +123,7 @@ public class GeosparqlJenaTestSystem implements TestSystem {
         }
         GeoSPARQLSupport.clearAllIndexesAndRegistries();
         try {
+            System.gc();
             Thread.sleep(5000); //Sleep for 5s to allow any Operating System clearing.
         } catch (InterruptedException ex) {
             LOGGER.error("Exception closing Jena: {}", ex.getMessage());
