@@ -1,1 +1,0 @@
-gradle :GeoSPARQLJenaBenchmark:runTDBMicro :GeoSPARQLJenaBenchmark:runMemoryMicro :GeoSPARQLJenaBenchmark:runNoIndexMicro :GeoSPARQLJenaBenchmark:runTDBMacro :GeoSPARQLJenaBenchmark:runMemoryMacro runNoIndexMacro :StrabonBenchmark:runMacro :ParliamentBenchmark:runMacro :GeoSPARQLJenaBenchmark:runTDBGeosparql :StrabonBenchmark:runGeosparql :ParliamentBenchmark:runGeosparql
