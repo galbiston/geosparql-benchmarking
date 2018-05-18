@@ -19,34 +19,27 @@ import java.util.Random;
 public class MacroBenchmark {
 
     public static final String BASE_FOLDER = "../queries/geographica_benchmarking/macro_benchmark_queries";
+    private static final Random RANDOM = new Random();
 
     //Query Folders
     private static final String REVERSE_GEOCODING = BASE_FOLDER + "/reverse_geocoding";
     private static final String RAPID_MAPPING = BASE_FOLDER + "/rapid_mapping";
     private static final String MAP_SEARCH_AND_BROWSING = BASE_FOLDER + "/map_search_and_browsing";
 
-    //Query Resources
-    public static final List<QueryPair> TIMESTAMPS = QueryLoader.readQueryPairs(BASE_FOLDER + "/timestamps.txt");
-    public static final List<QueryPair> POINTS = QueryLoader.readQueryPairs(BASE_FOLDER + "/points.txt");
-    public static final List<QueryPair> GEONAMES = QueryLoader.readQueryPairs(BASE_FOLDER + "/geonames.txt");
-
     public static List<QueryCase> loadAll() {
 
-        Random rand = new Random();
         List<QueryCase> queryCases = new ArrayList<>();
-        queryCases.addAll(loadMapSearchAndBrowsingQueries(rand.nextInt(getMapSearchAndBrowsingIndexSize())));
-        queryCases.addAll(loadRapidMappingQueries(rand.nextInt(getRapidMappingIndexSize())));
-        queryCases.addAll(loadReverseGeocodingQueries(rand.nextInt(getReverseGeocodingIndexSize())));
+        queryCases.addAll(loadMapSearchAndBrowsingQueries());
+        queryCases.addAll(loadRapidMappingQueries());
+        queryCases.addAll(loadReverseGeocodingQueries());
         return queryCases;
     }
 
-    public static int getMapSearchAndBrowsingIndexSize() {
-        return GEONAMES.size();
-    }
-
-    public static List<QueryCase> loadMapSearchAndBrowsingQueries(int index) {
-        String name = GEONAMES.get(index).getLabel();
-        String box = GEONAMES.get(index).getGeometry();
+    public static List<QueryCase> loadMapSearchAndBrowsingQueries() {
+        List<QueryPair> geonames = QueryLoader.readQueryPairs(BASE_FOLDER + "/geonames.txt");
+        int index = RANDOM.nextInt(geonames.size());
+        String name = geonames.get(index).getLabel();
+        String box = geonames.get(index).getGeometry();
         List<QueryCase> queryCases = new ArrayList<>();
         queryCases.add(new QueryCase("MS0", "MapSearchAndBrowsing", QueryLoader.readFile(MAP_SEARCH_AND_BROWSING + "/Query0.spl").replace("TOPONYME", name)));
         queryCases.add(new QueryCase("MS1", "MapSearchAndBrowsing", QueryLoader.readFile(MAP_SEARCH_AND_BROWSING + "/Query1.spl").replace("GIVEN_RECTANGLE_IN_WKT", box)));
@@ -54,13 +47,11 @@ public class MacroBenchmark {
         return queryCases;
     }
 
-    public static int getRapidMappingIndexSize() {
-        return TIMESTAMPS.size();
-    }
-
-    public static List<QueryCase> loadRapidMappingQueries(int index) {
-        String timestamp = TIMESTAMPS.get(index).getLabel();
-        String polygon = TIMESTAMPS.get(index).getGeometry();
+    public static List<QueryCase> loadRapidMappingQueries() {
+        List<QueryPair> timestamps = QueryLoader.readQueryPairs(BASE_FOLDER + "/timestamps.txt");
+        int index = RANDOM.nextInt(timestamps.size());
+        String timestamp = timestamps.get(index).getLabel();
+        String polygon = timestamps.get(index).getGeometry();
         List<QueryCase> queryCases = new ArrayList<>();
         queryCases.add(new QueryCase("RM0", "RapidMapping", QueryLoader.readFile(RAPID_MAPPING + "/Query0.spl").replace("GIVEN_POLYGON_IN_WKT", polygon)));
         queryCases.add(new QueryCase("RM1", "RapidMapping", QueryLoader.readFile(RAPID_MAPPING + "/Query1.spl").replace("GIVEN_POLYGON_IN_WKT", polygon)));
@@ -71,12 +62,10 @@ public class MacroBenchmark {
         return queryCases;
     }
 
-    public static int getReverseGeocodingIndexSize() {
-        return POINTS.size();
-    }
-
-    public static List<QueryCase> loadReverseGeocodingQueries(int index) {
-        String point = POINTS.get(index).getGeometry();
+    public static List<QueryCase> loadReverseGeocodingQueries() {
+        List<QueryPair> points = QueryLoader.readQueryPairs(BASE_FOLDER + "/points.txt");
+        int index = RANDOM.nextInt(points.size());
+        String point = points.get(index).getGeometry();
         List<QueryCase> queryCases = new ArrayList<>();
         queryCases.add(new QueryCase("RG0", "ReverseGeocoding", QueryLoader.readFile(REVERSE_GEOCODING + "/Query0.spl").replace("GIVEN_POINT_IN_WKT", point)));
         queryCases.add(new QueryCase("RG1", "ReverseGeocoding", QueryLoader.readFile(REVERSE_GEOCODING + "/Query1.spl").replace("GIVEN_POINT_IN_WKT", point)));
