@@ -84,9 +84,10 @@ public class QueryCase {
             writer.newLine();
             writer.newLine();
 
+            boolean isMultipleStrings = queryCase.queryStrings.size() > 1;
             int i = 1;
             for (String queryString : queryCase.queryStrings) {
-                if (queryCase.queryStrings.size() > 1) {
+                if (isMultipleStrings) {
                     writer.write("Iteration: " + i);
                     writer.newLine();
                 }
