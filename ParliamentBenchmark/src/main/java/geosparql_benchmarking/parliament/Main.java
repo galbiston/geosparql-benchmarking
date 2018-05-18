@@ -145,7 +145,7 @@ public class Main {
                 + "}";
 
         try (TestSystem testSystem = testSystemFactory.getTestSystem()) {
-            QueryResult qResult = testSystem.runQueryWithTimeout(queryString, Duration.ofHours(1));
+            QueryResult qResult = BenchmarkExecution.runQueryWithTimeout(testSystem, queryString, Duration.ofHours(1));
             System.out.println(qResult.getResults());
 
         } catch (Exception ex) {
@@ -166,7 +166,7 @@ public class Main {
                 + "}";
 
         try (TestSystem testSystem = testSystemFactory.getTestSystem()) {
-            QueryResult qResult = testSystem.runQueryWithTimeout(queryString, Duration.ofHours(1));
+            QueryResult qResult = BenchmarkExecution.runQueryWithTimeout(testSystem, queryString, Duration.ofHours(1));
             System.out.println(qResult.getResults());
 
         } catch (Exception ex) {

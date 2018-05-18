@@ -10,6 +10,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,13 +111,17 @@ public class BenchmarkExecution {
                 queryString = testSystem.translateQuery(queryString);
                 //Warm Up execution.
                 LOGGER.info("------Warmup Query - System: {}, Query: {}, Type: {} - Started------", testSystemName, queryName, queryType);
-                testSystem.runQueryWithTimeout(queryString, timeout);
+                QueryResult queryResult = runQueryWithTimeout(testSystem, queryString, timeout);
                 LOGGER.info("------Warmup Query - System: {}, Query: {}, Type: {} - Completed------", testSystemName, queryName, queryType);
+
+                if (!queryResult.isCompleted()) {
+                    LOGGER.error("System: {}, Query: {}, Type: {},  Warm Up - Did not complete.", testSystemName, queryName, queryType);
+                }
 
                 //Benchmark executions.
                 for (int i = 1; i <= iterations; i++) {
                     LOGGER.info("------Query Iteration - System: {}, Query: {}, Type: {}, Iteration: {} - Started------", testSystemName, queryName, queryType, i);
-                    QueryResult queryResult = testSystem.runQueryWithTimeout(queryString, timeout);
+                    queryResult = runQueryWithTimeout(testSystem, queryString, timeout);
                     LOGGER.info("------Query Iteration - System: {}, Query: {}, Type: {}, Iteration: {} - Completed------", testSystemName, queryName, queryType, i);
 
                     IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, i, queryResult, initStartNanoTime, initEndNanoTime);
@@ -122,7 +132,7 @@ public class BenchmarkExecution {
                         //Write results for all iterations for each query to own file.
                         IterationResult.writeResultsFile(resultsFolder, iterationResult, queryResult, testTimestamp, resultsLineLimit);
                     } else {
-                        LOGGER.warn("System: {}, Query: {}, Type: {},  Iteration: {} - Did not complete.", testSystemName, queryName, queryType, i);
+                        LOGGER.error("System: {}, Query: {}, Type: {},  Iteration: {} - Did not complete.", testSystemName, queryName, queryType, i);
                         break;
                     }
                 }
@@ -171,7 +181,7 @@ public class BenchmarkExecution {
                     queryString = testSystem.translateQuery(queryString);
 
                     LOGGER.info("------Cold Iteration - System: {}, Query: {}, Type: {}, Iteration: {} - Started------", testSystemName, queryName, queryType, i);
-                    QueryResult queryResult = testSystem.runQueryWithTimeout(queryString, timeout);
+                    QueryResult queryResult = runQueryWithTimeout(testSystem, queryString, timeout);
                     LOGGER.info("------Cold Iteration - System: {}, Query: {}, Type: {}, Iteration: {} - Completed------", testSystemName, queryName, queryType, i);
 
                     IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, i, queryResult, initStartNanoTime, initEndNanoTime);
@@ -214,6 +224,29 @@ public class BenchmarkExecution {
         DatasetLoadResult.writeSummaryFile(resultsFolder, datasetLoadResults);
 
         return datasetLoadResults;
+    }
+
+    public static final QueryResult runQueryWithTimeout(TestSystem testSystem, String query, Duration timeout) throws Exception {
+
+        ExecutorService executor = Executors.newFixedThreadPool(1);
+        QueryTask runnable = testSystem.getQueryTask(query);
+        Future<?> future = executor.submit(runnable);
+
+        QueryResult queryResult;
+        try {
+            LOGGER.debug("Query Future: Started");
+            future.get(timeout.getSeconds(), TimeUnit.SECONDS);
+            queryResult = runnable.getQueryResult();
+            LOGGER.debug("Query Future: Completed");
+        } catch (TimeoutException | InterruptedException | ExecutionException ex) {
+            LOGGER.error("Query Exception: {}", ex.getMessage());
+            queryResult = new QueryResult(0, 0, 0, new ArrayList<>(), false);
+        } finally {
+            LOGGER.debug("Query Future: Executor Shutdown");
+            executor.shutdown();
+        }
+
+        return queryResult;
     }
 
 }

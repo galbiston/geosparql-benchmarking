@@ -4,29 +4,13 @@
 package geosparql_benchmarking.strabon;
 
 import eu.earthobservatory.runtime.postgis.Strabon;
-import eu.earthobservatory.utils.Format;
+import execution.QueryTask;
 import execution.TestSystem;
 import execution_results.QueryResult;
-import execution_results.VarValue;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import org.apache.commons.lang.StringUtils;
-import org.openrdf.model.Value;
-import org.openrdf.query.BindingSet;
 import org.openrdf.query.MalformedQueryException;
-import org.openrdf.query.QueryEvaluationException;
-import org.openrdf.query.TupleQuery;
-import org.openrdf.query.TupleQueryResult;
-import org.openrdf.query.TupleQueryResultHandlerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -217,26 +201,8 @@ public class StrabonTestSystem implements TestSystem {
     }
 
     @Override
-    public QueryResult runQueryWithTimeout(String query, Duration timeout) {
-
-        ExecutorService executor = Executors.newFixedThreadPool(1);
-        QueryTask runnable = new QueryTask(query, strabon);
-        Future<?> future = executor.submit(runnable);
-
-        try {
-            LOGGER.debug("Strabon Future: Started");
-            future.get(timeout.getSeconds(), TimeUnit.SECONDS);
-            LOGGER.debug("Strabon Future: Completed");
-        } catch (TimeoutException | InterruptedException | ExecutionException ex) {
-            LOGGER.error("Exception: {}", ex.getMessage());
-        } finally {
-            LOGGER.debug("Strabon: Executor Shutdown");
-            executor.shutdown();
-            System.gc();
-        }
-
-        QueryResult queryResult = runnable.getQueryResult();
-        return queryResult;
+    public QueryTask getQueryTask(String query) {
+        return new StrabonQueryTask(query, strabon);
     }
 
     @Override
@@ -292,69 +258,6 @@ public class StrabonTestSystem implements TestSystem {
         }
          */
         return translatedQuery;
-    }
-
-    private class QueryTask implements Runnable {
-
-        private final String query;
-        private final Strabon strabon;
-        private QueryResult queryResult;
-
-        public QueryTask(String query, Strabon strabon) {
-            this.query = query;
-            this.strabon = strabon;
-            this.queryResult = new QueryResult();
-        }
-
-        public QueryResult getQueryResult() {
-            return queryResult;
-        }
-
-        @Override
-        public void run() {
-            runQuery();
-        }
-
-        public void runQuery() {
-
-            LOGGER.info("Query Evaluation: Started");
-            Boolean isComplete = true;
-            List<List<VarValue>> results = new ArrayList<>();
-            long startNanoTime = System.nanoTime();
-            long queryNanoTime;
-            try {
-
-                TupleQuery tupleQuery = (TupleQuery) strabon.query(query, Format.TUQU, strabon.getSailRepoConnection(), System.out);
-
-                TupleQueryResult tupleQueryResult = tupleQuery.evaluate();
-                queryNanoTime = System.nanoTime();
-
-                while (tupleQueryResult.hasNext()) {
-
-                    BindingSet bindingSet = tupleQueryResult.next();
-                    List<String> bindingNames = tupleQueryResult.getBindingNames();
-                    List<VarValue> result = new ArrayList<>();
-                    for (String binding : bindingNames) {
-                        Value value = bindingSet.getValue(binding);
-                        String valueStr = value.stringValue();
-                        VarValue varValue = new VarValue(binding, valueStr);
-                        result.add(varValue);
-                    }
-                    results.add(result);
-                }
-                tupleQueryResult.close();
-
-            } catch (MalformedQueryException | QueryEvaluationException | TupleQueryResultHandlerException | IOException ex) {
-                LOGGER.error("Exception: {}", ex.getMessage());
-                queryNanoTime = startNanoTime;
-                results.clear();
-                isComplete = false;
-            }
-            long resultsNanoTime = System.nanoTime();
-
-            this.queryResult = new QueryResult(startNanoTime, queryNanoTime, resultsNanoTime, results, isComplete);
-            LOGGER.info("Query Evaluation Time - Start->Query: {}, Query->Results: {}, Start->Results: {}", queryResult.getStartQueryDuration(), queryResult.getQueryResultsDuration(), queryResult.getStartResultsDuration());
-        }
     }
 
 }

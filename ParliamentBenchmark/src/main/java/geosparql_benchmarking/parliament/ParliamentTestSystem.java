@@ -13,35 +13,19 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QuerySolution;
-import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.Syntax;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.update.UpdateExecutionFactory;
 import com.hp.hpl.jena.update.UpdateFactory;
 import com.hp.hpl.jena.update.UpdateProcessor;
 import com.hp.hpl.jena.update.UpdateRequest;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
+import execution.QueryTask;
 import execution.TestSystem;
 import execution_results.QueryResult;
-import execution_results.VarValue;
 import java.lang.invoke.MethodHandles;
-import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,26 +89,8 @@ public class ParliamentTestSystem implements TestSystem {
     }
 
     @Override
-    public QueryResult runQueryWithTimeout(String query, Duration timeout) {
-
-        ExecutorService executor = Executors.newFixedThreadPool(1);
-        QueryTask runnable = new QueryTask(query, dataset);
-        Future<?> future = executor.submit(runnable);
-
-        try {
-            LOGGER.debug("Parliament Future: Started");
-            future.get(timeout.getSeconds(), TimeUnit.SECONDS);
-            LOGGER.debug("Parliament Future: Completed");
-        } catch (TimeoutException | InterruptedException | ExecutionException ex) {
-            LOGGER.error("Exception: {}", ex.getMessage());
-        } finally {
-            LOGGER.debug("Parliament: Executor shutdown");
-            executor.shutdown();
-            System.gc();
-        }
-
-        QueryResult queryResult = runnable.getQueryResult();
-        return queryResult;
+    public QueryTask getQueryTask(String query) {
+        return new ParliamentQueryTask(query, dataset);
     }
 
     @Override
@@ -165,79 +131,6 @@ public class ParliamentTestSystem implements TestSystem {
     public String translateQuery(String query) {
         //Query translation shold not be required as Parliament has aligned with GeoSPARQL 1.0 namespaces.
         return query;
-    }
-
-    private class QueryTask implements Runnable {
-
-        private final String queryString;
-        private final Dataset dataset;
-        private QueryResult queryResult;
-
-        public QueryTask(String queryString, Dataset dataset) {
-            this.queryString = queryString;
-            this.dataset = dataset;
-            this.queryResult = new QueryResult();
-        }
-
-        public QueryResult getQueryResult() {
-            return queryResult;
-        }
-
-        @Override
-        public void run() {
-            runQuery();
-        }
-
-        public void runQuery() {
-
-            LOGGER.info("Query Evaluation: Started");
-            Boolean isComplete = true;
-            List<List<VarValue>> results = new ArrayList<>();
-            long startNanoTime = System.nanoTime();
-            long queryNanoTime;
-            QueryExecution qexec = null;
-            try {
-                qexec = QueryExecutionFactory.create(queryString, dataset);
-                ResultSet rs = qexec.execSelect();
-                queryNanoTime = System.nanoTime();
-                while (rs.hasNext()) {
-                    QuerySolution querySolution = rs.next();
-                    Iterator<String> varNames = querySolution.varNames();
-                    List<VarValue> result = new ArrayList<>();
-                    while (varNames.hasNext()) {
-                        String varName = varNames.next();
-                        String valueStr;
-                        RDFNode solution = querySolution.get(varName);
-                        if (solution.isLiteral()) {
-                            Literal literal = solution.asLiteral();
-                            valueStr = literal.getLexicalForm();
-                        } else if (solution.isResource()) {
-                            Resource resource = solution.asResource();
-                            valueStr = resource.getURI();
-                        } else {
-                            Node anon = solution.asNode();
-                            valueStr = anon.getBlankNodeLabel();
-                            LOGGER.error("Anon Node result: " + valueStr);
-                        }
-                        VarValue varValue = new VarValue(varName, valueStr);
-                        result.add(varValue);
-                    }
-                    results.add(result);
-                }
-            } catch (Exception ex) {
-                LOGGER.error("Exception: {}", ex.getMessage());
-                queryNanoTime = startNanoTime;
-                results.clear();
-                isComplete = false;
-            } finally {
-                if (qexec != null) {
-                    qexec.close();
-                }
-            }
-            long resultsNanoTime = System.nanoTime();
-            this.queryResult = new QueryResult(startNanoTime, queryNanoTime, resultsNanoTime, results, isComplete);
-            LOGGER.info("Query Evaluation Time - Start->Query: {}, Query->Results: {}, Start->Results: {}", queryResult.getStartQueryDuration(), queryResult.getQueryResultsDuration(), queryResult.getStartResultsDuration());
-        }
     }
 
     private static SpatialIndexFactory createSpatialIndexFactory() {

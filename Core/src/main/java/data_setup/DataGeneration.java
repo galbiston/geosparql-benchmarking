@@ -5,8 +5,9 @@
  */
 package data_setup;
 
-import execution_results.QueryResult;
+import execution.BenchmarkExecution;
 import execution.TestSystem;
+import execution_results.QueryResult;
 import execution_results.VarValue;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -53,7 +54,7 @@ public class DataGeneration {
                     + "	}\n"
                     + "}";
             LOGGER.info("Retrieving Geonames and Points: Started");
-            QueryResult queryResult = testSystem.runQueryWithTimeout(queryString, Duration.ofSeconds(3600));
+            QueryResult queryResult = BenchmarkExecution.runQueryWithTimeout(testSystem, queryString, Duration.ofSeconds(3600));
             List<List<VarValue>> results = queryResult.getResults();
             LOGGER.info("Retrieving Geonames and Points: Completed");
             LOGGER.info("Writing Geonames: Started - {}", outputFile);
