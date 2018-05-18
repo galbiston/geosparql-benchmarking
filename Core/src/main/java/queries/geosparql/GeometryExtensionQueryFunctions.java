@@ -30,7 +30,7 @@ public class GeometryExtensionQueryFunctions {
         queryCases.add(new QueryCase("GEQ8", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/Envelope.spl")));
         queryCases.add(new QueryCase("GEQ9", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/GetSRID.spl")));
         queryCases.add(new QueryCase("GEQ10", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/Intersection.spl")));
-        queryCases.add(new QueryCase("GEQ11", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/SymmetricDiffernce.spl")));
+        queryCases.add(new QueryCase("GEQ11", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/SymmetricDifference.spl")));
         queryCases.add(new QueryCase("GEQ12", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/Union.spl")));
         return queryCases;
     }

@@ -107,6 +107,7 @@ public class ExecutionParameters {
                 case "geosparql":
                     queryCases = GeosparqlBenchmark.loadAll();
                     LOGGER.info("Query Set: GeoSPARQL Microbenchmark.");
+                    break;
                 default:
                     File fileArg = new File(args[QUERY_CASE_POSITION + argOffset]);
                     if (fileArg.exists()) {
