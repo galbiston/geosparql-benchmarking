@@ -1,4 +1,5 @@
 #Query 3 - Get_hotspots:
+#Fixed ?confirmatino to ?confirmation.
 
 PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
 PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
@@ -7,7 +8,7 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
 
-SELECT ?h ?sensor ?confidence ?producer ?satellite ?chain ?confirmatino ?geometry ?r ?wkt
+SELECT ?h ?sensor ?confidence ?producer ?satellite ?chain ?confirmation ?geometry ?r ?wkt
 WHERE {
 	GRAPH dataset:hotspots {
 		?h rdf:type noa:Hotspot.

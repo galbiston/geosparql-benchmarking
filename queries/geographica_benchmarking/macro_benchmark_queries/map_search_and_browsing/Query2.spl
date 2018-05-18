@@ -1,5 +1,8 @@
 #Query 2 - Get_Around_Roads:
+#Added RDF and RDFS prefix.
 
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
 PREFIX geo: <http://www.opengis.net/ont/geosparql#>
 PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>

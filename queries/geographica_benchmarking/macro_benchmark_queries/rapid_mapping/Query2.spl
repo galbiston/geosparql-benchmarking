@@ -1,9 +1,11 @@
 #Query 2 - Get_municipalities:
+#Added RDFS prefix.
 
 PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
 PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
 PREFIX geo: <http://www.opengis.net/ont/geosparql#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX gag: <http://geo.linkedopendata.gr/gag/ontology/>
 
 SELECT (geof:boundary(?gGeoWKT) as ?boundary) ?gLabel
