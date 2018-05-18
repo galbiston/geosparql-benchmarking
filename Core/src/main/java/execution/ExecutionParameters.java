@@ -93,6 +93,18 @@ public class ExecutionParameters {
     public static final ExecutionParameters extract(String[] args, Integer argOffset) {
 
         LOGGER.info("---------------------------Benchmarking Parameters----------------------------");
+
+        //Iterations - find first as needed for query loading.
+        Integer iterations;
+        if (args.length > ITERATIONS_POSITION + argOffset) {
+            iterations = Integer.parseInt(args[ITERATIONS_POSITION + argOffset]);
+            LOGGER.info("Iterations: {}", iterations);
+        } else {
+            iterations = BenchmarkParameters.ITERATIONS;
+            LOGGER.info("Iterations: Defaulting to {}", iterations);
+        }
+
+        //Query Cases
         List<QueryCase> queryCases;
         if (args.length > QUERY_CASE_POSITION + argOffset) {
             switch (args[QUERY_CASE_POSITION + argOffset].toLowerCase()) {
@@ -101,7 +113,7 @@ public class ExecutionParameters {
                     LOGGER.info("Query Set: Geographica Microbenchmark.");
                     break;
                 case "macro":
-                    queryCases = MacroBenchmark.loadAll();
+                    queryCases = MacroBenchmark.loadAll(iterations);
                     LOGGER.info("Query Set: Geographica Macrobenchmark.");
                     break;
                 case "geosparql":
@@ -125,6 +137,7 @@ public class ExecutionParameters {
             LOGGER.info("Query Set: Defaulting to GeoSPARQL Microbenchmark.");
         }
 
+        //Benchmark Type
         BenchmarkType benchmarkType;
         if (args.length > BENCHMARK_TYPE_POSITION + argOffset) {
             benchmarkType = BenchmarkExecution.BenchmarkType.valueOf(args[BENCHMARK_TYPE_POSITION + argOffset].toUpperCase());
@@ -143,15 +156,7 @@ public class ExecutionParameters {
             LOGGER.info("Inference Enabled: Defaulting to true");
         }
 
-        Integer iterations;
-        if (args.length > ITERATIONS_POSITION + argOffset) {
-            iterations = Integer.parseInt(args[ITERATIONS_POSITION + argOffset]);
-            LOGGER.info("Iterations: {}", iterations);
-        } else {
-            iterations = BenchmarkParameters.ITERATIONS;
-            LOGGER.info("Iterations: Defaulting to {}", iterations);
-        }
-
+        //Timeout
         Duration timeout;
         if (args.length > TIMEOUT_POSITION + argOffset) {
             timeout = Duration.ofSeconds(Integer.parseInt(args[TIMEOUT_POSITION + argOffset]));
@@ -161,6 +166,7 @@ public class ExecutionParameters {
             LOGGER.info("Timout: Defaulting to {}", timeout.toString());
         }
 
+        //Line Limit
         Integer lineLimit;
         if (args.length > LINE_LIMIT_POSITION + argOffset) {
             lineLimit = Integer.parseInt(args[LINE_LIMIT_POSITION + argOffset]);
@@ -170,6 +176,7 @@ public class ExecutionParameters {
             LOGGER.info("Line Limit: Defaulting to line limit zero, so no detailed results output.");
         }
 
+        //Dataset
         TreeMap<String, File> datasetMap;
         if (args.length > DATASET_POSITION + argOffset) {
             switch (args[DATASET_POSITION + argOffset].toLowerCase()) {
