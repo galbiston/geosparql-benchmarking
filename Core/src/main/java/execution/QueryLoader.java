@@ -66,7 +66,7 @@ public class QueryLoader {
 
             while (buffer.ready()) {
                 String line = buffer.readLine();
-                String[] parts = line.split("/t");
+                String[] parts = line.split("\t");
                 QueryPair queryPair = new QueryPair(parts[0], parts[1]);
                 queryPairs.add(queryPair);
             }
