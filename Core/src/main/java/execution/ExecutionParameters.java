@@ -117,7 +117,6 @@ public class ExecutionParameters {
                             queryCases = QueryLoader.readQuery(fileArg.getAbsolutePath());
                         }
                     } else {
-                        LOGGER.error("Unknown Query Case Set: {}. Expected 'micro', 'macro', 'geosparql' or file path to load.", args[QUERY_CASE_POSITION + argOffset]);
                         throw new IllegalArgumentException("Unknown Query Case Set: " + args[QUERY_CASE_POSITION + argOffset] + ". Expected 'micro', 'macro', 'geosparql' or file path to load.");
                     }
             }
@@ -204,7 +203,6 @@ public class ExecutionParameters {
                         }
 
                     } else {
-                        LOGGER.error("Unknown Data Set: {}. Expected 'GreekGrid', 'WGS84', 'WGS84_Legacy', 'CRS84' or file path to load.", args[DATASET_POSITION + argOffset]);
                         throw new IllegalArgumentException("Unknown Data Set: " + args[DATASET_POSITION + argOffset] + ". Expected 'GreekGrid', 'WGS84', 'WGS84_Legacy', 'CRS84' or file path to load.");
                     }
 
