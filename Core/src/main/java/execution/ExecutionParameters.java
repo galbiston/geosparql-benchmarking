@@ -112,9 +112,33 @@ public class ExecutionParameters {
                     queryCases = MicroBenchmark.loadMainQuerySet();
                     LOGGER.info("Query Set: Geographica Microbenchmark.");
                     break;
+                case "micro_non_topological":
+                    queryCases = MicroBenchmark.loadNonTopologicalFunctionsQueries();
+                    LOGGER.info("Query Set: Geographica Microbenchmark Non-Topological.");
+                    break;
+                case "micro_spatial_joins":
+                    queryCases = MicroBenchmark.loadSpatialJoinsQueries();
+                    LOGGER.info("Query Set: Geographica Microbenchmark Spatial Joins.");
+                    break;
+                case "micro_spatial_selections":
+                    queryCases = MicroBenchmark.loadSpatialSelectionsQueries();
+                    LOGGER.info("Query Set: Geographica Microbenchmark Spatial Selections.");
+                    break;
                 case "macro":
                     queryCases = MacroBenchmark.loadAll(iterations);
                     LOGGER.info("Query Set: Geographica Macrobenchmark.");
+                    break;
+                case "macro_map_search_and_browsing":
+                    queryCases = MacroBenchmark.loadMapSearchAndBrowsingQueries(iterations);
+                    LOGGER.info("Query Set: Geographica Macrobenchmark Map Search and Browsing.");
+                    break;
+                case "macro_rapid_mapping":
+                    queryCases = MacroBenchmark.loadRapidMappingQueries(iterations);
+                    LOGGER.info("Query Set: Geographica Macrobenchmark Rapid Mapping.");
+                    break;
+                case "macro_reverse_geocoding":
+                    queryCases = MacroBenchmark.loadReverseGeocodingQueries(iterations);
+                    LOGGER.info("Query Set: Geographica Macrobenchmark Reverse Geocoding.");
                     break;
                 case "geosparql":
                     queryCases = GeosparqlBenchmark.loadAll();
