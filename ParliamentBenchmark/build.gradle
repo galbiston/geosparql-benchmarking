@@ -103,6 +103,14 @@ task runMacro(type:JavaExec){
     args "macro"
 }
 
+task runMacroReverseGeocoding(type:JavaExec){
+    environment 'PARLIAMENT_CONFIG_PATH', 'parliament-release\\ParliamentConfig.txt'
+    environment 'Path', 'parliament-release'
+    classpath = sourceSets.main.runtimeClasspath
+    main = mainClassName
+    args "macro_reverse_geocoding"
+}
+
 task runGeosparql(type:JavaExec){
     environment 'PARLIAMENT_CONFIG_PATH', 'parliament-release\\ParliamentConfig.txt'
     environment 'Path', 'parliament-release'
