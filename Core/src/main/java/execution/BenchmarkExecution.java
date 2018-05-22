@@ -26,7 +26,7 @@ public class BenchmarkExecution {
     public static final File RESULTS_FOLDER = new File("../results");
 
     public static enum BenchmarkType {
-        BOTH, WARM, COLD
+        BOTH, WARM, COLD, COMPLIANCE
     }
 
     static {
@@ -35,6 +35,7 @@ public class BenchmarkExecution {
 
     public static final String COLD_RUN_RESULTS_FOLDER_NAME = "cold_run";
     public static final String WARM_RUN_RESULTS_FOLDER_NAME = "warm_run";
+    public static final String COMPLIANCE_RUN_RESULTS_FOLDER_NAME = "compliance_run";
 
     public static void runType(TestSystemFactory testSystemFactory, ExecutionParameters parameters) {
         runType(testSystemFactory, parameters.getIterations(), parameters.getTimeout(), parameters.getQueryCases(), parameters.getLineLimit(), parameters.getBenchmarkType());
@@ -61,6 +62,13 @@ public class BenchmarkExecution {
             case COLD:
                 runCold(testSystemFactory, iterations, timeout, queryCases, resultsLineLimit);
                 break;
+            case COMPLIANCE:
+                if (iterations > 1) {
+                    LOGGER.warn("Compliance Run: Single iteration only of each query on same test system.");
+                }
+                runCompliance(testSystemFactory, timeout, queryCases, resultsLineLimit);
+                break;
+
         }
     }
 
@@ -220,7 +228,7 @@ public class BenchmarkExecution {
         String testSystemName = testSystemFactory.getTestSystemName();
         String testTimestamp = LocalDateTime.now().format(IterationResult.FILE_DATE_TIME_FORMAT);
         File testSystemResultsFolder = testSystemFactory.getResultsFolder();
-        File runResultsFolder = new File(testSystemResultsFolder, COLD_RUN_RESULTS_FOLDER_NAME);
+        File runResultsFolder = new File(testSystemResultsFolder, COMPLIANCE_RUN_RESULTS_FOLDER_NAME);
         runResultsFolder.mkdir();
         LOGGER.info("------Compliance Run - System: {}, Folder: {} - Started------", testSystemName, runResultsFolder);
         long initStartNanoTime = System.nanoTime();
