@@ -205,6 +205,59 @@ public class BenchmarkExecution {
         LOGGER.info("------Cold Run - System: {}, Folder: {} - Completed------", testSystemName, runResultsFolder);
     }
 
+    /**
+     * Iterate through each query on a single test system.<br>
+     * One instance of the test system will be obtained and is re-used for each
+     * query. Only one iteration will be performed for each query.
+     *
+     * @param testSystemFactory
+     * @param timeout
+     * @param queryCases
+     * @param resultsLineLimit Set to zero for no detailed results output.
+     */
+    public static final void runCompliance(TestSystemFactory testSystemFactory, Duration timeout, List<QueryCase> queryCases, Integer resultsLineLimit) {
+
+        String testSystemName = testSystemFactory.getTestSystemName();
+        String testTimestamp = LocalDateTime.now().format(IterationResult.FILE_DATE_TIME_FORMAT);
+        File testSystemResultsFolder = testSystemFactory.getResultsFolder();
+        File runResultsFolder = new File(testSystemResultsFolder, COLD_RUN_RESULTS_FOLDER_NAME);
+        runResultsFolder.mkdir();
+        LOGGER.info("------Compliance Run - System: {}, Folder: {} - Started------", testSystemName, runResultsFolder);
+        long initStartNanoTime = System.nanoTime();
+        try (TestSystem testSystem = testSystemFactory.getTestSystem()) {
+            long initEndNanoTime = System.nanoTime();
+            for (QueryCase queryCase : queryCases) {
+                String queryName = queryCase.getQueryName();
+                String queryType = queryCase.getQueryType();
+                File resultsFolder = new File(runResultsFolder, queryType);
+                QueryCase.writeQueryFile(runResultsFolder, queryCase, testSystemName, testTimestamp);
+
+                //Benchmark executions.
+                String queryString = testSystem.translateQuery(queryCase.getQueryString());
+
+                LOGGER.info("------Compliance Iteration - System: {}, Query: {}, Type: {} - Started------", testSystemName, queryName, queryType);
+                QueryResult queryResult = runQueryWithTimeout(testSystem, queryString, timeout);
+                LOGGER.info("------Compliance Iteration - System: {}, Query: {}, Type: {} - Completed------", testSystemName, queryName, queryType);
+
+                int iteration = 1;
+                IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, iteration, queryResult, initStartNanoTime, initEndNanoTime);
+                //Write summary for all queries and iterations performed to a single file. Reduce footprint by writing immediately.
+                IterationResult.writeSummaryFile(runResultsFolder, iterationResult, testSystemName, testTimestamp);
+
+                if (queryResult.isCompleted()) {
+                    //Write results for all iterations for each query to own file.
+                    IterationResult.writeResultsFile(resultsFolder, iterationResult, queryResult, testTimestamp, resultsLineLimit);
+                } else {
+                    LOGGER.warn("System: {}, Query: {}, Type: {} - Did not complete.", testSystemName, queryName, queryType);
+                }
+            }
+        } catch (Exception ex) {
+            LOGGER.error("Exception: {}", ex.getMessage());
+        }
+
+        LOGGER.info("------Compliance Run - System: {}, Folder: {} - Completed------", testSystemName, runResultsFolder);
+    }
+
     public static final List<DatasetLoadResult> runDatasetLoad(TestSystemFactory testSystemFactory, Integer iterations, TreeMap<String, File> datasetMap) {
 
         List<DatasetLoadResult> datasetLoadResults = new ArrayList<>();
