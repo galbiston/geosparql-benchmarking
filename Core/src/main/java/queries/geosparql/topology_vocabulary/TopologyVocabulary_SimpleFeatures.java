@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package queries.geosparql.geometry_topology_vocabulary;
+package queries.geosparql.topology_vocabulary;
 
 import execution.QueryCase;
 import execution.QueryLoader;
@@ -14,7 +14,7 @@ import java.util.List;
  *
  *
  */
-public class GeometryTopologyVocabulary_SimpleFeatures {
+public class TopologyVocabulary_SimpleFeatures {
 
     public static final String BASE_FOLDER = "../queries/geosparql_benchmarking/topology_vocabulary_extension/simple_features";
 

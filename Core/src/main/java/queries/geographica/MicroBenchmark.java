@@ -7,14 +7,19 @@ package queries.geographica;
 
 import execution.QueryCase;
 import execution.QueryLoader;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  *
  */
 public class MicroBenchmark {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     public static final String BASE_FOLDER = "../queries/geographica_benchmarking/micro_benchmark_queries";
 
@@ -32,13 +37,33 @@ public class MicroBenchmark {
     public static final String GIVEN_RADIUS = QueryLoader.readFile(BASE_FOLDER + "/givenRadius.txt");
     public static final String GIVEN_POLYGON = QueryLoader.readFile(BASE_FOLDER + "/givenPolygon.txt");
 
-    public static List<QueryCase> loadNonTopologicalFunctionsQuery_4() {
+    public static final List<QueryCase> loadQueryCases(String arg) {
+        switch (arg) {
+            case "micro":
+                LOGGER.info("Query Set: Geographica Microbenchmark.");
+                return loadMainQuerySet();
+            case "micro_non_topological":
+                LOGGER.info("Query Set: Geographica Microbenchmark Non-Topological.");
+                return loadNonTopologicalFunctionsQueries();
+            case "micro_spatial_joins":
+                LOGGER.info("Query Set: Geographica Microbenchmark Spatial Joins.");
+                return loadSpatialJoinsQueries();
+            case "micro_spatial_selections":
+                LOGGER.info("Query Set: Geographica Microbenchmark Spatial Selections.");
+                return loadSpatialSelectionsQueries();
+            default:
+                LOGGER.error("Query Set: unrecognised option - {}", arg);
+                return null;
+        }
+    }
+
+    public static final List<QueryCase> loadNonTopologicalFunctionsQuery_4() {
         List<QueryCase> queryCases = new ArrayList<>();
         queryCases.add(new QueryCase("Query4", "NonTopologicalFunctions", QueryLoader.readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query4.spl")));
         return queryCases;
     }
 
-    public static List<QueryCase> loadNonTopologicalFunctionsQuery_3() {
+    public static final List<QueryCase> loadNonTopologicalFunctionsQuery_3() {
         List<QueryCase> queryCases = new ArrayList<>();
         queryCases.add(new QueryCase("Query3", "NonTopologicalFunctions", QueryLoader.readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query3.spl")));
         return queryCases;
@@ -50,7 +75,7 @@ public class MicroBenchmark {
      *
      * @return
      */
-    public static List<QueryCase> loadAggregationsQueries() {
+    public static final List<QueryCase> loadAggregationsQueries() {
         List<QueryCase> queryCases = new ArrayList<>();
         queryCases.add(new QueryCase("Query28", "Aggregations", QueryLoader.readFile(AGGREGATIONS + "/Query28.spl")));
         queryCases.add(new QueryCase("Query29", "Aggregations", QueryLoader.readFile(AGGREGATIONS + "/Query29.spl")));
@@ -63,7 +88,7 @@ public class MicroBenchmark {
      *
      * @return
      */
-    public static List<QueryCase> loadMainQuerySet() {
+    public static final List<QueryCase> loadMainQuerySet() {
         List<QueryCase> queryCases = new ArrayList<>();
         queryCases.addAll(loadNonTopologicalFunctionsQueries());
         queryCases.addAll(loadSpatialSelectionsQueries());
@@ -77,7 +102,7 @@ public class MicroBenchmark {
      *
      * @return
      */
-    public static List<QueryCase> loadNonTopologicalFunctionsQuery_6() {
+    public static final List<QueryCase> loadNonTopologicalFunctionsQuery_6() {
         List<QueryCase> queryCases = new ArrayList<>();
         queryCases.add(new QueryCase("Query6", "NonTopologicalFunctions", QueryLoader.readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query6.spl")));
         return queryCases;
@@ -89,7 +114,7 @@ public class MicroBenchmark {
      *
      * @return
      */
-    public static List<QueryCase> loadSpatialSelectionsQueries() {
+    public static final List<QueryCase> loadSpatialSelectionsQueries() {
         List<QueryCase> queryCases = new ArrayList<>();
         queryCases.add(new QueryCase("Query7", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query7.spl").replace("GIVEN_LINESTRING_1_IN_WKT", GIVEN_LINESTRING_1)));
         queryCases.add(new QueryCase("Query8", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query8.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON)));
@@ -105,13 +130,13 @@ public class MicroBenchmark {
         return queryCases;
     }
 
-    public static List<QueryCase> loadSpatialSelectionsQuery_14() {
+    public static final List<QueryCase> loadSpatialSelectionsQuery_14() {
         List<QueryCase> queryCases = new ArrayList<>();
         queryCases.add(new QueryCase("Query14", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query14.spl").replace("GIVEN_POINT_IN_WKT", GIVEN_POINT).replace("GIVEN_RADIUS", GIVEN_RADIUS)));
         return queryCases;
     }
 
-    public static List<QueryCase> loadSpatialJoinsQueries() {
+    public static final List<QueryCase> loadSpatialJoinsQueries() {
         List<QueryCase> queryCases = new ArrayList<>();
         queryCases.add(new QueryCase("Query18", "SpatialJoins", QueryLoader.readFile(SPATIAL_JOINS + "/Query18.spl")));
         queryCases.add(new QueryCase("Query19", "SpatialJoins", QueryLoader.readFile(SPATIAL_JOINS + "/Query19.spl")));
@@ -132,7 +157,7 @@ public class MicroBenchmark {
      *
      * @return
      */
-    public static List<QueryCase> loadNonTopologicalFunctionsQueries() {
+    public static final List<QueryCase> loadNonTopologicalFunctionsQueries() {
         List<QueryCase> queryCases = new ArrayList<>();
         queryCases.add(new QueryCase("Query1", "NonTopologicalFunctions", QueryLoader.readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query1.spl")));
         queryCases.add(new QueryCase("Query2", "NonTopologicalFunctions", QueryLoader.readFile(NON_TOPOLOGICAL_FUNCTIONS + "/Query2.spl")));

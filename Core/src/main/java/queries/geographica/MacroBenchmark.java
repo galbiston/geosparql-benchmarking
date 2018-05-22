@@ -8,15 +8,20 @@ package queries.geographica;
 import execution.QueryCase;
 import execution.QueryLoader;
 import execution.QueryPair;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  *
  */
 public class MacroBenchmark {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     public static final String BASE_FOLDER = "../queries/geographica_benchmarking/macro_benchmark_queries";
     private static final Random RANDOM = new Random();
@@ -25,6 +30,26 @@ public class MacroBenchmark {
     private static final String REVERSE_GEOCODING = BASE_FOLDER + "/reverse_geocoding";
     private static final String RAPID_MAPPING = BASE_FOLDER + "/rapid_mapping";
     private static final String MAP_SEARCH_AND_BROWSING = BASE_FOLDER + "/map_search_and_browsing";
+
+    public static final List<QueryCase> loadQueryCases(String arg, int iterations) {
+        switch (arg) {
+            case "macro":
+                LOGGER.info("Query Set: Geographica Macrobenchmark.");
+                return loadAll(iterations);
+            case "macro_map_search_and_browsing":
+                LOGGER.info("Query Set: Geographica Macrobenchmark Map Search and Browsing.");
+                return loadMapSearchAndBrowsingQueries(iterations);
+            case "macro_rapid_mapping":
+                LOGGER.info("Query Set: Geographica Macrobenchmark Rapid Mapping.");
+                return loadRapidMappingQueries(iterations);
+            case "macro_reverse_geocoding":
+                LOGGER.info("Query Set: Geographica Macrobenchmark Reverse Geocoding.");
+                return loadReverseGeocodingQueries(iterations);
+            default:
+                LOGGER.error("Query Set: unrecognised option - {}", arg);
+                return null;
+        }
+    }
 
     public static final List<QueryCase> loadAll(Integer iterations) {
 
