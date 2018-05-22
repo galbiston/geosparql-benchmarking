@@ -20,14 +20,14 @@ public class GeometryTopologyExtension_SimpleFeatures {
 
     public static List<QueryCase> loadQueries() {
         List<QueryCase> queryCases = new ArrayList<>();
-        queryCases.add(new QueryCase("GTE_SF1", "GeometryTopologyExtension_SF", QueryLoader.readFile(BASE_FOLDER + "/sfContains.spl")));
-        queryCases.add(new QueryCase("GTE_SF2", "GeometryTopologyExtension_SF", QueryLoader.readFile(BASE_FOLDER + "/sfCrosses.spl")));
-        queryCases.add(new QueryCase("GTE_SF3", "GeometryTopologyExtension_SF", QueryLoader.readFile(BASE_FOLDER + "/sfDisjoint.spl")));
-        queryCases.add(new QueryCase("GTE_SF4", "GeometryTopologyExtension_SF", QueryLoader.readFile(BASE_FOLDER + "/sfEquals.spl")));
-        queryCases.add(new QueryCase("GTE_SF5", "GeometryTopologyExtension_SF", QueryLoader.readFile(BASE_FOLDER + "/sfIntersects.spl")));
-        queryCases.add(new QueryCase("GTE_SF6", "GeometryTopologyExtension_SF", QueryLoader.readFile(BASE_FOLDER + "/sfOverlaps.spl")));
-        queryCases.add(new QueryCase("GTE_SF7", "GeometryTopologyExtension_SF", QueryLoader.readFile(BASE_FOLDER + "/sfTouches.spl")));
-        queryCases.add(new QueryCase("GTE_SF8", "GeometryTopologyExtension_SF", QueryLoader.readFile(BASE_FOLDER + "/sfWithin.spl")));
+        queryCases.add(new QueryCase("GTE_SF1", "GeometryTopologyExtension_SF", QueryLoader.readFile(BASE_FOLDER + "/GTE_SF1-sfContains.spl")));
+        queryCases.add(new QueryCase("GTE_SF2", "GeometryTopologyExtension_SF", QueryLoader.readFile(BASE_FOLDER + "/GTE_SF2-sfCrosses.spl")));
+        queryCases.add(new QueryCase("GTE_SF3", "GeometryTopologyExtension_SF", QueryLoader.readFile(BASE_FOLDER + "/GTE_SF3-sfDisjoint.spl")));
+        queryCases.add(new QueryCase("GTE_SF4", "GeometryTopologyExtension_SF", QueryLoader.readFile(BASE_FOLDER + "/GTE_SF4-sfEquals.spl")));
+        queryCases.add(new QueryCase("GTE_SF5", "GeometryTopologyExtension_SF", QueryLoader.readFile(BASE_FOLDER + "/GTE_SF5-sfIntersects.spl")));
+        queryCases.add(new QueryCase("GTE_SF6", "GeometryTopologyExtension_SF", QueryLoader.readFile(BASE_FOLDER + "/GTE_SF6-sfOverlaps.spl")));
+        queryCases.add(new QueryCase("GTE_SF7", "GeometryTopologyExtension_SF", QueryLoader.readFile(BASE_FOLDER + "/GTE_SF7-sfTouches.spl")));
+        queryCases.add(new QueryCase("GTE_SF8", "GeometryTopologyExtension_SF", QueryLoader.readFile(BASE_FOLDER + "/GTE_SF8-sfWithin.spl")));
         return queryCases;
     }
 

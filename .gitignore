@@ -16,7 +16,7 @@ gradle-app.setting
 
 
 datasets_*
-geosparql_*
+geosparql_jena_*
 logs
 parliament_kb
 lgd-jena.ttl

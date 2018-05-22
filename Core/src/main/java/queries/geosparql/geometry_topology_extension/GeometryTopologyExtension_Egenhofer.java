@@ -20,14 +20,14 @@ public class GeometryTopologyExtension_Egenhofer {
 
     public static List<QueryCase> loadQueries() {
         List<QueryCase> queryCases = new ArrayList<>();
-        queryCases.add(new QueryCase("GTE_EH1", "GeometryTopologyExtension_EH", QueryLoader.readFile(BASE_FOLDER + "/ehContains.spl")));
-        queryCases.add(new QueryCase("GTE_EH2", "GeometryTopologyExtension_EH", QueryLoader.readFile(BASE_FOLDER + "/ehCoveredBy.spl")));
-        queryCases.add(new QueryCase("GTE_EH3", "GeometryTopologyExtension_EH", QueryLoader.readFile(BASE_FOLDER + "/ehCovers.spl")));
-        queryCases.add(new QueryCase("GTE_EH4", "GeometryTopologyExtension_EH", QueryLoader.readFile(BASE_FOLDER + "/ehDisjoint.spl")));
-        queryCases.add(new QueryCase("GTE_EH5", "GeometryTopologyExtension_EH", QueryLoader.readFile(BASE_FOLDER + "/ehEquals.spl")));
-        queryCases.add(new QueryCase("GTE_EH6", "GeometryTopologyExtension_EH", QueryLoader.readFile(BASE_FOLDER + "/ehInside.spl")));
-        queryCases.add(new QueryCase("GTE_EH7", "GeometryTopologyExtension_EH", QueryLoader.readFile(BASE_FOLDER + "/ehMeet.spl")));
-        queryCases.add(new QueryCase("GTE_EH8", "GeometryTopologyExtension_EH", QueryLoader.readFile(BASE_FOLDER + "/ehOverlap.spl")));
+        queryCases.add(new QueryCase("GTE_EH1", "GeometryTopologyExtension_EH", QueryLoader.readFile(BASE_FOLDER + "/GTE_EH1-ehContains.spl")));
+        queryCases.add(new QueryCase("GTE_EH2", "GeometryTopologyExtension_EH", QueryLoader.readFile(BASE_FOLDER + "/GTE_EH2-ehCoveredBy.spl")));
+        queryCases.add(new QueryCase("GTE_EH3", "GeometryTopologyExtension_EH", QueryLoader.readFile(BASE_FOLDER + "/GTE_EH3-ehCovers.spl")));
+        queryCases.add(new QueryCase("GTE_EH4", "GeometryTopologyExtension_EH", QueryLoader.readFile(BASE_FOLDER + "/GTE_EH4-ehDisjoint.spl")));
+        queryCases.add(new QueryCase("GTE_EH5", "GeometryTopologyExtension_EH", QueryLoader.readFile(BASE_FOLDER + "/GTE_EH5-ehEquals.spl")));
+        queryCases.add(new QueryCase("GTE_EH6", "GeometryTopologyExtension_EH", QueryLoader.readFile(BASE_FOLDER + "/GTE_EH6-ehInside.spl")));
+        queryCases.add(new QueryCase("GTE_EH7", "GeometryTopologyExtension_EH", QueryLoader.readFile(BASE_FOLDER + "/GTE_EH7-ehMeet.spl")));
+        queryCases.add(new QueryCase("GTE_EH8", "GeometryTopologyExtension_EH", QueryLoader.readFile(BASE_FOLDER + "/GTE_EH8-ehOverlap.spl")));
         return queryCases;
     }
 

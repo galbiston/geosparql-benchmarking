@@ -1,0 +1,11 @@
+#Query 5 - Spatial_Dimension:
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+
+SELECT ?dimension
+WHERE {
+	GRAPH dataset:lgd {
+		?geometry a geo:Geometry .
+		?geometry geo:spatialDimension ?dimension .
+	}	
+}

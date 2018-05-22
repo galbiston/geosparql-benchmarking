@@ -1,0 +1,15 @@
+#Query 6 - Distance_Radians_CLC:
+
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX uom: <http://www.opengis.net/def/uom/OGC/1.0/>
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+
+SELECT ?distance
+WHERE {
+	GRAPH dataset:clc {
+		?geometry geo:hasSerialization ?aWKT .
+		BIND( "POINT (23.98333 35.51667)"^^<http://www.opengis.net/ont/geosparql#wktLiteral> AS ?pointWKT)
+		BIND(geof:distance(?aWKT, ?pointWKT, uom:degree) AS ?distance)
+	}
+}

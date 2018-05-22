@@ -20,14 +20,14 @@ public class QueryRewriteExtension_FF_EH {
 
     public static List<QueryCase> loadQueries() {
         List<QueryCase> queryCases = new ArrayList<>();
-        queryCases.add(new QueryCase("QRE_FF_EH1", "QueryRewriteExtension_FF_EH", QueryLoader.readFile(BASE_FOLDER + "/ehContains.spl")));
-        queryCases.add(new QueryCase("QRE_FF_EH2", "QueryRewriteExtension_FF_EH", QueryLoader.readFile(BASE_FOLDER + "/ehCoveredBy.spl")));
-        queryCases.add(new QueryCase("QRE_FF_EH3", "QueryRewriteExtension_FF_EH", QueryLoader.readFile(BASE_FOLDER + "/ehCovers.spl")));
-        queryCases.add(new QueryCase("QRE_FF_EH4", "QueryRewriteExtension_FF_EH", QueryLoader.readFile(BASE_FOLDER + "/ehDisjoint.spl")));
-        queryCases.add(new QueryCase("QRE_FF_EH5", "QueryRewriteExtension_FF_EH", QueryLoader.readFile(BASE_FOLDER + "/ehEquals.spl")));
-        queryCases.add(new QueryCase("QRE_FF_EH6", "QueryRewriteExtension_FF_EH", QueryLoader.readFile(BASE_FOLDER + "/ehInside.spl")));
-        queryCases.add(new QueryCase("QRE_FF_EH7", "QueryRewriteExtension_FF_EH", QueryLoader.readFile(BASE_FOLDER + "/ehMeet.spl")));
-        queryCases.add(new QueryCase("QRE_FF_EH8", "QueryRewriteExtension_FF_EH", QueryLoader.readFile(BASE_FOLDER + "/ehOverlap.spl")));
+        queryCases.add(new QueryCase("QRE_FF_EH1", "QueryRewriteExtension_FF_EH", QueryLoader.readFile(BASE_FOLDER + "/QRE_FF_EH1-ehContains.spl")));
+        queryCases.add(new QueryCase("QRE_FF_EH2", "QueryRewriteExtension_FF_EH", QueryLoader.readFile(BASE_FOLDER + "/QRE_FF_EH2-ehCoveredBy.spl")));
+        queryCases.add(new QueryCase("QRE_FF_EH3", "QueryRewriteExtension_FF_EH", QueryLoader.readFile(BASE_FOLDER + "/QRE_FF_EH3-ehCovers.spl")));
+        queryCases.add(new QueryCase("QRE_FF_EH4", "QueryRewriteExtension_FF_EH", QueryLoader.readFile(BASE_FOLDER + "/QRE_FF_EH4-ehDisjoint.spl")));
+        queryCases.add(new QueryCase("QRE_FF_EH5", "QueryRewriteExtension_FF_EH", QueryLoader.readFile(BASE_FOLDER + "/QRE_FF_EH5-ehEquals.spl")));
+        queryCases.add(new QueryCase("QRE_FF_EH6", "QueryRewriteExtension_FF_EH", QueryLoader.readFile(BASE_FOLDER + "/QRE_FF_EH6-ehInside.spl")));
+        queryCases.add(new QueryCase("QRE_FF_EH7", "QueryRewriteExtension_FF_EH", QueryLoader.readFile(BASE_FOLDER + "/QRE_FF_EH7-ehMeet.spl")));
+        queryCases.add(new QueryCase("QRE_FF_EH8", "QueryRewriteExtension_FF_EH", QueryLoader.readFile(BASE_FOLDER + "/QRE_FF_EH8-ehOverlap.spl")));
         return queryCases;
     }
 

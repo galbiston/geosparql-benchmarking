@@ -20,14 +20,14 @@ public class QueryRewriteExtension_GF_SimpleFeatures {
 
     public static List<QueryCase> loadQueries() {
         List<QueryCase> queryCases = new ArrayList<>();
-        queryCases.add(new QueryCase("QRE_GF_SF1", "QueryRewriteExtension_GF_SF", QueryLoader.readFile(BASE_FOLDER + "/sfContains.spl")));
-        queryCases.add(new QueryCase("QRE_GF_SF2", "QueryRewriteExtension_GF_SF", QueryLoader.readFile(BASE_FOLDER + "/sfCrosses.spl")));
-        queryCases.add(new QueryCase("QRE_GF_SF3", "QueryRewriteExtension_GF_SF", QueryLoader.readFile(BASE_FOLDER + "/sfDisjoint.spl")));
-        queryCases.add(new QueryCase("QRE_GF_SF4", "QueryRewriteExtension_GF_SF", QueryLoader.readFile(BASE_FOLDER + "/sfEquals.spl")));
-        queryCases.add(new QueryCase("QRE_GF_SF5", "QueryRewriteExtension_GF_SF", QueryLoader.readFile(BASE_FOLDER + "/sfIntersects.spl")));
-        queryCases.add(new QueryCase("QRE_GF_SF6", "QueryRewriteExtension_GF_SF", QueryLoader.readFile(BASE_FOLDER + "/sfOverlaps.spl")));
-        queryCases.add(new QueryCase("QRE_GF_SF7", "QueryRewriteExtension_GF_SF", QueryLoader.readFile(BASE_FOLDER + "/sfTouches.spl")));
-        queryCases.add(new QueryCase("QRE_GF_SF8", "QueryRewriteExtension_GF_SF", QueryLoader.readFile(BASE_FOLDER + "/sfWithin.spl")));
+        queryCases.add(new QueryCase("QRE_GF_SF1", "QueryRewriteExtension_GF_SF", QueryLoader.readFile(BASE_FOLDER + "/QRE_GF_SF1-sfContains.spl")));
+        queryCases.add(new QueryCase("QRE_GF_SF2", "QueryRewriteExtension_GF_SF", QueryLoader.readFile(BASE_FOLDER + "/QRE_GF_SF2-sfCrosses.spl")));
+        queryCases.add(new QueryCase("QRE_GF_SF3", "QueryRewriteExtension_GF_SF", QueryLoader.readFile(BASE_FOLDER + "/QRE_GF_SF3-sfDisjoint.spl")));
+        queryCases.add(new QueryCase("QRE_GF_SF4", "QueryRewriteExtension_GF_SF", QueryLoader.readFile(BASE_FOLDER + "/QRE_GF_SF4-sfEquals.spl")));
+        queryCases.add(new QueryCase("QRE_GF_SF5", "QueryRewriteExtension_GF_SF", QueryLoader.readFile(BASE_FOLDER + "/QRE_GF_SF5-sfIntersects.spl")));
+        queryCases.add(new QueryCase("QRE_GF_SF6", "QueryRewriteExtension_GF_SF", QueryLoader.readFile(BASE_FOLDER + "/QRE_GF_SF6-sfOverlaps.spl")));
+        queryCases.add(new QueryCase("QRE_GF_SF7", "QueryRewriteExtension_GF_SF", QueryLoader.readFile(BASE_FOLDER + "/QRE_GF_SF7-sfTouches.spl")));
+        queryCases.add(new QueryCase("QRE_GF_SF8", "QueryRewriteExtension_GF_SF", QueryLoader.readFile(BASE_FOLDER + "/QRE_GF_SF8-sfWithin.spl")));
         return queryCases;
     }
 

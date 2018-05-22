@@ -20,18 +20,18 @@ public class GeometryExtensionQueryFunctions {
 
     public static List<QueryCase> loadQueries() {
         List<QueryCase> queryCases = new ArrayList<>();
-        queryCases.add(new QueryCase("GEQ1", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/Boundary.spl")));
-        queryCases.add(new QueryCase("GEQ2", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/BufferMetres.spl")));
-        queryCases.add(new QueryCase("GEQ3", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/BufferDegrees.spl")));
-        queryCases.add(new QueryCase("GEQ4", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/ConvexHull.spl")));
-        queryCases.add(new QueryCase("GEQ5", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/Difference.spl")));
-        queryCases.add(new QueryCase("GEQ6", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/DistanceMetres.spl")));
-        queryCases.add(new QueryCase("GEQ7", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/DistanceDegrees.spl")));
-        queryCases.add(new QueryCase("GEQ8", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/Envelope.spl")));
-        queryCases.add(new QueryCase("GEQ9", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/GetSRID.spl")));
-        queryCases.add(new QueryCase("GEQ10", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/Intersection.spl")));
-        queryCases.add(new QueryCase("GEQ11", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/SymmetricDifference.spl")));
-        queryCases.add(new QueryCase("GEQ12", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/Union.spl")));
+        queryCases.add(new QueryCase("GEQ1", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/GEQ1-Boundary.spl")));
+        queryCases.add(new QueryCase("GEQ2", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/GEQ2-BufferDegrees.spl")));
+        queryCases.add(new QueryCase("GEQ3", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/GEQ3-BufferMetres.spl")));
+        queryCases.add(new QueryCase("GEQ4", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/GEQ4-ConvexHull.spl")));
+        queryCases.add(new QueryCase("GEQ5", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/GEQ5-Difference.spl")));
+        queryCases.add(new QueryCase("GEQ6", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/GEQ6-DistanceDegrees.spl")));
+        queryCases.add(new QueryCase("GEQ7", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/GEQ7-DistanceMetres.spl")));
+        queryCases.add(new QueryCase("GEQ8", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/GEQ8-Envelope.spl")));
+        queryCases.add(new QueryCase("GEQ9", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/GEQ9-GetSRID.spl")));
+        queryCases.add(new QueryCase("GEQ10", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/GEQ10-Intersection.spl")));
+        queryCases.add(new QueryCase("GEQ11", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/GEQ11-SymmetricDifference.spl")));
+        queryCases.add(new QueryCase("GEQ12", "GeometryExtensionQueryFunctions", QueryLoader.readFile(BASE_FOLDER + "/GEQ12-Union.spl")));
         return queryCases;
     }
 

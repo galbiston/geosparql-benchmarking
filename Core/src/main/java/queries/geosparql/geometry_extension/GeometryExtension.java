@@ -20,10 +20,10 @@ public class GeometryExtension {
 
     public static List<QueryCase> loadQueries() {
         List<QueryCase> queryCases = new ArrayList<>();
-        queryCases.add(new QueryCase("GE1", "GeometryExtension", QueryLoader.readFile(BASE_FOLDER + "/CRSConversion_Geodetic.spl")));
-        queryCases.add(new QueryCase("GE2", "GeometryExtension", QueryLoader.readFile(BASE_FOLDER + "/CRSConversion_Projection.spl")));
-        queryCases.add(new QueryCase("GE3", "GeometryExtension", QueryLoader.readFile(BASE_FOLDER + "/GMLSupport.spl")));
-        queryCases.add(new QueryCase("GE4", "GeometryExtension", QueryLoader.readFile(BASE_FOLDER + "/WKTSupport.spl")));
+        queryCases.add(new QueryCase("GE1", "GeometryExtension", QueryLoader.readFile(BASE_FOLDER + "/GE1-CRSConversion_Geodetic.spl")));
+        queryCases.add(new QueryCase("GE2", "GeometryExtension", QueryLoader.readFile(BASE_FOLDER + "/GE2-CRSConversion_Projection.spl")));
+        queryCases.add(new QueryCase("GE3", "GeometryExtension", QueryLoader.readFile(BASE_FOLDER + "/GE3-GMLSupport.spl")));
+        queryCases.add(new QueryCase("GE4", "GeometryExtension", QueryLoader.readFile(BASE_FOLDER + "/GE4-WKTSupport.spl")));
         return queryCases;
     }
 
