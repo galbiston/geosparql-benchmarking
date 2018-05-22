@@ -77,8 +77,8 @@ public class GeosparqlBenchmark {
         queryCases.addAll(loadGeometryExtensionProperties());
         queryCases.addAll(loadGeometryExtensionQueryFunctions());
         queryCases.addAll(loadGeometryTopologyExtension());
-        queryCases.addAll(loadTopologyVocabulary());
         queryCases.addAll(loadQueryRewriteExtension());
+        queryCases.addAll(loadTopologyVocabulary());
         return queryCases;
     }
 
