@@ -88,6 +88,7 @@ public class Main {
         } catch (Exception ex) {
             LOGGER.error("{} for arguments {}", ex.getMessage(), args);
         }
+
         //equalsTest();
         //equalsTest2();
         //intersectsTest();
@@ -99,7 +100,8 @@ public class Main {
         //indexTDBTest();
         //TDB
         //GeosparqlJenaTDBTestSystemFactory.clearDataset(GEOSPARQL_JENA_TDB_FOLDER);
-        //GeosparqlJenaTDBTestSystemFactory.loadDataset(GEOSPARQL_JENA_TDB_FOLDER, datasetMap, inferenceEnabled);
+        //TreeMap<String, File> datasetMap = Dataset_Compliance.getComplianceData();
+        //GeosparqlJenaTDBTestSystemFactory.loadDataset(GEOSPARQL_JENA_TDB_FOLDER, datasetMap, true);
         //runTDB(inferenceEnabled);
         //runTestTDB(inferenceEnabled);
         //rdfsJenaTDBTest();
