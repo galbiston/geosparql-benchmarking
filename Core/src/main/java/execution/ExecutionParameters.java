@@ -7,6 +7,7 @@ package execution;
 
 import data_setup.BenchmarkParameters;
 import data_setup.Dataset_CRS84;
+import data_setup.Dataset_Compliance;
 import data_setup.Dataset_Greek_Grid;
 import data_setup.Dataset_WGS84;
 import data_setup.Dataset_WGS84_Legacy;
@@ -174,21 +175,26 @@ public class ExecutionParameters {
         TreeMap<String, File> datasetMap;
         if (args.length > DATASET_POSITION + argOffset) {
             switch (args[DATASET_POSITION + argOffset].toLowerCase()) {
-                case "GreekGrid":
+                case "greekgrid":
                     datasetMap = Dataset_Greek_Grid.getAll();
                     LOGGER.info("Dataset: GreekGrid");
                     break;
-                case "WGS84":
+                case "wgs84":
                     datasetMap = Dataset_WGS84.getAll();
                     LOGGER.info("Dataset: WG84");
                     break;
-                case "WGS84_Legacy":
+                case "wgs84_legacy":
                     datasetMap = Dataset_WGS84_Legacy.getAll();
                     LOGGER.info("Dataset: WG84 Legacy");
                     break;
-                case "CRS84":
+                case "crs84":
                     datasetMap = Dataset_CRS84.getAll();
                     LOGGER.info("Dataset: CRS84");
+                    break;
+                case "compliance":
+                    datasetMap = Dataset_Compliance.getComplianceData();
+                    LOGGER.info("Dataset: Compliance");
+                    break;
                 default:
                     File fileArg = new File(args[DATASET_POSITION + argOffset]);
                     if (fileArg.exists()) {
@@ -209,8 +215,16 @@ public class ExecutionParameters {
 
             }
         } else {
-            datasetMap = Dataset_CRS84.getAll();
-            LOGGER.info("Dataset: Defaulting to CRS84");
+            switch (benchmarkType) {
+                case COMPLIANCE:
+                    datasetMap = Dataset_Compliance.getComplianceData();
+                    LOGGER.info("Dataset: Defaulting to Compliance");
+                    break;
+                default:
+                    datasetMap = Dataset_CRS84.getAll();
+                    LOGGER.info("Dataset: Defaulting to CRS84");
+                    break;
+            }
         }
 
         LOGGER.info("--------------------------------------------------------------------------------");

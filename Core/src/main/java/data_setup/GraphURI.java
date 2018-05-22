@@ -9,7 +9,7 @@ package data_setup;
  *
  *
  */
-public class GraphURI {
+public interface GraphURI {
 
     public static final String GADM_URI = "http://geographica.di.uoa.gr/dataset/gag";
     public static final String LGD_URI = "http://geographica.di.uoa.gr/dataset/lgd";
@@ -19,4 +19,5 @@ public class GraphURI {
     public static final String DBPEDIA_URI = "http://geographica.di.uoa.gr/dataset/dbpedia";
     public static final String DEFAULT = "";
     public static final String USER = "http://example.org/user/dataset#";
+    public static final String COMPLIANCE_URI = "http://example.org/dataset#compliance";
 }
