@@ -41,6 +41,8 @@ public class GeosparqlBenchmark {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+    public static final String CONFORMANCE_FOLDER = "../queries/geosparql_conformance";
+
     public static final List<QueryCase> loadQueryCases(String arg) {
         switch (arg) {
             case "geosparql":

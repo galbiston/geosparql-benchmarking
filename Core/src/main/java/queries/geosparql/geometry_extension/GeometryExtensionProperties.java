@@ -9,6 +9,7 @@ import execution.QueryCase;
 import execution.QueryLoader;
 import java.util.ArrayList;
 import java.util.List;
+import static queries.geosparql.GeosparqlBenchmark.CONFORMANCE_FOLDER;
 
 /**
  *
@@ -16,7 +17,7 @@ import java.util.List;
  */
 public class GeometryExtensionProperties {
 
-    public static final String BASE_FOLDER = "../queries/geosparql_benchmarking/geometry_extension_properties";
+    public static final String BASE_FOLDER = CONFORMANCE_FOLDER + "/geometry_extension_properties";
 
     public static List<QueryCase> loadQueries() {
         List<QueryCase> queryCases = new ArrayList<>();

@@ -73,8 +73,8 @@ task runGeosparql(type:JavaExec){
     args "geosparql"
 }
 
-task runGeosparqlCompliance(type:JavaExec){
+task runGeosparqlConformance(type:JavaExec){
     classpath = sourceSets.main.runtimeClasspath
     main = mainClassName
-    args "geosparql", "compliance"
+    args "geosparql", "conformance"
 }

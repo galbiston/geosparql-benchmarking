@@ -100,7 +100,7 @@ public class Main {
         //indexTDBTest();
         //TDB
         //GeosparqlJenaTDBTestSystemFactory.clearDataset(GEOSPARQL_JENA_TDB_FOLDER);
-        //TreeMap<String, File> datasetMap = Dataset_Compliance.getComplianceData();
+        //TreeMap<String, File> datasetMap = Dataset_Conformance.getConformanceData();
         //GeosparqlJenaTDBTestSystemFactory.loadDataset(GEOSPARQL_JENA_TDB_FOLDER, datasetMap, true);
         //runTDB(inferenceEnabled);
         //runTestTDB(inferenceEnabled);

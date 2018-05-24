@@ -1,0 +1,18 @@
+#Query 5 - ehEquals:
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX geonames: <http://www.geonames.org/ontology#>
+PREFIX gag: <http://geo.linkedopendata.gr/gag/ontology/>
+
+SELECT ?s1 ?s2
+WHERE {
+	GRAPH dataset:geonames {
+		?geometry1 a geo:Geometry .
+	}
+	
+	GRAPH dataset:gag {
+		?geometry2 a geo:Geometry .
+	}
+	
+	?geometry1 geo:ehEquals ?geometry2 .
+}

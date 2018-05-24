@@ -113,10 +113,10 @@ task runTDBGeosparql(type:JavaExec){
     args "tdb", "geosparql"
 }
 
-task runTDBGeosparqlCompliance(type:JavaExec){
+task runTDBGeosparqlConformance(type:JavaExec){
     classpath = sourceSets.main.runtimeClasspath
     main = mainClassName
-    args "tdb", "geosparql", "compliance"
+    args "tdb", "geosparql", "conformance"
 }
 
 //Run sequence of tasks:

@@ -9,6 +9,7 @@ import execution.QueryCase;
 import execution.QueryLoader;
 import java.util.ArrayList;
 import java.util.List;
+import static queries.geosparql.GeosparqlBenchmark.CONFORMANCE_FOLDER;
 
 /**
  *
@@ -16,7 +17,7 @@ import java.util.List;
  */
 public class TopologyVocabulary_Egenhofer {
 
-    public static final String BASE_FOLDER = "../queries/geosparql_benchmarking/topology_vocabulary_extension/egenhofer";
+    public static final String BASE_FOLDER = CONFORMANCE_FOLDER + "/topology_vocabulary_extension/egenhofer";
 
     public static List<QueryCase> loadQueries() {
         List<QueryCase> queryCases = new ArrayList<>();

@@ -119,10 +119,10 @@ task runGeosparql(type:JavaExec){
     args "geosparql"
 }
 
-task runGeosparqlCompliance(type:JavaExec){
+task runGeosparqlConformance(type:JavaExec){
     environment 'PARLIAMENT_CONFIG_PATH', 'parliament-release\\ParliamentConfig.txt'
     environment 'Path', 'parliament-release'
     classpath = sourceSets.main.runtimeClasspath
     main = mainClassName
-    args "geosparql", "compliance"
+    args "geosparql", "conformance"
 }

@@ -26,7 +26,7 @@ public class BenchmarkExecution {
     public static final File RESULTS_FOLDER = new File("../results");
 
     public static enum BenchmarkType {
-        BOTH, WARM, COLD, COMPLIANCE
+        BOTH, WARM, COLD, CONFORMANCE
     }
 
     static {
@@ -35,7 +35,7 @@ public class BenchmarkExecution {
 
     public static final String COLD_RUN_RESULTS_FOLDER_NAME = "cold_run";
     public static final String WARM_RUN_RESULTS_FOLDER_NAME = "warm_run";
-    public static final String COMPLIANCE_RUN_RESULTS_FOLDER_NAME = "compliance_run";
+    public static final String CONFORMANCE_RUN_RESULTS_FOLDER_NAME = "conformance_run";
 
     public static void runType(TestSystemFactory testSystemFactory, ExecutionParameters parameters) {
         runType(testSystemFactory, parameters.getIterations(), parameters.getTimeout(), parameters.getQueryCases(), parameters.getLineLimit(), parameters.getBenchmarkType());
@@ -62,11 +62,11 @@ public class BenchmarkExecution {
             case COLD:
                 runCold(testSystemFactory, iterations, timeout, queryCases, resultsLineLimit);
                 break;
-            case COMPLIANCE:
+            case CONFORMANCE:
                 if (iterations > 1) {
-                    LOGGER.warn("Compliance Run: Single iteration only of each query on same test system.");
+                    LOGGER.warn("Conformance Run: Single iteration only of each query on same test system.");
                 }
-                runCompliance(testSystemFactory, timeout, queryCases, resultsLineLimit);
+                runConformance(testSystemFactory, timeout, queryCases, resultsLineLimit);
                 break;
 
         }
@@ -223,14 +223,14 @@ public class BenchmarkExecution {
      * @param queryCases
      * @param resultsLineLimit Set to zero for no detailed results output.
      */
-    public static final void runCompliance(TestSystemFactory testSystemFactory, Duration timeout, List<QueryCase> queryCases, Integer resultsLineLimit) {
+    public static final void runConformance(TestSystemFactory testSystemFactory, Duration timeout, List<QueryCase> queryCases, Integer resultsLineLimit) {
 
         String testSystemName = testSystemFactory.getTestSystemName();
         String testTimestamp = LocalDateTime.now().format(IterationResult.FILE_DATE_TIME_FORMAT);
         File testSystemResultsFolder = testSystemFactory.getResultsFolder();
-        File runResultsFolder = new File(testSystemResultsFolder, COMPLIANCE_RUN_RESULTS_FOLDER_NAME);
+        File runResultsFolder = new File(testSystemResultsFolder, CONFORMANCE_RUN_RESULTS_FOLDER_NAME);
         runResultsFolder.mkdir();
-        LOGGER.info("------Compliance Run - System: {}, Folder: {} - Started------", testSystemName, runResultsFolder);
+        LOGGER.info("------Conformance Run - System: {}, Folder: {} - Started------", testSystemName, runResultsFolder);
         long initStartNanoTime = System.nanoTime();
         try (TestSystem testSystem = testSystemFactory.getTestSystem()) {
             long initEndNanoTime = System.nanoTime();
@@ -243,9 +243,9 @@ public class BenchmarkExecution {
                 //Benchmark executions.
                 String queryString = testSystem.translateQuery(queryCase.getQueryString());
 
-                LOGGER.info("------Compliance Iteration - System: {}, Query: {}, Type: {} - Started------", testSystemName, queryName, queryType);
+                LOGGER.info("------Conformance Iteration - System: {}, Query: {}, Type: {} - Started------", testSystemName, queryName, queryType);
                 QueryResult queryResult = runQueryWithTimeout(testSystem, queryString, timeout);
-                LOGGER.info("------Compliance Iteration - System: {}, Query: {}, Type: {} - Completed------", testSystemName, queryName, queryType);
+                LOGGER.info("------Conformance Iteration - System: {}, Query: {}, Type: {} - Completed------", testSystemName, queryName, queryType);
 
                 int iteration = 1;
                 IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, iteration, queryResult, initStartNanoTime, initEndNanoTime);
@@ -263,7 +263,7 @@ public class BenchmarkExecution {
             LOGGER.error("Exception: {}", ex.getMessage());
         }
 
-        LOGGER.info("------Compliance Run - System: {}, Folder: {} - Completed------", testSystemName, runResultsFolder);
+        LOGGER.info("------Conformance Run - System: {}, Folder: {} - Completed------", testSystemName, runResultsFolder);
     }
 
     public static final List<DatasetLoadResult> runDatasetLoad(TestSystemFactory testSystemFactory, Integer iterations, TreeMap<String, File> datasetMap) {

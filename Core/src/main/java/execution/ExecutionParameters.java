@@ -7,7 +7,7 @@ package execution;
 
 import data_setup.BenchmarkParameters;
 import data_setup.Dataset_CRS84;
-import data_setup.Dataset_Compliance;
+import data_setup.Dataset_Conformance;
 import data_setup.Dataset_Greek_Grid;
 import data_setup.Dataset_WGS84;
 import data_setup.Dataset_WGS84_Legacy;
@@ -191,9 +191,9 @@ public class ExecutionParameters {
                     datasetMap = Dataset_CRS84.getAll();
                     LOGGER.info("Dataset: CRS84");
                     break;
-                case "compliance":
-                    datasetMap = Dataset_Compliance.getComplianceData();
-                    LOGGER.info("Dataset: Compliance");
+                case "conformance":
+                    datasetMap = Dataset_Conformance.getConformanceData();
+                    LOGGER.info("Dataset: Conformance");
                     break;
                 default:
                     File fileArg = new File(args[DATASET_POSITION + argOffset]);
@@ -216,9 +216,9 @@ public class ExecutionParameters {
             }
         } else {
             switch (benchmarkType) {
-                case COMPLIANCE:
-                    datasetMap = Dataset_Compliance.getComplianceData();
-                    LOGGER.info("Dataset: Defaulting to Compliance");
+                case CONFORMANCE:
+                    datasetMap = Dataset_Conformance.getConformanceData();
+                    LOGGER.info("Dataset: Defaulting to Conformance");
                     break;
                 default:
                     datasetMap = Dataset_CRS84.getAll();
