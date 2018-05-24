@@ -15,7 +15,6 @@ import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import execution.QueryTask;
-import execution_results.QueryResult;
 import execution_results.VarValue;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -28,74 +27,56 @@ import org.slf4j.LoggerFactory;
  *
  *
  */
-public class ParliamentQueryTask implements QueryTask {
+public class ParliamentQueryTask extends QueryTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final String queryString;
     private final Dataset dataset;
-    private QueryResult queryResult;
+    private QueryExecution qexec;
+    private ResultSet rs;
 
     public ParliamentQueryTask(String queryString, Dataset dataset) {
         this.queryString = queryString;
         this.dataset = dataset;
-        this.queryResult = new QueryResult();
     }
 
     @Override
-    public QueryResult getQueryResult() {
-        return queryResult;
+    protected void prepareQuery() {
+        qexec = QueryExecutionFactory.create(queryString, dataset);
+        rs = qexec.execSelect();
     }
 
     @Override
-    public void run() {
-
-        LOGGER.info("Query Evaluation: Started");
-        Boolean isComplete = true;
-        List<List<VarValue>> results = new ArrayList<>();
-        long startNanoTime = System.nanoTime();
-        long queryNanoTime;
-        QueryExecution qexec = null;
-        try {
-            qexec = QueryExecutionFactory.create(queryString, dataset);
-            ResultSet rs = qexec.execSelect();
-            queryNanoTime = System.nanoTime();
-            while (rs.hasNext()) {
-                QuerySolution querySolution = rs.next();
-                Iterator<String> varNames = querySolution.varNames();
-                List<VarValue> result = new ArrayList<>();
-                while (varNames.hasNext()) {
-                    String varName = varNames.next();
-                    String valueStr;
-                    RDFNode solution = querySolution.get(varName);
-                    if (solution.isLiteral()) {
-                        Literal literal = solution.asLiteral();
-                        valueStr = literal.getLexicalForm();
-                    } else if (solution.isResource()) {
-                        Resource resource = solution.asResource();
-                        valueStr = resource.getURI();
-                    } else {
-                        Node anon = solution.asNode();
-                        valueStr = anon.getBlankNodeLabel();
-                        LOGGER.error("Anon Node result: " + valueStr);
-                    }
-                    VarValue varValue = new VarValue(varName, valueStr);
-                    result.add(varValue);
+    protected void executeQuery() {
+        while (rs.hasNext()) {
+            QuerySolution querySolution = rs.next();
+            Iterator<String> varNames = querySolution.varNames();
+            List<VarValue> result = new ArrayList<>();
+            while (varNames.hasNext()) {
+                String varName = varNames.next();
+                String valueStr;
+                RDFNode solution = querySolution.get(varName);
+                if (solution.isLiteral()) {
+                    Literal literal = solution.asLiteral();
+                    valueStr = literal.getLexicalForm();
+                } else if (solution.isResource()) {
+                    Resource resource = solution.asResource();
+                    valueStr = resource.getURI();
+                } else {
+                    Node anon = solution.asNode();
+                    valueStr = anon.getBlankNodeLabel();
+                    LOGGER.error("Anon Node result: " + valueStr);
                 }
-                results.add(result);
+                VarValue varValue = new VarValue(varName, valueStr);
+                result.add(varValue);
             }
-        } catch (Exception ex) {
-            LOGGER.error("Thread Exception: {}", ex.getMessage());
-            queryNanoTime = startNanoTime;
-            results.clear();
-            isComplete = false;
-        } finally {
-            if (qexec != null) {
-                qexec.close();
-            }
+            results.add(result);
         }
-        long resultsNanoTime = System.nanoTime();
-        this.queryResult = new QueryResult(startNanoTime, queryNanoTime, resultsNanoTime, results, isComplete);
-        LOGGER.info("Query Evaluation Time - Start->Query: {}, Query->Results: {}, Start->Results: {}", queryResult.getStartQueryDuration(), queryResult.getQueryResultsDuration(), queryResult.getStartResultsDuration());
+    }
+
+    @Override
+    protected void endQuery() {
+        qexec.close();
     }
 }
