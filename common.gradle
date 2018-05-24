@@ -19,7 +19,7 @@ repositories {
     maven{
         url "http://maven.geo-solutions.it"
     }
-
+    mavenLocal()
     mavenCentral()
 }
 
