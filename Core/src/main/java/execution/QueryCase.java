@@ -84,7 +84,7 @@ public class QueryCase {
 
             writer.write(PADDING_STRING);
             writer.newLine();
-            writer.write(queryCase.queryName + " - " + queryCase.queryType);
+            writer.write("#" + queryCase.queryName + " - " + queryCase.queryType);
             writer.newLine();
             writer.newLine();
 
