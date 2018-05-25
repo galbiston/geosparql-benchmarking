@@ -51,6 +51,10 @@ public class QueryCase {
         return queryStrings.get(0);
     }
 
+    public void addQueryString(String queryString) {
+        queryStrings.add(queryString);
+    }
+
     public String getQueryString(int index) throws Exception {
         if (queryStrings.size() == 1) {
             return queryStrings.get(0);

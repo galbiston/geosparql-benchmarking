@@ -25,7 +25,7 @@ public class QueryLoader {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(QueryLoader.class);
 
-    public static String readFile(String filepath) {
+    public static final String readFile(String filepath) {
 
         File file = new File(filepath);
         try (BufferedReader buffer = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
@@ -36,15 +36,24 @@ public class QueryLoader {
         }
     }
 
-    public static List<QueryCase> readQuery(String filepath) {
+    public static final List<QueryCase> readQuery(String filepath) {
         return Arrays.asList(readQuery(filepath, 1));
     }
 
-    public static QueryCase readQuery(String filepath, int count) {
-        return new QueryCase("UQ" + count, "UserQuery", readFile(filepath));
+    public static final QueryCase readQuery(String filepath, int count) {
+
+        String[] fileName = new File(filepath).getName().split("-");
+        String queryName;
+        if (fileName.length > 1) {
+            queryName = fileName[0];
+        } else {
+            queryName = "UQ" + count;
+        }
+
+        return new QueryCase(queryName, "UserQuery", readFile(filepath));
     }
 
-    public static List<QueryCase> readFolder(File directory) {
+    public static final List<QueryCase> readFolder(File directory) {
 
         List<QueryCase> queryCases = new ArrayList<>();
         File[] files = directory.listFiles();
@@ -53,12 +62,30 @@ public class QueryLoader {
             count++;
             String filepath = file.getAbsolutePath();
             QueryCase queryCase = readQuery(filepath, count);
-            queryCases.add(queryCase);
+            checkIteration(queryCases, queryCase);
         }
         return queryCases;
     }
 
-    public static List<QueryPair> readQueryPairs(String filepath) {
+    private static void checkIteration(List<QueryCase> queryCases, QueryCase queryCase) {
+
+        boolean isNoMatch = true;
+        for (QueryCase existingCase : queryCases) {
+
+            String queryName = existingCase.getQueryName();
+            if (queryName.equals(queryCase.getQueryName())) {
+                existingCase.addQueryString(queryCase.getQueryString());
+                isNoMatch = false;
+                break;
+            }
+        }
+
+        if (isNoMatch) {
+            queryCases.add(queryCase);
+        }
+    }
+
+    public static final List<QueryPair> readQueryPairs(String filepath) {
 
         List<QueryPair> queryPairs = new ArrayList<>();
         File file = new File(filepath);
