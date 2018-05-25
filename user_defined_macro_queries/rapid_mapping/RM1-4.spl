@@ -1,0 +1,21 @@
+#Iteration: 4
+#Query 1 - Get_highways:
+#Added RDFS prefix.
+
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX lgd: <http://linkedgeodata.org/ontology/>
+
+SELECT ?r ?rName ?rGeoWKT
+WHERE {
+	GRAPH dataset:lgd {
+		?r rdf:type lgd:HighwayThing.
+		?r rdfs:label ?rName.
+		?r lgd:hasGeometry ?rGeo.
+		?rGeo lgd:asWKT ?rGeoWKT.
+		FILTER(geof:sfIntersects(?rGeoWKT, "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((22.3089069565018 39.1890420584841,22.3071765712805 39.2610981887895,22.3998678194706 39.2624089347065,22.401503557985 39.1903494652597,22.3089069565018 39.1890420584841))"^^geo:wktLiteral))
+	}
+}

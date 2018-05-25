@@ -1,0 +1,21 @@
+#Iteration: 2
+#Query 2 - Get_municipalities:
+#Added RDFS prefix.
+
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX gag: <http://geo.linkedopendata.gr/gag/ontology/>
+
+SELECT (geof:boundary(?gGeoWKT) as ?boundary) ?gLabel
+WHERE {
+	GRAPH dataset:gag {
+		?g rdf:type gag:Municipality.
+		?g rdfs:label ?gLabel.
+		?g gag:hasGeometry ?gGeo.
+		?gGeo gag:asWKT ?gGeoWKT.
+		FILTER(geof:sfIntersects(?gGeoWKT, "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((23.073995356111 40.8553827908113,23.0729901602812 40.9274400972305,23.120493526591 40.927812199295,23.121447229113 40.8557539546156,23.073995356111 40.8553827908113))"^^geo:wktLiteral))
+	}
+}

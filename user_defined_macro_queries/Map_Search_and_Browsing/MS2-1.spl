@@ -1,0 +1,21 @@
+#Iteration: 1
+#Query 2 - Get_Around_Roads:
+#Added RDF and RDFS prefix.
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX lgd: <http://linkedgeodata.org/ontology/>
+
+SELECT ?r ?label ?rGeo ?rGeoWKT
+WHERE {
+	GRAPH dataset:lgd {
+		?r rdf:type ?type.
+		OPTIONAL{ ?r rdfs:label ?label }.
+		?r lgd:hasGeometry ?rGeo.
+		?rGeo lgd:asWKT ?rGeoWKT.
+		FILTER(geof:sfIntersects(?rGeoWKT, "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((19.843 39.759, 19.843 39.799, 19.903 39.799, 19.903 39.759, 19.843 39.759))"^^geo:wktLiteral)).
+	}
+}
