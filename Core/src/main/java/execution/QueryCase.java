@@ -92,12 +92,13 @@ public class QueryCase {
             int i = 1;
             for (String queryString : queryCase.queryStrings) {
                 if (isMultipleStrings) {
-                    writer.write("Iteration: " + i);
+                    writer.write("#Iteration: " + i);
                     writer.newLine();
                 }
                 i++;
                 writer.write(queryString);
                 writer.newLine();
+				writer.newLine();
             }
             writer.newLine();
 
