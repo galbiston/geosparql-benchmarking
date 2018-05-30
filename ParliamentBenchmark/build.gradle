@@ -70,6 +70,11 @@ run.doFirst {
     environment 'Path', 'parliament-release'
 }
 
+run {
+    if (project.hasProperty("appArgs")) {
+        args Eval.me(appArgs)
+    }
+}
 
 task runMicro(type:JavaExec){
     environment 'PARLIAMENT_CONFIG_PATH', 'parliament-release\\ParliamentConfig.txt'

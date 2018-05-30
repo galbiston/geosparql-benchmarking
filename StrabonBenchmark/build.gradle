@@ -37,6 +37,12 @@ dependencies {
     compile "uk.org.lidalia:sysout-over-slf4j:$sysoutBridgeVersion"
 }
 
+run {
+    if (project.hasProperty("appArgs")) {
+        args Eval.me(appArgs)
+    }
+}
+
 task runMicro(type:JavaExec){
     classpath = sourceSets.main.runtimeClasspath
     main = mainClassName
