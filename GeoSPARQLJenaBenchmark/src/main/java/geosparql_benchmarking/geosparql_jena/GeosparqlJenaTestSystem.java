@@ -83,6 +83,7 @@ public class GeosparqlJenaTestSystem implements TestSystem {
         if (TDBFactory.isBackedByTDB(dataset)) {
             TDBFactory.release(dataset);
         }
+        dataset = null;
         GeoSPARQLSupport.clearAllIndexesAndRegistries();
         try {
             System.gc();
