@@ -51,7 +51,7 @@ public class Main {
     public static final String GEOSPARL_JENA_TDB_RESULTS_FOLDER_NAME = "geosparql_jena_tdb";
     public static final String GEOSPARL_JENA_IN_MEMORY_RESULTS_FOLDER_NAME = "geosparql_jena_in_memory";
     public static final String GEOSPARL_JENA_NO_INDEX_RESULTS_FOLDER_NAME = "geosparql_jena_no_index";
-    public static final File GEOSPARQL_SCHEMA_FILE = new File("geosparql_vocab_all.rdf");
+    public static final File GEOSPARQL_SCHEMA_FILE = new File("geosparql_vocab_all_v1_0_1_updated.rdf");
 
     private static final Integer ARGUMENT_OFFSET = 1;
 
