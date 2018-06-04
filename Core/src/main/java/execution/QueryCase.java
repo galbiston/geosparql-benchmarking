@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,8 @@ public class QueryCase {
     public QueryCase(String queryName, String queryType, String queryString) {
         this.queryName = queryName;
         this.queryType = queryType;
-        this.queryStrings = Arrays.asList(queryString);
+        this.queryStrings = new ArrayList<>();
+        this.queryStrings.add(queryString);
     }
 
     public QueryCase(String queryName, String queryType, List<String> queryStrings) {
@@ -98,7 +99,7 @@ public class QueryCase {
                 i++;
                 writer.write(queryString);
                 writer.newLine();
-				writer.newLine();
+                writer.newLine();
             }
             writer.newLine();
 

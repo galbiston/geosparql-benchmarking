@@ -70,12 +70,13 @@ public class QueryLoader {
         File[] files = directory.listFiles();
 
         for (File file : files) {
-            count++;
+
             if (file.isDirectory()) {
                 List<QueryCase> folderQueryCases = readFolder(file, count);
                 count += folderQueryCases.size();
                 queryCases.addAll(folderQueryCases);
             } else {
+                count++;
                 String filepath = file.getAbsolutePath();
                 QueryCase queryCase = readQuery(filepath, count, directory.getName());
                 checkIteration(queryCases, queryCase);
