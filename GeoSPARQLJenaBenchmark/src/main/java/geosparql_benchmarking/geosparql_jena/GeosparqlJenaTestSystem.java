@@ -8,7 +8,7 @@ package geosparql_benchmarking.geosparql_jena;
 import execution.TestSystem;
 import execution_results.QueryResult;
 import implementation.GeoSPARQLSupport;
-import implementation.index.IndexOption;
+import implementation.index.IndexConfiguration.IndexOption;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.util.Iterator;
@@ -84,6 +84,7 @@ public class GeosparqlJenaTestSystem implements TestSystem {
             TDBFactory.release(dataset);
         }
         dataset = null;
+        //GeoSPARQLSupport.disposeAllIndexesAndRegistries();
         GeoSPARQLSupport.clearAllIndexesAndRegistries();
         try {
             System.gc();

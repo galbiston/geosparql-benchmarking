@@ -10,7 +10,7 @@ import execution.TestSystem;
 import execution.TestSystemFactory;
 import execution_results.DatasetLoadResult;
 import execution_results.DatasetLoadTimeResult;
-import implementation.index.IndexOption;
+import implementation.index.IndexConfiguration.IndexOption;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
