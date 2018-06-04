@@ -37,10 +37,10 @@ public class QueryLoader {
     }
 
     public static final List<QueryCase> readQuery(String filepath) {
-        return Arrays.asList(readQuery(filepath, 1));
+        return Arrays.asList(readQuery(filepath, 1, null));
     }
 
-    public static final QueryCase readQuery(String filepath, int count) {
+    public static final QueryCase readQuery(String filepath, int count, String groupName) {
 
         String[] fileName = new File(filepath).getName().split("-");
         String queryName;
@@ -50,19 +50,36 @@ public class QueryLoader {
             queryName = "UQ" + count;
         }
 
-        return new QueryCase(queryName, "UserQuery", readFile(filepath));
+        String queryGroupName;
+        if (groupName != null) {
+            queryGroupName = groupName;
+        } else {
+            queryGroupName = "UserQuery";
+        }
+
+        return new QueryCase(queryName, queryGroupName, readFile(filepath));
     }
 
     public static final List<QueryCase> readFolder(File directory) {
+        return readFolder(directory, 0);
+    }
+
+    public static final List<QueryCase> readFolder(File directory, int count) {
 
         List<QueryCase> queryCases = new ArrayList<>();
         File[] files = directory.listFiles();
-        int count = 0;
+
         for (File file : files) {
             count++;
-            String filepath = file.getAbsolutePath();
-            QueryCase queryCase = readQuery(filepath, count);
-            checkIteration(queryCases, queryCase);
+            if (file.isDirectory()) {
+                List<QueryCase> folderQueryCases = readFolder(file, count);
+                count += folderQueryCases.size();
+                queryCases.addAll(folderQueryCases);
+            } else {
+                String filepath = file.getAbsolutePath();
+                QueryCase queryCase = readQuery(filepath, count, directory.getName());
+                checkIteration(queryCases, queryCase);
+            }
         }
         return queryCases;
     }
