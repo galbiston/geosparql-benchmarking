@@ -123,26 +123,26 @@ public class BenchmarkExecution {
 
                 if (!queryResult.isCompleted()) {
                     LOGGER.error("System: {}, Query: {}, Type: {},  Warm Up - Did not complete.", testSystemName, queryName, queryType);
-                }
+                } else {
+                    //Benchmark executions.
+                    for (int i = 0; i < iterations; i++) {
+                        queryString = testSystem.translateQuery(queryCase.getQueryString(i));
+                        int iteration = i + 1;
+                        LOGGER.info("------Query Iteration - System: {}, Query: {}, Type: {}, Iteration: {} - Started------", testSystemName, queryName, queryType, iteration);
+                        queryResult = runQueryWithTimeout(testSystem, queryString, timeout);
+                        LOGGER.info("------Query Iteration - System: {}, Query: {}, Type: {}, Iteration: {} - Completed------", testSystemName, queryName, queryType, iteration);
 
-                //Benchmark executions.
-                for (int i = 0; i < iterations; i++) {
-                    queryString = testSystem.translateQuery(queryCase.getQueryString(i));
-                    int iteration = i + 1;
-                    LOGGER.info("------Query Iteration - System: {}, Query: {}, Type: {}, Iteration: {} - Started------", testSystemName, queryName, queryType, iteration);
-                    queryResult = runQueryWithTimeout(testSystem, queryString, timeout);
-                    LOGGER.info("------Query Iteration - System: {}, Query: {}, Type: {}, Iteration: {} - Completed------", testSystemName, queryName, queryType, iteration);
+                        IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, iteration, queryResult, initStartNanoTime, initEndNanoTime);
+                        //Write summary for all queries and iterations performed to a single file. Reduce footprint by writing immediately.
+                        IterationResult.writeSummaryFile(runResultsFolder, iterationResult, testSystemName, testTimestamp);
 
-                    IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, iteration, queryResult, initStartNanoTime, initEndNanoTime);
-                    //Write summary for all queries and iterations performed to a single file. Reduce footprint by writing immediately.
-                    IterationResult.writeSummaryFile(runResultsFolder, iterationResult, testSystemName, testTimestamp);
-
-                    if (queryResult.isCompleted()) {
-                        //Write results for all iterations for each query to own file.
-                        IterationResult.writeResultsFile(resultsFolder, iterationResult, queryResult, testTimestamp, resultsLineLimit);
-                    } else {
-                        LOGGER.error("System: {}, Query: {}, Type: {},  Iteration: {} - Did not complete.", testSystemName, queryName, queryType, iteration);
-                        break;
+                        if (queryResult.isCompleted()) {
+                            //Write results for all iterations for each query to own file.
+                            IterationResult.writeResultsFile(resultsFolder, iterationResult, queryResult, testTimestamp, resultsLineLimit);
+                        } else {
+                            LOGGER.error("System: {}, Query: {}, Type: {},  Iteration: {} - Did not complete.", testSystemName, queryName, queryType, iteration);
+                            break;
+                        }
                     }
                 }
 
