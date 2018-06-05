@@ -139,10 +139,15 @@ public class ExecutionParameters {
         //Benchmark Type
         BenchmarkType benchmarkType;
         if (args.length > BENCHMARK_TYPE_POSITION + argOffset) {
-            benchmarkType = BenchmarkExecution.BenchmarkType.valueOf(args[BENCHMARK_TYPE_POSITION + argOffset].toUpperCase());
-            LOGGER.info("Benchmark Type: {}", benchmarkType);
+            try {
+                benchmarkType = BenchmarkType.valueOf(args[BENCHMARK_TYPE_POSITION + argOffset].toUpperCase());
+                LOGGER.info("Benchmark Type: {}", benchmarkType);
+            } catch (IllegalArgumentException | NullPointerException ex) {
+                LOGGER.error("Benchmark Type: {} not recognised. Expected: {}", args[BENCHMARK_TYPE_POSITION + argOffset], BenchmarkType.values());
+                throw new AssertionError();
+            }
         } else {
-            benchmarkType = BenchmarkExecution.BenchmarkType.BOTH;
+            benchmarkType = BenchmarkType.BOTH;
             LOGGER.info("Benchmark Type: Defaulting to BOTH benchmarks.");
         }
 

@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -104,18 +103,23 @@ public class DatasetLoadResult {
         return line.toArray(new String[line.size()]);
     }
 
-    private static final DateTimeFormatter FILE_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
+    public static final DateTimeFormatter FILE_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
 
-    public static final void writeSummaryFile(File datasetLoadResultsFolder, DatasetLoadResult datasetLoadResult) {
-        DatasetLoadResult.writeSummaryFile(datasetLoadResultsFolder, Arrays.asList(datasetLoadResult));
+    public static final void writeSummaryFile(File datasetLoadResultsFolder, DatasetLoadResult datasetLoadResult, String testSystemName, String testTimestamp) {
+        DatasetLoadResult.writeSummaryFile(datasetLoadResultsFolder, Arrays.asList(datasetLoadResult), testSystemName, testTimestamp);
     }
 
-    public static final void writeSummaryFile(File datasetLoadResultsFolder, List<DatasetLoadResult> datasetLoadResults) {
+    public static final void writeSummaryFile(File datasetLoadResultsFolder, List<DatasetLoadResult> datasetLoadResults, String testSystemName, String testTimestamp) {
         datasetLoadResultsFolder.mkdir();
-        String filename = "datasetload-" + LocalDateTime.now().format(FILE_DATE_TIME_FORMAT) + ".csv";
+        String filename = "datasetload-" + testSystemName + "-" + testTimestamp + ".csv";
         File summaryFile = new File(datasetLoadResultsFolder, filename);
-        try (CSVWriter writer = new CSVWriter(new FileWriter(summaryFile))) {
-            writer.writeNext(SUMMARY_HEADER);
+        boolean summaryFileAlreadyExists = summaryFile.exists();
+
+        try (CSVWriter writer = new CSVWriter(new FileWriter(summaryFile, true))) {
+
+            if (!summaryFileAlreadyExists) {
+                writer.writeNext(SUMMARY_HEADER);
+            }
             for (DatasetLoadResult datasetLoadResult : datasetLoadResults) {
                 writer.writeNext(datasetLoadResult.writeSummaryLine());
             }
@@ -123,7 +127,5 @@ public class DatasetLoadResult {
         } catch (IOException ex) {
             LOGGER.error("IOException: {}", ex.getMessage());
         }
-
     }
-
 }

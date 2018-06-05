@@ -26,7 +26,7 @@ public class BenchmarkExecution {
     public static final File RESULTS_FOLDER = new File("../results");
 
     public static enum BenchmarkType {
-        BOTH, WARM, COLD, CONFORMANCE
+        BOTH, WARM, COLD, CONFORMANCE, DATALOAD
     }
 
     static {
@@ -37,9 +37,13 @@ public class BenchmarkExecution {
     public static final String WARM_RUN_RESULTS_FOLDER_NAME = "warm_run";
     public static final String CONFORMANCE_RUN_RESULTS_FOLDER_NAME = "conformance_run";
 
+    /**
+     *
+     * @param testSystemFactory
+     * @param parameters
+     */
     public static void runType(TestSystemFactory testSystemFactory, ExecutionParameters parameters) {
-        runType(testSystemFactory, parameters.getIterations(), parameters.getTimeout(), parameters.getQueryCases(), parameters.getLineLimit(), parameters.getBenchmarkType());
-
+        runType(testSystemFactory, parameters.getIterations(), parameters.getTimeout(), parameters.getQueryCases(), parameters.getLineLimit(), parameters.getBenchmarkType(), parameters.getDatasetMap());
     }
 
     /**
@@ -50,8 +54,9 @@ public class BenchmarkExecution {
      * @param queryCases
      * @param resultsLineLimit Set to zero for no detailed results output.
      * @param benchmarkType Choose both, warm or cold.
+     * @param datasetMap
      */
-    public static void runType(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, List<QueryCase> queryCases, Integer resultsLineLimit, BenchmarkType benchmarkType) {
+    public static void runType(TestSystemFactory testSystemFactory, Integer iterations, Duration timeout, List<QueryCase> queryCases, Integer resultsLineLimit, BenchmarkType benchmarkType, TreeMap<String, File> datasetMap) {
         switch (benchmarkType) {
             case BOTH:
                 runBoth(testSystemFactory, iterations, timeout, queryCases, resultsLineLimit);
@@ -68,7 +73,9 @@ public class BenchmarkExecution {
                 }
                 runConformance(testSystemFactory, timeout, queryCases, resultsLineLimit);
                 break;
-
+            case DATALOAD:
+                runDatasetLoad(testSystemFactory, iterations, datasetMap);
+                break;
         }
     }
 
@@ -266,11 +273,13 @@ public class BenchmarkExecution {
         LOGGER.info("------Conformance Run - System: {}, Folder: {} - Completed------", testSystemName, runResultsFolder);
     }
 
-    public static final List<DatasetLoadResult> runDatasetLoad(TestSystemFactory testSystemFactory, Integer iterations, TreeMap<String, File> datasetMap) {
+    public static final void runDatasetLoad(TestSystemFactory testSystemFactory, Integer iterations, TreeMap<String, File> datasetMap) {
 
+        String testSystemName = testSystemFactory.getTestSystemName();
+        String testTimestamp = LocalDateTime.now().format(DatasetLoadResult.FILE_DATE_TIME_FORMAT);
         List<DatasetLoadResult> datasetLoadResults = new ArrayList<>();
         File resultsFolder = testSystemFactory.getResultsFolder();
-        String testSystemName = testSystemFactory.getTestSystemName();
+
         for (int i = 1; i <= iterations; i++) {
             LOGGER.info("------Dataset Load Run- System: {}, Iteration: {} - Started------", testSystemName, i);
             boolean isClear = testSystemFactory.clearDataset();
@@ -283,9 +292,7 @@ public class BenchmarkExecution {
             LOGGER.info("------Dataset Load Run- System: {}, Iteration: {} - Completed------", testSystemName, i);
         }
 
-        DatasetLoadResult.writeSummaryFile(resultsFolder, datasetLoadResults);
-
-        return datasetLoadResults;
+        DatasetLoadResult.writeSummaryFile(resultsFolder, datasetLoadResults, testSystemName, testTimestamp);
     }
 
     public static final QueryResult runQueryWithTimeout(TestSystem testSystem, String query, Duration timeout) throws Exception {
