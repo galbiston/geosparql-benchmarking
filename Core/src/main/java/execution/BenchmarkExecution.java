@@ -288,6 +288,7 @@ public class BenchmarkExecution {
                 datasetLoadResults.add(datasetLoadResult);
             } else {
                 LOGGER.error("------Dataset Load Run- System: {}, Iteration: {} - Did not clear.------", testSystemName, i);
+                break;
             }
             LOGGER.info("------Dataset Load Run- System: {}, Iteration: {} - Completed------", testSystemName, i);
         }
