@@ -16,10 +16,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import org.apache.commons.io.FileUtils;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.query.Dataset;
@@ -94,13 +94,30 @@ public class GeosparqlJenaTDBTestSystemFactory implements TestSystemFactory {
     }
 
     public static Boolean clearDataset(File datasetFolder) {
+
+        Dataset dataset = TDBFactory.createDataset(datasetFolder.getAbsolutePath());
+        Boolean isCleared;
         try {
-            FileUtils.deleteDirectory(datasetFolder);
-            return true;
-        } catch (IOException ex) {
-            LOGGER.error("TDB Folder deletion: {} - {}", datasetFolder.getAbsolutePath(), ex.getMessage());
-            return false;
+            dataset.begin(ReadWrite.WRITE);
+            Iterator<String> iterator = dataset.listNames();
+            while (iterator.hasNext()) {
+                String graphName = iterator.next();
+                dataset.removeNamedModel(graphName);
+            }
+            Model defaultModel = dataset.getDefaultModel();
+            defaultModel.removeAll();
+            dataset.commit();
+            isCleared = true;
+        } catch (Exception ex) {
+            LOGGER.error("TDB Folder clearance: {} - {}", datasetFolder.getAbsolutePath(), ex.getMessage());
+            isCleared = false;
+        } finally {
+            dataset.end();
         }
+
+        dataset.close();
+        TDBFactory.release(dataset);
+        return isCleared;
     }
 
     /**
