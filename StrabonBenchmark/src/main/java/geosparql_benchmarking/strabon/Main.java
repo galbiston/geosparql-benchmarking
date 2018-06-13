@@ -43,15 +43,20 @@ public class Main {
         Boolean inferenceEnabled = true;
         String baseURI = null;
         String format = "NTRIPLES";
-
+        //String format = "RDFXML"; //Use for conformance dataset.
         //Built using PGAdmin tool to create a PostGIS template.
         String databaseTemplate = "template_postgis";
 
         try {
-            ExecutionParameters parameters = ExecutionParameters.extract(args);
 
             StrabonTestSystemFactory testSystemFactory = new StrabonTestSystemFactory(dbName, user, password, port, host, resultsFolder, inferenceEnabled, baseURI, format, postgresBinPath, postgresDataPath, databaseTemplate);
+
+            //StrabonTestSystemFactory.clearDataset(testSystemFactory);
+            //StrabonTestSystemFactory.loadDataset(Dataset_Conformance.getConformanceData(), testSystemFactory);
+            //equalsTest3(testSystemFactory);
+            ExecutionParameters parameters = ExecutionParameters.extract(args);
             BenchmarkExecution.runType(testSystemFactory, parameters);
+
         } catch (Exception ex) {
             LOGGER.error("{} for arguments {}", ex.getMessage(), args);
         }
@@ -97,7 +102,7 @@ public class Main {
 
     }
 
-    private static void equalsTest(StrabonTestSystemFactory testSystemFactory) {
+    private static void equalsTest(TestSystemFactory testSystemFactory) {
 
         String queryString = "PREFIX geof: <http://www.opengis.net/def/function/geosparql/> "
                 + "SELECT ?res WHERE{"
@@ -116,7 +121,7 @@ public class Main {
 
     }
 
-    private static void equalsTestA(StrabonTestSystemFactory testSystemFactory) {
+    private static void equalsTestA(TestSystemFactory testSystemFactory) {
 
         String queryString = "PREFIX geof: <http://www.opengis.net/def/function/geosparql/> "
                 + "SELECT ?res WHERE{"
@@ -135,7 +140,7 @@ public class Main {
 
     }
 
-    private static void equalsTest2(StrabonTestSystemFactory testSystemFactory) {
+    private static void equalsTest2(TestSystemFactory testSystemFactory) {
 
         String queryString = "PREFIX geof: <http://www.opengis.net/def/function/geosparql/> "
                 + "SELECT ?res WHERE{"
@@ -144,6 +149,43 @@ public class Main {
                 + "BIND(geof:sfEquals(?first, ?second) AS ?res) "
                 + "}";
 
+        try (TestSystem testSystem = testSystemFactory.getTestSystem()) {
+            QueryResult qResult = BenchmarkExecution.runQueryWithTimeout(testSystem, queryString, Duration.ofHours(1));
+            System.out.println(qResult.getResults());
+
+        } catch (Exception ex) {
+            LOGGER.error("Exception: {}", ex.getMessage());
+        }
+
+    }
+
+    private static void equalsTest3(TestSystemFactory testSystemFactory) {
+
+        //This query returns everything when it should just return LineStringD and LineStringD1.
+        String queryString = "PREFIX geof: <http://www.opengis.net/def/function/geosparql/> "
+                + "PREFIX geo: <http://www.opengis.net/ont/geosparql#>"
+                + "SELECT ?res WHERE{"
+                + "GRAPH <http://example.org/dataset#conformance>{"
+                + "<http://example.org/Geometry#LineStringD> geo:asWKT ?first ."
+                + "?res geo:asWKT ?second ."
+                + "FILTER(geof:sfEquals(?first, ?second)) "
+                + "}"
+                + "}";
+        /*
+        String queryString = "PREFIX geof: <http://www.opengis.net/def/function/geosparql/> "
+                + "PREFIX geo: <http://www.opengis.net/ont/geosparql#>"
+                + "PREFIX geom: <http://example.org/Geometry#>"
+                + "PREFIX sf: <http://www.opengis.net/ont/sf#>"
+                + "SELECT ?res WHERE{"
+                + "GRAPH <http://example.org/dataset#conformance>{"
+                + "?line a sf:LineString ."
+                + "?line geo:asWKT ?first ."
+                + "?res a sf:LineString ."
+                + "?res geo:asWKT ?second ."
+                + "FILTER(geof:sfEquals(?first, ?second)) "
+                + "}"
+                + "}";
+         */
         try (TestSystem testSystem = testSystemFactory.getTestSystem()) {
             QueryResult qResult = BenchmarkExecution.runQueryWithTimeout(testSystem, queryString, Duration.ofHours(1));
             System.out.println(qResult.getResults());
