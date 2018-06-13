@@ -384,6 +384,28 @@ public class Main {
 
     }
 
+    private static void equalsTest3(TestSystemFactory testSystemFactory) {
+
+        String queryString = "PREFIX geof: <http://www.opengis.net/def/function/geosparql/> "
+                + "PREFIX geo: <http://www.opengis.net/ont/geosparql#>"
+                + "SELECT ?res WHERE{"
+                + "GRAPH <http://example.org/dataset#conformance>{"
+                + "<http://example.org/Geometry#LineStringD> geo:asWKT ?first ."
+                + "?res geo:asWKT ?second ."
+                + "FILTER(geof:sfEquals(?first, ?second)) "
+                + "}"
+                + "}";
+
+        try (TestSystem testSystem = testSystemFactory.getTestSystem()) {
+            QueryResult qResult = BenchmarkExecution.runQueryWithTimeout(testSystem, queryString, Duration.ofHours(1));
+            System.out.println(qResult.getResults());
+
+        } catch (Exception ex) {
+            LOGGER.error("Exception: {}", ex.getMessage());
+        }
+
+    }
+
     private static void intersectsTest() {
 
         GeosparqlJenaTDBTestSystemFactory testSystemFactory = new GeosparqlJenaTDBTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_TDB_RESULTS_FOLDER_NAME, true);
