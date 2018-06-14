@@ -19,6 +19,7 @@ public class Dataset_Conformance {
     public static TreeMap<String, File> getConformanceData() {
         TreeMap<String, File> datasetMap = new TreeMap<>();
         datasetMap.put(GraphURI.CONFORMANCE_URI, new File(FOLDER, "geosparql_conformance.rdf"));
+        datasetMap.put(GraphURI.CONFORMANCE_EQUALS_URI, new File(FOLDER, "geosparql_conformance_equals.rdf"));
         return datasetMap;
     }
 

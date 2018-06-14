@@ -20,4 +20,5 @@ public interface GraphURI {
     public static final String DEFAULT = "";
     public static final String USER = "http://example.org/user/dataset#";
     public static final String CONFORMANCE_URI = "http://example.org/dataset#conformance";
+    public static final String CONFORMANCE_EQUALS_URI = "http://example.org/dataset#conformance-equals";
 }

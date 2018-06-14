@@ -102,6 +102,8 @@ public class Main {
         //GeosparqlJenaTDBTestSystemFactory.clearDataset(GEOSPARQL_JENA_TDB_FOLDER);
         //TreeMap<String, File> datasetMap = Dataset_Conformance.getConformanceData();
         //GeosparqlJenaTDBTestSystemFactory.loadDataset(GEOSPARQL_JENA_TDB_FOLDER, datasetMap, true);
+        //GeosparqlJenaTDBTestSystemFactory testSystemFactory = new GeosparqlJenaTDBTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_TDB_RESULTS_FOLDER_NAME, true);
+        //equalsTest4(testSystemFactory);
         //runTDB(inferenceEnabled);
         //runTestTDB(inferenceEnabled);
         //rdfsJenaTDBTest();
@@ -394,6 +396,31 @@ public class Main {
                 + "?res geo:asWKT ?second ."
                 + "FILTER(geof:sfEquals(?first, ?second)) "
                 + "}"
+                + "}";
+
+        try (TestSystem testSystem = testSystemFactory.getTestSystem()) {
+            QueryResult qResult = BenchmarkExecution.runQueryWithTimeout(testSystem, queryString, Duration.ofHours(1));
+            System.out.println(qResult.getResults());
+
+        } catch (Exception ex) {
+            LOGGER.error("Exception: {}", ex.getMessage());
+        }
+
+    }
+
+    private static void equalsTest4(TestSystemFactory testSystemFactory) {
+
+        //This query returns everything when it should just return LineStringD and LineStringD1.
+        String queryString = "PREFIX geof: <http://www.opengis.net/def/function/geosparql/> "
+                + "PREFIX geo: <http://www.opengis.net/ont/geosparql#>"
+                + "SELECT ?res WHERE{"
+                + "GRAPH <http://example.org/dataset#conformance>{"
+                + "?res geo:asWKT ?first ."
+                + "}"
+                + "GRAPH <http://example.org/dataset#conformance-equals>{"
+                + "?secondGeo geo:asWKT ?second ."
+                + "}"
+                + "FILTER(geof:sfEquals(?first, ?second)) "
                 + "}";
 
         try (TestSystem testSystem = testSystemFactory.getTestSystem()) {

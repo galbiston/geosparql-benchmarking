@@ -51,19 +51,19 @@ public class Main {
 
             StrabonTestSystemFactory testSystemFactory = new StrabonTestSystemFactory(dbName, user, password, port, host, resultsFolder, inferenceEnabled, baseURI, format, postgresBinPath, postgresDataPath, databaseTemplate);
 
-            //StrabonTestSystemFactory.clearDataset(testSystemFactory);
-            //StrabonTestSystemFactory.loadDataset(Dataset_Conformance.getConformanceData(), testSystemFactory);
-            //equalsTest3(testSystemFactory);
             ExecutionParameters parameters = ExecutionParameters.extract(args);
             BenchmarkExecution.runType(testSystemFactory, parameters);
-
         } catch (Exception ex) {
             LOGGER.error("{} for arguments {}", ex.getMessage(), args);
         }
+
         /*
         //runDatasetLoad(testSystemFactory, BenchmarkParameters.ITERATIONS, datasetMap);
 
         //Strabon
+        //StrabonTestSystemFactory.clearDataset(testSystemFactory);
+        //StrabonTestSystemFactory.loadDataset(Dataset_Conformance.getConformanceData(), testSystemFactory);
+        //equalsTest4(testSystemFactory);
         //BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadMainQuerySet(), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
         //List<QueryCase> queryCases = MicroBenchmark.loadMainQuerySet();
         //BenchmarkExecution.runWarm(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, queryCases.subList(17, queryCases.size()), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
@@ -186,6 +186,31 @@ public class Main {
                 + "}"
                 + "}";
          */
+        try (TestSystem testSystem = testSystemFactory.getTestSystem()) {
+            QueryResult qResult = BenchmarkExecution.runQueryWithTimeout(testSystem, queryString, Duration.ofHours(1));
+            System.out.println(qResult.getResults());
+
+        } catch (Exception ex) {
+            LOGGER.error("Exception: {}", ex.getMessage());
+        }
+
+    }
+
+    private static void equalsTest4(TestSystemFactory testSystemFactory) {
+
+        //This query returns everything when it should just return LineStringD and LineStringD1.
+        String queryString = "PREFIX geof: <http://www.opengis.net/def/function/geosparql/> "
+                + "PREFIX geo: <http://www.opengis.net/ont/geosparql#>"
+                + "SELECT ?res WHERE{"
+                + "GRAPH <http://example.org/dataset#conformance>{"
+                + "?res geo:asWKT ?first ."
+                + "}"
+                + "GRAPH <http://example.org/dataset#conformance-equals>{"
+                + "?secondGeo geo:asWKT ?second ."
+                + "}"
+                + "FILTER(geof:sfEquals(?first, ?second)) "
+                + "}";
+
         try (TestSystem testSystem = testSystemFactory.getTestSystem()) {
             QueryResult qResult = BenchmarkExecution.runQueryWithTimeout(testSystem, queryString, Duration.ofHours(1));
             System.out.println(qResult.getResults());
