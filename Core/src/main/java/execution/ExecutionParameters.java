@@ -81,10 +81,10 @@ public class ExecutionParameters {
 
     private static final Integer QUERY_CASE_POSITION = 0;
     private static final Integer BENCHMARK_TYPE_POSITION = 1;
-    private static final Integer INFERENCE_ENABLED_POSITION = 2;
-    private static final Integer ITERATIONS_POSITION = 3;
-    private static final Integer TIMEOUT_POSITION = 4;
-    private static final Integer LINE_LIMIT_POSITION = 5;
+    private static final Integer ITERATIONS_POSITION = 2;
+    private static final Integer TIMEOUT_POSITION = 3;
+    private static final Integer LINE_LIMIT_POSITION = 4;
+    private static final Integer INFERENCE_ENABLED_POSITION = 5;
     private static final Integer DATASET_POSITION = 6;
 
     public static final ExecutionParameters extract(String[] args) {
@@ -95,7 +95,7 @@ public class ExecutionParameters {
 
         LOGGER.info("---------------------------Benchmarking Parameters----------------------------");
 
-        //Iterations - find first as needed for query loading.
+        //Iterations - check first as needed for query loading.
         Integer iterations;
         if (args.length > ITERATIONS_POSITION + argOffset) {
             iterations = Integer.parseInt(args[ITERATIONS_POSITION + argOffset]);
@@ -151,15 +151,6 @@ public class ExecutionParameters {
             LOGGER.info("Benchmark Type: Defaulting to BOTH benchmarks.");
         }
 
-        Boolean inferenceEnabled;
-        if (args.length > INFERENCE_ENABLED_POSITION + argOffset) {
-            inferenceEnabled = Boolean.valueOf(args[INFERENCE_ENABLED_POSITION + argOffset]);
-            LOGGER.info("Inference Enabled: {}", inferenceEnabled);
-        } else {
-            inferenceEnabled = true;
-            LOGGER.info("Inference Enabled: Defaulting to true");
-        }
-
         //Timeout
         Duration timeout;
         if (args.length > TIMEOUT_POSITION + argOffset) {
@@ -178,6 +169,16 @@ public class ExecutionParameters {
         } else {
             lineLimit = BenchmarkParameters.RESULT_LINE_LIMIT_ZERO;
             LOGGER.info("Line Limit: Defaulting to line limit zero, so no detailed results output.");
+        }
+
+        //Inferencing
+        Boolean inferenceEnabled;
+        if (args.length > INFERENCE_ENABLED_POSITION + argOffset) {
+            inferenceEnabled = Boolean.valueOf(args[INFERENCE_ENABLED_POSITION + argOffset]);
+            LOGGER.info("Inference Enabled: {}", inferenceEnabled);
+        } else {
+            inferenceEnabled = true;
+            LOGGER.info("Inference Enabled: Defaulting to true");
         }
 
         //Dataset
