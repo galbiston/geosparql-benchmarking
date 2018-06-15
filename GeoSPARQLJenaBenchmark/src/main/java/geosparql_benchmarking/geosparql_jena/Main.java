@@ -101,6 +101,7 @@ public class Main {
         //TDB
         //GeosparqlJenaTDBTestSystemFactory.clearDataset(GEOSPARQL_JENA_TDB_FOLDER);
         //TreeMap<String, File> datasetMap = Dataset_Conformance.getConformanceData();
+        //TreeMap<String, File> datasetMap = Dataset_CRS84.getAll();
         //GeosparqlJenaTDBTestSystemFactory.loadDataset(GEOSPARQL_JENA_TDB_FOLDER, datasetMap, true);
         //GeosparqlJenaTDBTestSystemFactory testSystemFactory = new GeosparqlJenaTDBTestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_TDB_RESULTS_FOLDER_NAME, true);
         //equalsTest4(testSystemFactory);
