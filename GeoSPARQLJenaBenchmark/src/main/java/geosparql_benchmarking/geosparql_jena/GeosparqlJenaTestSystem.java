@@ -53,8 +53,8 @@ public class GeosparqlJenaTestSystem implements TestSystem {
         this.dataset = dataset;
         this.indexOption = indexOption;
         try {
-            GeoSPARQLSupport.loadFunctions(indexOption);
-            GeoSPARQLSupport.clearAllIndexesAndRegistries();
+            GeoSPARQLSupport.loadFunctions(indexOption, dataset);
+            GeoSPARQLSupport.resetIndexesAndRegistries();
         } catch (Exception ex) {
             throw new AssertionError("Issue accessing GeosparqlJena library. " + ex.getMessage());
         }
@@ -84,8 +84,7 @@ public class GeosparqlJenaTestSystem implements TestSystem {
             TDBFactory.release(dataset);
         }
         dataset = null;
-        //GeoSPARQLSupport.disposeAllIndexesAndRegistries();
-        GeoSPARQLSupport.clearAllIndexesAndRegistries();
+        GeoSPARQLSupport.resetIndexesAndRegistries();
         try {
             System.gc();
             Thread.sleep(5000); //Sleep for 5s to allow any Operating System clearing.
