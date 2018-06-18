@@ -33,6 +33,8 @@ dependencies {
     //SLF4J Logback
     compile "ch.qos.logback:logback-classic:$logbackVersion"
 
+    //System Out Bridge to Logging
+    compile "uk.org.lidalia:sysout-over-slf4j:$sysoutBridgeVersion"
 }
 
 run {
