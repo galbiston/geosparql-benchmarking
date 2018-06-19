@@ -1,0 +1,13 @@
+#Query 15 - GeoNames_Point_Distance:
+
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX opengis: <http://www.opengis.net/def/uom/OGC/1.0/>
+PREFIX geonames: <http://www.geonames.org/ontology#>
+
+SELECT ?s1
+WHERE {
+	?s1 geonames:asWKT ?o1 .
+	FILTER(geof:distance(?o1, "GIVEN_POINT_IN_WKT"^^geo:wktLiteral, opengis:metre) <= GIVEN_RADIUS).
+}

@@ -1,0 +1,12 @@
+#Query 9 - Intersects_LGD_GivenPolygon:
+
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX lgd: <http://linkedgeodata.org/ontology/>
+
+SELECT ?s1 ?o1
+WHERE {
+	?s1 lgd:asWKT ?o1 .
+	FILTER(geof:sfIntersects(?o1, "GIVEN_POLYGON_IN_WKT"^^geo:wktLiteral)).
+}

@@ -1,0 +1,10 @@
+#Query 6 - Area_CLC:
+#This uses the Strabon only function strdf:area - remove or replace with GeoSPARQL equivalent.
+PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX clc: <http://geo.linkedopendata.gr/corine/ontology#>
+
+SELECT (strdf:area(?o1) as ?ret)
+WHERE {
+	?s1 clc:asWKT ?o1 .
+}

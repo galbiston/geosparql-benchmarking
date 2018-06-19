@@ -1,0 +1,14 @@
+#Query 25 - Crosses_LGD_GAG:
+#lgd namespace corrected from http://linkedgeodata.org/ontology/asWKT to http://linkedgeodata.org/ontology/.
+
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX lgd: <http://linkedgeodata.org/ontology/>
+PREFIX gag: <http://geo.linkedopendata.gr/gag/ontology/>
+
+SELECT ?s1 ?s2
+WHERE {
+	?s1 lgd:asWKT ?o1 .
+	?s2 gag:asWKT ?o2 .
+	FILTER(geof:sfCrosses(?o1, ?o2)).
+}

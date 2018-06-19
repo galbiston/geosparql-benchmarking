@@ -23,85 +23,113 @@ public class MacroBenchmark {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    public static final String BASE_FOLDER = "../queries/geographica_benchmarking/macro_benchmark_queries";
+    public static final String PUBLISHED_FOLDER = "../queries/geographica_benchmarking/macro_benchmark_queries";
+    public static final String UNION_FOLDER = "../queries/geographica_benchmarking_union/macro_benchmark_queries";
     private static final Random RANDOM = new Random();
 
     //Query Folders
-    private static final String REVERSE_GEOCODING = BASE_FOLDER + "/reverse_geocoding";
-    private static final String RAPID_MAPPING = BASE_FOLDER + "/rapid_mapping";
-    private static final String MAP_SEARCH_AND_BROWSING = BASE_FOLDER + "/map_search_and_browsing";
+    private static final String REVERSE_GEOCODING = "/reverse_geocoding";
+    private static final String RAPID_MAPPING = "/rapid_mapping";
+    private static final String MAP_SEARCH_AND_BROWSING = "/map_search_and_browsing";
 
     public static final List<QueryCase> loadQueryCases(String arg, int iterations) {
         switch (arg) {
             case "macro":
                 LOGGER.info("Query Set: Geographica Macrobenchmark.");
-                return loadAll(iterations);
+                return loadAll(iterations, QueryFormat.PUBLISHED);
             case "macro_map_search_and_browsing":
                 LOGGER.info("Query Set: Geographica Macrobenchmark Map Search and Browsing.");
-                return loadMapSearchAndBrowsingQueries(iterations);
+                return loadMapSearchAndBrowsingQueries(iterations, QueryFormat.PUBLISHED);
             case "macro_rapid_mapping":
                 LOGGER.info("Query Set: Geographica Macrobenchmark Rapid Mapping.");
-                return loadRapidMappingQueries(iterations);
+                return loadRapidMappingQueries(iterations, QueryFormat.PUBLISHED);
             case "macro_reverse_geocoding":
                 LOGGER.info("Query Set: Geographica Macrobenchmark Reverse Geocoding.");
-                return loadReverseGeocodingQueries(iterations);
+                return loadReverseGeocodingQueries(iterations, QueryFormat.PUBLISHED);
+            case "macro_union":
+                LOGGER.info("Query Set: Geographica Macrobenchmark.");
+                return loadAll(iterations, QueryFormat.UNION);
+            case "macro_map_search_and_browsing_union":
+                LOGGER.info("Query Set: Geographica Macrobenchmark Map Search and Browsing.");
+                return loadMapSearchAndBrowsingQueries(iterations, QueryFormat.UNION);
+            case "macro_rapid_mapping_union":
+                LOGGER.info("Query Set: Geographica Macrobenchmark Rapid Mapping.");
+                return loadRapidMappingQueries(iterations, QueryFormat.UNION);
+            case "macro_reverse_geocoding_union":
+                LOGGER.info("Query Set: Geographica Macrobenchmark Reverse Geocoding.");
+                return loadReverseGeocodingQueries(iterations, QueryFormat.UNION);
             default:
                 LOGGER.error("Query Set: unrecognised option - {}", arg);
                 return null;
         }
     }
 
-    public static final List<QueryCase> loadAll(Integer iterations) {
+    private static String selectQueryFolder(QueryFormat queryFormat, String subFolder) {
+        switch (queryFormat) {
+            case UNION:
+                return UNION_FOLDER + subFolder;
+            default:
+                return PUBLISHED_FOLDER + subFolder;
+        }
+    }
+
+    public static final List<QueryCase> loadAll(Integer iterations, QueryFormat queryFormat) {
 
         List<QueryCase> queryCases = new ArrayList<>();
-        queryCases.addAll(loadMapSearchAndBrowsingQueries(iterations));
-        queryCases.addAll(loadRapidMappingQueries(iterations));
-        queryCases.addAll(loadReverseGeocodingQueries(iterations));
+        queryCases.addAll(loadMapSearchAndBrowsingQueries(iterations, queryFormat));
+        queryCases.addAll(loadRapidMappingQueries(iterations, queryFormat));
+        queryCases.addAll(loadReverseGeocodingQueries(iterations, queryFormat));
         return queryCases;
     }
 
-    public static final List<QueryCase> loadMapSearchAndBrowsingQueries(Integer iterations) {
-        List<QueryPair> queryPairs = QueryLoader.readQueryPairs(BASE_FOLDER + "/geonames.txt");
+    public static final List<QueryCase> loadMapSearchAndBrowsingQueries(Integer iterations, QueryFormat queryFormat) {
+        String queryFolder = selectQueryFolder(queryFormat, MAP_SEARCH_AND_BROWSING);
+        String baseFolder = selectQueryFolder(queryFormat, "");
+        List<QueryPair> queryPairs = QueryLoader.readQueryPairs(baseFolder + "/geonames.txt");
         int[] indexes = RANDOM.ints(iterations, 0, queryPairs.size()).toArray();
 
         List<QueryCase> queryCases = new ArrayList<>();
-        List<String> queryStrings = buildIterations(indexes, queryPairs, QueryLoader.readFile(MAP_SEARCH_AND_BROWSING + "/Query0.spl"), "TOPONYME", "");
+        List<String> queryStrings = buildIterations(indexes, queryPairs, QueryLoader.readFile(queryFolder + "/Query0.spl"), "TOPONYME", "");
         queryCases.add(new QueryCase("MS0", "MapSearchAndBrowsing", queryStrings));
-        queryStrings = buildIterations(indexes, queryPairs, QueryLoader.readFile(MAP_SEARCH_AND_BROWSING + "/Query1.spl"), "", "GIVEN_RECTANGLE_IN_WKT");
+        queryStrings = buildIterations(indexes, queryPairs, QueryLoader.readFile(queryFolder + "/Query1.spl"), "", "GIVEN_RECTANGLE_IN_WKT");
         queryCases.add(new QueryCase("MS1", "MapSearchAndBrowsing", queryStrings));
-        queryStrings = buildIterations(indexes, queryPairs, QueryLoader.readFile(MAP_SEARCH_AND_BROWSING + "/Query2.spl"), "", "GIVEN_RECTANGLE_IN_WKT");
+        queryStrings = buildIterations(indexes, queryPairs, QueryLoader.readFile(queryFolder + "/Query2.spl"), "", "GIVEN_RECTANGLE_IN_WKT");
         queryCases.add(new QueryCase("MS2", "MapSearchAndBrowsing", queryStrings));
         return queryCases;
     }
 
-    public static final List<QueryCase> loadRapidMappingQueries(Integer iterations) {
-        List<QueryPair> queryPairs = QueryLoader.readQueryPairs(BASE_FOLDER + "/timestamps.txt");
+    public static final List<QueryCase> loadRapidMappingQueries(Integer iterations, QueryFormat queryFormat) {
+        String queryFolder = selectQueryFolder(queryFormat, RAPID_MAPPING);
+        String baseFolder = selectQueryFolder(queryFormat, "");
+        List<QueryPair> queryPairs = QueryLoader.readQueryPairs(baseFolder + "/timestamps.txt");
         int[] indexes = RANDOM.ints(iterations, 0, queryPairs.size()).toArray();
 
         List<QueryCase> queryCases = new ArrayList<>();
-        List<String> queryStrings = buildIterations(indexes, queryPairs, QueryLoader.readFile(RAPID_MAPPING + "/Query0.spl"), "", "GIVEN_POLYGON_IN_WKT");
+        List<String> queryStrings = buildIterations(indexes, queryPairs, QueryLoader.readFile(queryFolder + "/Query0.spl"), "", "GIVEN_POLYGON_IN_WKT");
         queryCases.add(new QueryCase("RM0", "RapidMapping", queryStrings));
-        queryStrings = buildIterations(indexes, queryPairs, QueryLoader.readFile(RAPID_MAPPING + "/Query1.spl"), "", "GIVEN_POLYGON_IN_WKT");
+        queryStrings = buildIterations(indexes, queryPairs, QueryLoader.readFile(queryFolder + "/Query1.spl"), "", "GIVEN_POLYGON_IN_WKT");
         queryCases.add(new QueryCase("RM1", "RapidMapping", queryStrings));
-        queryStrings = buildIterations(indexes, queryPairs, QueryLoader.readFile(RAPID_MAPPING + "/Query2.spl"), "", "GIVEN_POLYGON_IN_WKT");
+        queryStrings = buildIterations(indexes, queryPairs, QueryLoader.readFile(queryFolder + "/Query2.spl"), "", "GIVEN_POLYGON_IN_WKT");
         queryCases.add(new QueryCase("RM2", "RapidMapping", queryStrings));
-        queryStrings = buildIterations(indexes, queryPairs, QueryLoader.readFile(RAPID_MAPPING + "/Query3.spl"), "TIMESTAMP", "GIVEN_POLYGON_IN_WKT");
+        queryStrings = buildIterations(indexes, queryPairs, QueryLoader.readFile(queryFolder + "/Query3.spl"), "TIMESTAMP", "GIVEN_POLYGON_IN_WKT");
         queryCases.add(new QueryCase("RM3", "RapidMapping", queryStrings));
-        queryStrings = buildIterations(indexes, queryPairs, QueryLoader.readFile(RAPID_MAPPING + "/Query4.spl"), "TIMESTAMP", "GIVEN_POLYGON_IN_WKT");
+        queryStrings = buildIterations(indexes, queryPairs, QueryLoader.readFile(queryFolder + "/Query4.spl"), "TIMESTAMP", "GIVEN_POLYGON_IN_WKT");
         queryCases.add(new QueryCase("RM4", "RapidMapping", queryStrings));
-        queryStrings = buildIterations(indexes, queryPairs, QueryLoader.readFile(RAPID_MAPPING + "/Query5.spl"), "", "GIVEN_POLYGON_IN_WKT");
+        queryStrings = buildIterations(indexes, queryPairs, QueryLoader.readFile(queryFolder + "/Query5.spl"), "", "GIVEN_POLYGON_IN_WKT");
         queryCases.add(new QueryCase("RM5", "RapidMapping", queryStrings));
         return queryCases;
     }
 
-    public static final List<QueryCase> loadReverseGeocodingQueries(Integer iterations) {
-        List<QueryPair> queryPairs = QueryLoader.readQueryPairs(BASE_FOLDER + "/points.txt");
+    public static final List<QueryCase> loadReverseGeocodingQueries(Integer iterations, QueryFormat queryFormat) {
+        String queryFolder = selectQueryFolder(queryFormat, REVERSE_GEOCODING);
+        String baseFolder = selectQueryFolder(queryFormat, "");
+        List<QueryPair> queryPairs = QueryLoader.readQueryPairs(baseFolder + "/points.txt");
         int[] indexes = RANDOM.ints(iterations, 0, queryPairs.size()).toArray();
 
         List<QueryCase> queryCases = new ArrayList<>();
-        List<String> queryStrings = buildIterations(indexes, queryPairs, QueryLoader.readFile(REVERSE_GEOCODING + "/Query0.spl"), "", "GIVEN_POINT_IN_WKT");
+        List<String> queryStrings = buildIterations(indexes, queryPairs, QueryLoader.readFile(queryFolder + "/Query0.spl"), "", "GIVEN_POINT_IN_WKT");
         queryCases.add(new QueryCase("RG0", "ReverseGeocoding", queryStrings));
-        queryStrings = buildIterations(indexes, queryPairs, QueryLoader.readFile(REVERSE_GEOCODING + "/Query1.spl"), "", "GIVEN_POINT_IN_WKT");
+        queryStrings = buildIterations(indexes, queryPairs, QueryLoader.readFile(queryFolder + "/Query1.spl"), "", "GIVEN_POINT_IN_WKT");
         queryCases.add(new QueryCase("RG1", "ReverseGeocoding", queryStrings));
         return queryCases;
     }

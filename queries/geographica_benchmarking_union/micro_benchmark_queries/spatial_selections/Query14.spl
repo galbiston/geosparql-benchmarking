@@ -1,0 +1,13 @@
+#Query 14 - Within_GeoNames_Point_Buffer:
+
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX opengis: <http://www.opengis.net/def/uom/OGC/1.0/>
+PREFIX geonames: <http://www.geonames.org/ontology#>
+
+SELECT ?s1
+WHERE {
+	?s1 geonames:asWKT ?o1 .
+	FILTER(geof:sfWithin(?o1, geof:buffer("GIVEN_POINT_IN_WKT"^^geo:wktLiteral, GIVEN_RADIUS, opengis:metre))).
+}

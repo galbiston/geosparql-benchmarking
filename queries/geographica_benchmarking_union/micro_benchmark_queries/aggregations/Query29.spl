@@ -1,0 +1,10 @@
+#Query 29 - Union_GAG:
+
+PREFIX strdf: <http://strdf.di.uoa.gr/ontology#>
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX gag: <http://geo.linkedopendata.gr/gag/ontology/>
+
+SELECT (strdf:union(?o1) as ?ret)
+WHERE {
+	?s1 gag:asWKT ?o1
+}

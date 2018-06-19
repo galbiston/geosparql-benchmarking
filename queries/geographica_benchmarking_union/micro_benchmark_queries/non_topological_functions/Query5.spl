@@ -1,0 +1,11 @@
+#Query 5 - Buffer_LGD_2:
+
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX lgd: <http://linkedgeodata.org/ontology/>
+PREFIX opengis: <http://www.opengis.net/def/uom/OGC/1.0/>
+
+SELECT (geof:buffer(?o1, 4, opengis:metre) AS ?ret)
+WHERE {
+	?s1 lgd:asWKT ?o1 .
+}

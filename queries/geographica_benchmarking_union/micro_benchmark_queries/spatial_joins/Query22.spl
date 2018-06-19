@@ -1,0 +1,13 @@
+#Query 22 - Within_GeoNames_GAG:
+
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX geonames: <http://www.geonames.org/ontology#>
+PREFIX gag: <http://geo.linkedopendata.gr/gag/ontology/>
+
+SELECT ?s1 ?s2
+WHERE {
+	?s1 geonames:asWKT ?o1 .
+	?s2 gag:asWKT ?o2 .
+	FILTER(geof:sfWithin(?o1, ?o2)).
+}

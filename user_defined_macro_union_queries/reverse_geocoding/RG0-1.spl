@@ -1,0 +1,18 @@
+#Iteration: 1
+#Query 0 - Find_Closest_Populated_Place:
+
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX opengis: <http://www.opengis.net/def/uom/OGC/1.0/>
+PREFIX geonames: <http://www.geonames.org/ontology#>
+
+SELECT ?f ?distance
+WHERE {
+	?f geonames:featureCode geonames:P.PPL.
+	?f geonames:hasGeometry ?cGeo.
+	?cGeo geonames:asWKT ?cGeoWKT.
+	BIND(geof:distance(?cGeoWKT, "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(22.009 39.371)"^^geo:wktLiteral, opengis:metre) as ?distance)
+}
+ORDER BY ASC(?distance)
+LIMIT 1

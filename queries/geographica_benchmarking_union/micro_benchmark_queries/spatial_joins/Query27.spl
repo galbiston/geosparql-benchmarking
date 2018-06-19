@@ -1,0 +1,15 @@
+#Query 27 - Overlaps_GAG_CLC:
+#gag namespace corrected from http://geo.linkedopendata.gr/gag/ontology to http://geo.linkedopendata.gr/gag/ontology/.
+
+
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX gag: <http://geo.linkedopendata.gr/gag/ontology/>
+PREFIX clc: <http://geo.linkedopendata.gr/corine/ontology#>
+
+SELECT ?s1 ?s2
+WHERE {
+	?s1 gag:asWKT ?o1 .
+	?s2 clc:asWKT ?o2 .
+	FILTER(geof:sfOverlaps(?o1, ?o2)).
+}

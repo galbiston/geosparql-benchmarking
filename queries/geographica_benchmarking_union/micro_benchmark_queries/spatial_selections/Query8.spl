@@ -1,0 +1,12 @@
+#Query 8 - Equals_GAG_GivenPolygon:
+
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX gag: <http://geo.linkedopendata.gr/gag/ontology/>
+
+SELECT ?s1 ?o1
+WHERE {
+	?s1 gag:asWKT ?o1 .
+	FILTER(geof:sfEquals(?o1, "GIVEN_POLYGON_IN_WKT"^^geo:wktLiteral)).
+}

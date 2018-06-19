@@ -1,0 +1,25 @@
+#Iteration: 4
+#Query 5 - Get_road_segments_affected_by_fire:
+
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+PREFIX lgd: <http://linkedgeodata.org/ontology/>
+
+
+SELECT ?r (geof:difference(?rWKT, ?hWKT) as ?diff)
+WHERE {
+	?h rdf:type noa:Hotspot.
+	?h noa:hasGeometry ?hGeo.
+	?h noa:hasAcquisitionTime ?hAcqTime.
+	?hGeo noa:asWKT ?hWKT.
+
+	?r rdf:type lgd:HighwayThing.
+	?r lgd:hasGeometry ?rGeo.
+	?rGeo lgd:asWKT ?rWKT.
+
+	FILTER(geof:sfIntersects(?rWKT, ?hWKT)) .
+	FILTER(geof:sfIntersects(?rWKT, "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((22.3089069565018 39.1890420584841,22.3071765712805 39.2610981887895,22.3998678194706 39.2624089347065,22.401503557985 39.1903494652597,22.3089069565018 39.1890420584841))"^^geo:wktLiteral))
+}

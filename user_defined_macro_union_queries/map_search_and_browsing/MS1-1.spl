@@ -1,0 +1,19 @@
+#Iteration: 1
+#Query 1 - Get_Around_POIs:
+
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX geonames: <http://www.geonames.org/ontology#>
+
+SELECT ?f ?name ?fGeo ?code ?parent ?class ?fGeoWKT
+WHERE {
+		?f geonames:name ?name.
+		?f geonames:hasGeometry ?fGeo.
+		?f geonames:featureCode ?code.
+		?f geonames:parentFeature ?parent.
+		?f geonames:featureClass ?class.
+		?fGeo geonames:asWKT ?fGeoWKT.
+		
+		FILTER(geof:sfIntersects(?fGeoWKT, "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((19.843 39.759, 19.843 39.799, 19.903 39.799, 19.903 39.759, 19.843 39.759))"^^geo:wktLiteral)).
+}

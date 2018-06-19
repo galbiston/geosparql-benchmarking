@@ -1,0 +1,12 @@
+#Query 7 - Equals_LGD_GivenLine:
+
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX lgd: <http://linkedgeodata.org/ontology/>
+
+SELECT ?s1 ?o1
+WHERE {
+	?s1 lgd:asWKT ?o1 .
+	FILTER(geof:sfEquals(?o1, "GIVEN_LINESTRING_1_IN_WKT"^^geo:wktLiteral)).
+}

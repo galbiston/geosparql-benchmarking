@@ -1,0 +1,28 @@
+#Iteration: 5
+#Query 3 - Get_hotspots:
+#Fixed ?confirmatino to ?confirmation.
+
+PREFIX dataset: <http://geographica.di.uoa.gr/dataset/>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX noa: <http://teleios.di.uoa.gr/ontologies/noaOntology.owl#>
+
+SELECT ?h ?sensor ?confidence ?producer ?satellite ?chain ?confirmation ?geometry ?r ?wkt
+WHERE {
+		?h rdf:type noa:Hotspot.
+		?h noa:isDerivedFromSensor ?sensor.
+		?h noa:hasConfidence ?confidence.
+		?h noa:isProducedBy ?producer.
+		?h noa:isDerivedFromSatellite ?satellite.
+		?h noa:producedFromProcessingChain ?chain.
+		?h noa:hasConfirmation ?confirmation .
+		?h noa:hasAcquisitionTime "2007-08-04T12:30:00"^^xsd:dateTime.
+		?h noa:hasGeometry ?geomentry.
+		
+		OPTIONAL {?h noa:refinedBy ?r}
+		FILTER(!bound(?r))
+		?geometry noa:asWKT ?wkt .
+		FILTER(geof:sfIntersects(?wkt, "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((20.9939617898473 40.5317022972894,20.9934751287279 40.542580554258,21.0001259976201 40.5427535743636,21.0006115861157 40.5318752513373,20.9939617898473 40.5317022972894))"^^geo:wktLiteral))
+}
