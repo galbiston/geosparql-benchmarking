@@ -41,7 +41,7 @@ import tdb.tdbstats;
  *
  * @author Gerg
  */
-public class GeosparqlJenaTDBTestSystemFactory implements TestSystemFactory {
+public class GeosparqlJenaTDB_TestSystemFactory implements TestSystemFactory {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     public static final String TEST_SYSTEM_NAME = "GeoSparqlJenaTDB";
@@ -49,17 +49,23 @@ public class GeosparqlJenaTDBTestSystemFactory implements TestSystemFactory {
     protected final File datasetFolder;
     protected final File resultsFolder;
     protected final Boolean inferenceEnabled;
+    protected final Boolean isUnionDefaultGraph;
 
-    public GeosparqlJenaTDBTestSystemFactory(File datasetFolder, String resultsFolder, Boolean inferenceEnabled) {
+    public GeosparqlJenaTDB_TestSystemFactory(File datasetFolder, String resultsFolder, Boolean inferenceEnabled) {
+        this(datasetFolder, resultsFolder, inferenceEnabled, false);
+    }
+
+    protected GeosparqlJenaTDB_TestSystemFactory(File datasetFolder, String resultsFolder, Boolean inferenceEnabled, Boolean isUnionDefaultGraph) {
         this.datasetFolder = datasetFolder;
         this.resultsFolder = new File(BenchmarkExecution.RESULTS_FOLDER, resultsFolder);
         this.resultsFolder.mkdir();
         this.inferenceEnabled = inferenceEnabled;
+        this.isUnionDefaultGraph = isUnionDefaultGraph;
     }
 
     @Override
     public TestSystem getTestSystem() {
-        return new GeosparqlJenaTestSystem(datasetFolder, IndexOption.MEMORY);
+        return new GeosparqlJenaTestSystem(datasetFolder, IndexOption.MEMORY, isUnionDefaultGraph);
     }
 
     @Override

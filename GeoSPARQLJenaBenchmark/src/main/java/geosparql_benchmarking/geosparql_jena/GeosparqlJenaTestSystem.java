@@ -28,13 +28,19 @@ public class GeosparqlJenaTestSystem implements TestSystem {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private Dataset dataset;
     private IndexOption indexOption;
+    private Boolean isUnionDefaultGraph;
+
+    public GeosparqlJenaTestSystem(File datasetFolder, IndexOption indexOption, Boolean isUnionDefaultGraph) {
+        //Access the datset from the folder.
+        setup(TDBFactory.createDataset(datasetFolder.getAbsolutePath()), indexOption, isUnionDefaultGraph);
+    }
 
     public GeosparqlJenaTestSystem(File datasetFolder, IndexOption indexOption) {
         //Access the datset from the folder.
-        setup(TDBFactory.createDataset(datasetFolder.getAbsolutePath()), indexOption);
+        setup(TDBFactory.createDataset(datasetFolder.getAbsolutePath()), indexOption, false);
     }
 
-    public GeosparqlJenaTestSystem(Dataset dataset, IndexOption indexOption) {
+    public GeosparqlJenaTestSystem(Dataset dataset, IndexOption indexOption, Boolean isUnionDefaultGraph) {
 
         //Copy the contents of the dataset to a new memory dataset.
         Dataset memDataset = DatasetFactory.createTxnMem();
@@ -46,12 +52,13 @@ public class GeosparqlJenaTestSystem implements TestSystem {
             memDataset.addNamedModel(graphName, model);
         }
 
-        setup(memDataset, indexOption);
+        setup(memDataset, indexOption, isUnionDefaultGraph);
     }
 
-    private void setup(Dataset dataset, IndexOption indexOption) {
+    private void setup(Dataset dataset, IndexOption indexOption, Boolean isUnionDefaultGraph) {
         this.dataset = dataset;
         this.indexOption = indexOption;
+        this.isUnionDefaultGraph = isUnionDefaultGraph;
         try {
             GeoSPARQLSupport.loadFunctions(indexOption, dataset);
             GeoSPARQLSupport.resetIndexesAndRegistries();
@@ -62,7 +69,7 @@ public class GeosparqlJenaTestSystem implements TestSystem {
 
     @Override
     public GeosparqlJenaQueryTask getQueryTask(String query) {
-        return new GeosparqlJenaQueryTask(query, dataset);
+        return new GeosparqlJenaQueryTask(query, dataset, isUnionDefaultGraph);
     }
 
     @Override

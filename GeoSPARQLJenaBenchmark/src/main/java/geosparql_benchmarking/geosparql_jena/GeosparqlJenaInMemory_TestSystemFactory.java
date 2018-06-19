@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Gerg
  */
-public class GeosparqlJenaInMemoryTestSystemFactory implements TestSystemFactory {
+public class GeosparqlJenaInMemory_TestSystemFactory implements TestSystemFactory {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     public static final String TEST_SYSTEM_NAME = "GeoSparqlJenaInMemory";
@@ -40,7 +40,7 @@ public class GeosparqlJenaInMemoryTestSystemFactory implements TestSystemFactory
     protected final File resultsFolder;
     protected final Boolean inferenceEnabled;
 
-    public GeosparqlJenaInMemoryTestSystemFactory(Dataset dataset, String resultsFolder, Boolean inferenceEnabled) {
+    public GeosparqlJenaInMemory_TestSystemFactory(Dataset dataset, String resultsFolder, Boolean inferenceEnabled) {
         this.dataset = dataset;
         this.resultsFolder = new File(BenchmarkExecution.RESULTS_FOLDER, resultsFolder);
         this.resultsFolder.mkdir();
@@ -49,7 +49,7 @@ public class GeosparqlJenaInMemoryTestSystemFactory implements TestSystemFactory
 
     @Override
     public TestSystem getTestSystem() {
-        return new GeosparqlJenaTestSystem(dataset, IndexOption.MEMORY);
+        return new GeosparqlJenaTestSystem(dataset, IndexOption.MEMORY, false);
     }
 
     @Override

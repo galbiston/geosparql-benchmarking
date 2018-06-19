@@ -21,6 +21,7 @@ import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.tdb.TDB;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,18 +35,23 @@ public class GeosparqlJenaQueryTask extends QueryTask {
 
     private final String queryString;
     private final Dataset dataset;
+    private final Boolean isUnionDefaultGraph;
     private QueryExecution qexec;
     private ResultSet rs;
 
-    public GeosparqlJenaQueryTask(String queryString, Dataset dataset) {
+    public GeosparqlJenaQueryTask(String queryString, Dataset dataset, Boolean isUnionDefaultGraph) {
         this.queryString = queryString;
         this.dataset = dataset;
+        this.isUnionDefaultGraph = isUnionDefaultGraph;
     }
 
     @Override
     protected void prepareQuery() {
         dataset.begin(ReadWrite.READ);
         qexec = QueryExecutionFactory.create(queryString, dataset);
+        if (isUnionDefaultGraph) {
+            qexec.getContext().set(TDB.symUnionDefaultGraph, true);
+        }
         rs = qexec.execSelect();
     }
 

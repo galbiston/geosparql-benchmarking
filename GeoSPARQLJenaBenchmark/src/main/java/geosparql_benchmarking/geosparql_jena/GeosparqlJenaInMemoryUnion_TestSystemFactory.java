@@ -7,8 +7,8 @@ package geosparql_benchmarking.geosparql_jena;
 
 import execution.TestSystem;
 import implementation.index.IndexConfiguration.IndexOption;
-import java.io.File;
 import java.lang.invoke.MethodHandles;
+import org.apache.jena.query.Dataset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,18 +16,18 @@ import org.slf4j.LoggerFactory;
  *
  * @author Gerg
  */
-public class GeosparqlJenaNoIndexTDBTestSystemFactory extends GeosparqlJenaTDBTestSystemFactory {
+public class GeosparqlJenaInMemoryUnion_TestSystemFactory extends GeosparqlJenaInMemory_TestSystemFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    public static final String TEST_SYSTEM_NAME = "GeoSparqlJenaNoIndexTDB";
+    public static final String TEST_SYSTEM_NAME = "GeoSparqlJenaInMemory_Union";
 
-    public GeosparqlJenaNoIndexTDBTestSystemFactory(File datasetFolder, String resultsFolder, Boolean inferenceEnabled) {
-        super(datasetFolder, resultsFolder, inferenceEnabled);
+    public GeosparqlJenaInMemoryUnion_TestSystemFactory(Dataset dataset, String resultsFolder, Boolean inferenceEnabled) {
+        super(dataset, resultsFolder, inferenceEnabled);
     }
 
     @Override
     public TestSystem getTestSystem() {
-        return new GeosparqlJenaTestSystem(datasetFolder, IndexOption.NONE);
+        return new GeosparqlJenaTestSystem(dataset, IndexOption.MEMORY, true);
     }
 
     @Override
