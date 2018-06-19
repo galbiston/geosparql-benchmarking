@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 import org.apache.commons.io.FileUtils;
@@ -40,8 +41,9 @@ import org.apache.jena.tdb.TDBFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import queries.geographica.MicroBenchmark;
-import static queries.geographica.MicroBenchmark.GIVEN_POLYGON;
 import static queries.geographica.MicroBenchmark.SPATIAL_SELECTIONS;
+import static queries.geographica.MicroBenchmark.loadQueryResources;
+import queries.geographica.QueryFormat;
 
 public class Main {
 
@@ -136,20 +138,21 @@ public class Main {
 
     public static void runPartsTDB(Boolean inferenceEnabled) {
         GeosparqlJenaTDB_TestSystemFactory testSystemFactory = new GeosparqlJenaTDB_TestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_TDB_RESULTS_FOLDER_NAME, inferenceEnabled);
+        HashMap<String, String> queryResources = loadQueryResources(QueryFormat.PUBLISHED);
         List<QueryCase> queryCases = new ArrayList<>();
-        queryCases.add(new QueryCase("Query16", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query16.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON)));
-        queryCases.add(new QueryCase("Query17", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query17.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON)));
+        queryCases.add(new QueryCase("Query16", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query16.spl").replace("GIVEN_POLYGON_IN_WKT", queryResources.get("GIVEN_POLYGON"))));
+        queryCases.add(new QueryCase("Query17", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query17.spl").replace("GIVEN_POLYGON_IN_WKT", queryResources.get("GIVEN_POLYGON"))));
 
         /*
-        queryCases.add(new QueryCase("Query7", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query7.spl").replace("GIVEN_LINE_IN_WKT", GIVEN_LINESTRING_1)));
-        queryCases.add(new QueryCase("Query8", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query8.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON)));
-        queryCases.add(new QueryCase("Query9", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query9.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON)));
-        queryCases.add(new QueryCase("Query10", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query10.spl").replace("GIVEN_LINE_IN_WKT", GIVEN_LINESTRING_2)));
-        queryCases.add(new QueryCase("Query11", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query11.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON)));
-        queryCases.add(new QueryCase("Query12", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query12.spl").replace("GIVEN_LINE_IN_WKT", GIVEN_LINESTRING_3)));
-        queryCases.add(new QueryCase("Query13", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query13.spl").replace("GIVEN_POLYGON_IN_WKT", GIVEN_POLYGON)));
-        queryCases.add(new QueryCase("Query14", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query14.spl").replace("GIVEN_POINT_IN_WKT", GIVEN_POINT).replace("GIVEN_RADIUS", GIVEN_RADIUS)));
-        queryCases.add(new QueryCase("Query15", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query15.spl").replace("GIVEN_POINT_IN_WKT", GIVEN_POINT).replace("GIVEN_RADIUS", GIVEN_RADIUS)));
+        queryCases.add(new QueryCase("Query7", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query7.spl").replace("GIVEN_LINE_IN_WKT", queryResources.get("GIVEN_LINESTRING_1"))));
+        queryCases.add(new QueryCase("Query8", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query8.spl").replace("GIVEN_POLYGON_IN_WKT", queryResources.get("GIVEN_POLYGON"))));
+        queryCases.add(new QueryCase("Query9", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query9.spl").replace("GIVEN_POLYGON_IN_WKT", queryResources.get("GIVEN_POLYGON"))));
+        queryCases.add(new QueryCase("Query10", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query10.spl").replace("GIVEN_LINE_IN_WKT", queryResources.get("GIVEN_LINESTRING_2"))));
+        queryCases.add(new QueryCase("Query11", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query11.spl").replace("GIVEN_POLYGON_IN_WKT", queryResources.get("GIVEN_POLYGON"))));
+        queryCases.add(new QueryCase("Query12", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query12.spl").replace("GIVEN_LINE_IN_WKT", queryResources.get("GIVEN_LINESTRING_3"))));
+        queryCases.add(new QueryCase("Query13", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query13.spl").replace("GIVEN_POLYGON_IN_WKT", queryResources.get("GIVEN_POLYGON"))));
+        queryCases.add(new QueryCase("Query14", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query14.spl").replace("GIVEN_POINT_IN_WKT", queryResources.get("GIVEN_POINT")).replace("GIVEN_RADIUS", queryResources.get("GIVEN_RADIUS"))));
+        queryCases.add(new QueryCase("Query15", "SpatialSelections", QueryLoader.readFile(SPATIAL_SELECTIONS + "/Query15.spl").replace("GIVEN_POINT_IN_WKT", queryResources.get("GIVEN_POINT")).replace("GIVEN_RADIUS", queryResources.get("GIVEN_RADIUS"))));
         queryCases.add(new QueryCase("Query19", "SpatialJoins", QueryLoader.readFile(SPATIAL_JOINS + "/Query19.spl")));
         queryCases.add(new QueryCase("Query21", "SpatialJoins", QueryLoader.readFile(SPATIAL_JOINS + "/Query21.spl")));
         queryCases.add(new QueryCase("Query23", "SpatialJoins", QueryLoader.readFile(SPATIAL_JOINS + "/Query23.spl")));
@@ -161,7 +164,7 @@ public class Main {
 
     public static void runTDB(Boolean inferenceEnabled) {
         GeosparqlJenaTDB_TestSystemFactory testSystemFactory = new GeosparqlJenaTDB_TestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_TDB_RESULTS_FOLDER_NAME, inferenceEnabled);
-        BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadMainQuerySet(), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
+        BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadMainQuerySet(QueryFormat.PUBLISHED), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
         //BenchmarkExecution.runCold(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadMainQuerySet(), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
     }
 
@@ -169,12 +172,12 @@ public class Main {
         Dataset memDataset = DatasetFactory.createTxnMem();
         GeosparqlJenaInMemory_TestSystemFactory.loadDataset(datasetMap, inferenceEnabled, memDataset);
         GeosparqlJenaInMemory_TestSystemFactory testSystemFactory = new GeosparqlJenaInMemory_TestSystemFactory(memDataset, GEOSPARL_JENA_IN_MEMORY_RESULTS_FOLDER_NAME, inferenceEnabled);
-        BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadMainQuerySet(), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
+        BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadMainQuerySet(QueryFormat.PUBLISHED), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
     }
 
     public static void runNoIndexTDB(TreeMap<String, File> datasetMap, Boolean inferenceEnabled) {
         GeosparqlJenaTDBNoIndex_TestSystemFactory testSystemFactory = new GeosparqlJenaTDBNoIndex_TestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_NO_INDEX_RESULTS_FOLDER_NAME, inferenceEnabled);
-        BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadMainQuerySet(), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
+        BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadMainQuerySet(QueryFormat.PUBLISHED), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
     }
 
     public static void runTestTDB(Boolean inferenceEnabled) {
