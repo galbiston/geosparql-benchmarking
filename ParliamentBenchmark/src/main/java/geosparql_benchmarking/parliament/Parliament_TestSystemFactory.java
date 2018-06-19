@@ -18,7 +18,7 @@ import execution_results.DatasetLoadResult;
 import execution_results.DatasetLoadTimeResult;
 import execution.TestSystem;
 import execution.TestSystemFactory;
-import static geosparql_benchmarking.parliament.ParliamentTestSystem.SPATIAL_INDEX_FACTORY;
+import static geosparql_benchmarking.parliament.Parliament_TestSystem.SPATIAL_INDEX_FACTORY;
 import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -35,14 +35,14 @@ import org.slf4j.LoggerFactory;
  *
  * @author Gerg
  */
-public class ParliamentTestSystemFactory implements TestSystemFactory {
+public class Parliament_TestSystemFactory implements TestSystemFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     public static final String TEST_SYSTEM_NAME = "Parliament";
     private final File resultsFolder;
     private final File parliamentKnowledgeBaseFolder;
 
-    public ParliamentTestSystemFactory(String resultsFolder, File parliamentKnowledgeBaseFolder) {
+    public Parliament_TestSystemFactory(String resultsFolder, File parliamentKnowledgeBaseFolder) {
         this.resultsFolder = new File(RESULTS_FOLDER, resultsFolder);
         this.resultsFolder.mkdir();
         this.parliamentKnowledgeBaseFolder = parliamentKnowledgeBaseFolder;
@@ -50,7 +50,7 @@ public class ParliamentTestSystemFactory implements TestSystemFactory {
 
     @Override
     public TestSystem getTestSystem() {
-        return new ParliamentTestSystem();
+        return new Parliament_TestSystem();
     }
 
     @Override

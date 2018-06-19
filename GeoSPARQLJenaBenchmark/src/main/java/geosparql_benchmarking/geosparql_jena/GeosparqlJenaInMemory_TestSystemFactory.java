@@ -49,7 +49,7 @@ public class GeosparqlJenaInMemory_TestSystemFactory implements TestSystemFactor
 
     @Override
     public TestSystem getTestSystem() {
-        return new GeosparqlJenaTestSystem(dataset, IndexOption.MEMORY, false);
+        return new GeosparqlJena_TestSystem(dataset, IndexOption.MEMORY, false);
     }
 
     @Override

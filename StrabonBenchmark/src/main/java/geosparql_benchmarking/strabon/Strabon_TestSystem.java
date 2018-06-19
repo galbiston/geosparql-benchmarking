@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 /**
  *
  */
-public class StrabonTestSystem implements TestSystem {
+public class Strabon_TestSystem implements TestSystem {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -49,7 +49,7 @@ public class StrabonTestSystem implements TestSystem {
      * @param postgresDataPath
      * @throws Exception
      */
-    public StrabonTestSystem(String dbName, String user, String password, Integer port, String host, String postgresIsReadyPath, String postgresPG_CTLPath, String postgresDataPath) throws Exception {
+    public Strabon_TestSystem(String dbName, String user, String password, Integer port, String host, String postgresIsReadyPath, String postgresPG_CTLPath, String postgresDataPath) throws Exception {
         this.dbName = dbName;
         this.user = user;
         this.password = password;
@@ -202,7 +202,7 @@ public class StrabonTestSystem implements TestSystem {
 
     @Override
     public QueryTask getQueryTask(String query) {
-        return new StrabonQueryTask(query, strabon);
+        return new Strabon_QueryTask(query, strabon);
     }
 
     @Override

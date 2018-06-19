@@ -23,24 +23,24 @@ import org.apache.jena.update.UpdateRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GeosparqlJenaTestSystem implements TestSystem {
+public class GeosparqlJena_TestSystem implements TestSystem {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private Dataset dataset;
     private IndexOption indexOption;
     private Boolean isUnionDefaultGraph;
 
-    public GeosparqlJenaTestSystem(File datasetFolder, IndexOption indexOption, Boolean isUnionDefaultGraph) {
+    public GeosparqlJena_TestSystem(File datasetFolder, IndexOption indexOption, Boolean isUnionDefaultGraph) {
         //Access the datset from the folder.
         setup(TDBFactory.createDataset(datasetFolder.getAbsolutePath()), indexOption, isUnionDefaultGraph);
     }
 
-    public GeosparqlJenaTestSystem(File datasetFolder, IndexOption indexOption) {
+    public GeosparqlJena_TestSystem(File datasetFolder, IndexOption indexOption) {
         //Access the datset from the folder.
         setup(TDBFactory.createDataset(datasetFolder.getAbsolutePath()), indexOption, false);
     }
 
-    public GeosparqlJenaTestSystem(Dataset dataset, IndexOption indexOption, Boolean isUnionDefaultGraph) {
+    public GeosparqlJena_TestSystem(Dataset dataset, IndexOption indexOption, Boolean isUnionDefaultGraph) {
 
         //Copy the contents of the dataset to a new memory dataset.
         Dataset memDataset = DatasetFactory.createTxnMem();
@@ -68,8 +68,8 @@ public class GeosparqlJenaTestSystem implements TestSystem {
     }
 
     @Override
-    public GeosparqlJenaQueryTask getQueryTask(String query) {
-        return new GeosparqlJenaQueryTask(query, dataset, isUnionDefaultGraph);
+    public GeosparqlJena_QueryTask getQueryTask(String query) {
+        return new GeosparqlJena_QueryTask(query, dataset, isUnionDefaultGraph);
     }
 
     @Override

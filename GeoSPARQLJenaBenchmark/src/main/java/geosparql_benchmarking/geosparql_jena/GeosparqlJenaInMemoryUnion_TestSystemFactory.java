@@ -27,7 +27,7 @@ public class GeosparqlJenaInMemoryUnion_TestSystemFactory extends GeosparqlJenaI
 
     @Override
     public TestSystem getTestSystem() {
-        return new GeosparqlJenaTestSystem(dataset, IndexOption.MEMORY, true);
+        return new GeosparqlJena_TestSystem(dataset, IndexOption.MEMORY, true);
     }
 
     @Override

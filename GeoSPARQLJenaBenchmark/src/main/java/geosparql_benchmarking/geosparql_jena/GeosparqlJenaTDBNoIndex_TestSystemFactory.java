@@ -27,7 +27,7 @@ public class GeosparqlJenaTDBNoIndex_TestSystemFactory extends GeosparqlJenaTDB_
 
     @Override
     public TestSystem getTestSystem() {
-        return new GeosparqlJenaTestSystem(datasetFolder, IndexOption.NONE);
+        return new GeosparqlJena_TestSystem(datasetFolder, IndexOption.NONE);
     }
 
     @Override

@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Gerg
  */
-public class StrabonTestSystemFactory implements TestSystemFactory {
+public class Strabon_TestSystemFactory implements TestSystemFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -49,7 +49,7 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
     private final String postgresDropDBPath;
     private final String databaseTemplate;
 
-    public StrabonTestSystemFactory(String dbName, String user, String password, Integer port, String host, String resultsFolder, Boolean inferenceEnabled, String baseURI, String format, String postgresBinPath, String postgresDataPath, String databaseTemplate) {
+    public Strabon_TestSystemFactory(String dbName, String user, String password, Integer port, String host, String resultsFolder, Boolean inferenceEnabled, String baseURI, String format, String postgresBinPath, String postgresDataPath, String databaseTemplate) {
         this.dbName = dbName;
         this.user = user;
         this.password = password;
@@ -144,9 +144,9 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
         return getStrabonTestSystem();
     }
 
-    public StrabonTestSystem getStrabonTestSystem() {
+    public Strabon_TestSystem getStrabonTestSystem() {
         try {
-            return new StrabonTestSystem(dbName, user, password, port, host, postgresIsReadyPath, postgresPG_CTLPath, postgresDataPath);
+            return new Strabon_TestSystem(dbName, user, password, port, host, postgresIsReadyPath, postgresPG_CTLPath, postgresDataPath);
         } catch (Exception ex) {
             LOGGER.error("Strabon Exception: {}", ex.getMessage());
             throw new AssertionError("Strabon failed to initialise.");
@@ -191,7 +191,7 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
      * @param testSystemFactory
      * @return
      */
-    public static Boolean clearDataset(StrabonTestSystemFactory testSystemFactory) {
+    public static Boolean clearDataset(Strabon_TestSystemFactory testSystemFactory) {
         try {
             testSystemFactory.dropPostgresDatabase();
             testSystemFactory.createPostgresDatabase();
@@ -210,11 +210,11 @@ public class StrabonTestSystemFactory implements TestSystemFactory {
      * @param testSystemFactory
      * @return
      */
-    public static DatasetLoadResult loadDataset(TreeMap<String, File> datasetMap, StrabonTestSystemFactory testSystemFactory) {
+    public static DatasetLoadResult loadDataset(TreeMap<String, File> datasetMap, Strabon_TestSystemFactory testSystemFactory) {
         return loadDataset(datasetMap, testSystemFactory, 0);
     }
 
-    private static DatasetLoadResult loadDataset(TreeMap<String, File> datasetMap, StrabonTestSystemFactory testSystemFactory, Integer iteration) {
+    private static DatasetLoadResult loadDataset(TreeMap<String, File> datasetMap, Strabon_TestSystemFactory testSystemFactory, Integer iteration) {
         LOGGER.info("Strabon Loading: Started");
         List<DatasetLoadTimeResult> datasetLoadTimeResults = new ArrayList<>();
         Boolean isCompleted = true;

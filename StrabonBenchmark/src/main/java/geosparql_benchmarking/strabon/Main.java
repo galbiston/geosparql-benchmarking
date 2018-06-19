@@ -49,7 +49,7 @@ public class Main {
 
         try {
 
-            StrabonTestSystemFactory testSystemFactory = new StrabonTestSystemFactory(dbName, user, password, port, host, resultsFolder, inferenceEnabled, baseURI, format, postgresBinPath, postgresDataPath, databaseTemplate);
+            Strabon_TestSystemFactory testSystemFactory = new Strabon_TestSystemFactory(dbName, user, password, port, host, resultsFolder, inferenceEnabled, baseURI, format, postgresBinPath, postgresDataPath, databaseTemplate);
 
             ExecutionParameters parameters = ExecutionParameters.extract(args);
             BenchmarkExecution.runType(testSystemFactory, parameters);
@@ -81,7 +81,7 @@ public class Main {
         BenchmarkExecution.runDatasetLoad(testSystemFactory, iterations, datasetMap);
     }
 
-    private static void rdfsStrabonTest(StrabonTestSystemFactory testSystemFactory) {
+    private static void rdfsStrabonTest(Strabon_TestSystemFactory testSystemFactory) {
 
         //String property = "<http://www.opengis.net/ont/geosparql#asWKT>";
         String property = "<http://linkedgeodata.org/ontology/asWKT>";
@@ -90,7 +90,7 @@ public class Main {
 
         //Strabon doesn't seem to apply RDFS inferencing even though ahs a paraemter when data loading.
         //Geographica benchmarking paper (page 10) and running this query show it doesn't.
-        try (StrabonTestSystem strabonTestSystem = testSystemFactory.getStrabonTestSystem()) {
+        try (Strabon_TestSystem strabonTestSystem = testSystemFactory.getStrabonTestSystem()) {
             Strabon strabon = strabonTestSystem.getStrabon();
             TupleQuery tupleQuery = (TupleQuery) strabon.query(queryString, Format.TUQU, strabon.getSailRepoConnection(), System.out);
             SPARQLResultsCSVWriter csvWriter = new SPARQLResultsCSVWriter(System.out);

@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * the same project. This will be resolved if Parliament is kept up to date with
  * the the Jena API.
  */
-public class ParliamentTestSystem implements TestSystem {
+public class Parliament_TestSystem implements TestSystem {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -45,7 +45,7 @@ public class ParliamentTestSystem implements TestSystem {
     KbGraphStore graphStore;
     Dataset dataset;
 
-    public ParliamentTestSystem() {
+    public Parliament_TestSystem() {
         LOGGER.info("Parliament Initialisation: Started");
 
         //Set Factory Registry to index by default.
@@ -90,7 +90,7 @@ public class ParliamentTestSystem implements TestSystem {
 
     @Override
     public QueryTask getQueryTask(String query) {
-        return new ParliamentQueryTask(query, dataset);
+        return new Parliament_QueryTask(query, dataset);
     }
 
     @Override

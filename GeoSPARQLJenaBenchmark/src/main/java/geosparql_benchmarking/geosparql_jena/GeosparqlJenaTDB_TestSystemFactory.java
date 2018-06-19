@@ -65,7 +65,7 @@ public class GeosparqlJenaTDB_TestSystemFactory implements TestSystemFactory {
 
     @Override
     public TestSystem getTestSystem() {
-        return new GeosparqlJenaTestSystem(datasetFolder, IndexOption.MEMORY, isUnionDefaultGraph);
+        return new GeosparqlJena_TestSystem(datasetFolder, IndexOption.MEMORY, isUnionDefaultGraph);
     }
 
     @Override

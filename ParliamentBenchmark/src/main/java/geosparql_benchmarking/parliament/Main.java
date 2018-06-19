@@ -43,7 +43,7 @@ public class Main {
         try {
             ExecutionParameters parameters = ExecutionParameters.extract(args);
 
-            ParliamentTestSystemFactory testSystemFactory = new ParliamentTestSystemFactory(PARLIAMENT_RESULTS_FOLDER_NAME, PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
+            Parliament_TestSystemFactory testSystemFactory = new Parliament_TestSystemFactory(PARLIAMENT_RESULTS_FOLDER_NAME, PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
             BenchmarkExecution.runType(testSystemFactory, parameters);
         } catch (Exception ex) {
             LOGGER.error("{} for arguments {}", ex.getMessage(), args);
@@ -53,7 +53,7 @@ public class Main {
         TreeMap<String, File> datasetMap = Dataset_CRS84.getAll();
 
         //Parliament
-        ParliamentTestSystemFactory testSystemFactory = new ParliamentTestSystemFactory(PARLIAMENT_RESULTS_FOLDER_NAME, PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
+        Parliament_TestSystemFactory testSystemFactory = new Parliament_TestSystemFactory(PARLIAMENT_RESULTS_FOLDER_NAME, PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
         BenchmarkExecution.runBoth(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadMainQuerySet(), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
         //BenchmarkExecution.runWarm(testSystemFactory, BenchmarkParameters.ITERATIONS, BenchmarkParameters.TIMEOUT, MicroBenchmark.loadMainQuerySet(), BenchmarkParameters.RESULT_LINE_LIMIT_ZERO);
 
@@ -72,7 +72,7 @@ public class Main {
          */
     }
 
-    public static void runDatasetLoad(ParliamentTestSystemFactory testSystemFactory, Integer iterations, TreeMap<String, File> datasetMap) {
+    public static void runDatasetLoad(Parliament_TestSystemFactory testSystemFactory, Integer iterations, TreeMap<String, File> datasetMap) {
         BenchmarkExecution.runDatasetLoad(testSystemFactory, iterations, datasetMap);
     }
 
@@ -128,14 +128,14 @@ public class Main {
                 + "}";
 
         queryCases.add(new QueryCase("BufferQueryTest", "TestQuery", queryString));
-        ParliamentTestSystemFactory testSystemFactory = new ParliamentTestSystemFactory(PARLIAMENT_RESULTS_FOLDER_NAME, PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
+        Parliament_TestSystemFactory testSystemFactory = new Parliament_TestSystemFactory(PARLIAMENT_RESULTS_FOLDER_NAME, PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
         BenchmarkExecution.runCold(testSystemFactory, 1, BenchmarkParameters.TIMEOUT, queryCases, BenchmarkParameters.RESULT_LINE_LIMIT_5000);
 
     }
 
     private static void equalsTest() {
 
-        ParliamentTestSystemFactory testSystemFactory = new ParliamentTestSystemFactory(PARLIAMENT_RESULTS_FOLDER_NAME, PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
+        Parliament_TestSystemFactory testSystemFactory = new Parliament_TestSystemFactory(PARLIAMENT_RESULTS_FOLDER_NAME, PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
 
         String queryString = "PREFIX geof: <http://www.opengis.net/def/function/geosparql/> "
                 + "SELECT ?res WHERE{"
@@ -156,7 +156,7 @@ public class Main {
 
     private static void equalsTest2() {
 
-        ParliamentTestSystemFactory testSystemFactory = new ParliamentTestSystemFactory(PARLIAMENT_RESULTS_FOLDER_NAME, PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
+        Parliament_TestSystemFactory testSystemFactory = new Parliament_TestSystemFactory(PARLIAMENT_RESULTS_FOLDER_NAME, PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
 
         String queryString = "PREFIX geof: <http://www.opengis.net/def/function/geosparql/> "
                 + "SELECT ?res WHERE{"

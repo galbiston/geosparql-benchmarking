@@ -20,13 +20,13 @@ import org.openrdf.query.TupleQueryResult;
  *
  *
  */
-public class StrabonQueryTask extends QueryTask {
+public class Strabon_QueryTask extends QueryTask {
 
     private final String queryString;
     private final Strabon strabon;
     private TupleQueryResult tupleQueryResult;
 
-    public StrabonQueryTask(String queryString, Strabon strabon) {
+    public Strabon_QueryTask(String queryString, Strabon strabon) {
         this.queryString = queryString;
         this.strabon = strabon;
     }

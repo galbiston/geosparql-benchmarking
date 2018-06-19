@@ -29,7 +29,7 @@ public class GeosparqlJenaTDBUnion_TestSystemFactory extends GeosparqlJenaTDB_Te
 
     @Override
     public TestSystem getTestSystem() {
-        return new GeosparqlJenaTestSystem(datasetFolder, IndexOption.NONE);
+        return new GeosparqlJena_TestSystem(datasetFolder, IndexOption.NONE);
     }
 
     @Override
