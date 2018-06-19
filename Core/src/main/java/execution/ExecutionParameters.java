@@ -109,27 +109,23 @@ public class ExecutionParameters {
         List<QueryCase> queryCases;
         if (args.length > QUERY_CASE_POSITION + argOffset) {
             String arg = args[QUERY_CASE_POSITION + argOffset].toLowerCase();
-            switch (arg) {
-                case "micro":
-                    queryCases = MicroBenchmark.loadQueryCases(arg);
-                    break;
-                case "macro":
-                    queryCases = MacroBenchmark.loadQueryCases(arg, iterations);
-                    break;
-                case "geosparql":
-                    queryCases = GeosparqlBenchmark.loadQueryCases(arg);
-                    break;
-                default:
-                    File fileArg = new File(args[QUERY_CASE_POSITION + argOffset]);
-                    if (fileArg.exists()) {
-                        if (fileArg.isDirectory()) {
-                            queryCases = QueryLoader.readFolder(fileArg);
-                        } else {
-                            queryCases = QueryLoader.readQuery(fileArg.getAbsolutePath());
-                        }
+            if (arg.startsWith("micro")) {
+                queryCases = MicroBenchmark.loadQueryCases(arg);
+            } else if (arg.startsWith("macro")) {
+                queryCases = MacroBenchmark.loadQueryCases(arg, iterations);
+            } else if (arg.startsWith("geosparql")) {
+                queryCases = GeosparqlBenchmark.loadQueryCases(arg);
+            } else {
+                File fileArg = new File(args[QUERY_CASE_POSITION + argOffset]);
+                if (fileArg.exists()) {
+                    if (fileArg.isDirectory()) {
+                        queryCases = QueryLoader.readFolder(fileArg);
                     } else {
-                        throw new IllegalArgumentException("Unknown Query Case Set: " + args[QUERY_CASE_POSITION + argOffset] + ". Expected 'micro', 'macro', 'geosparql' or file path to load.");
+                        queryCases = QueryLoader.readQuery(fileArg.getAbsolutePath());
                     }
+                } else {
+                    throw new IllegalArgumentException("Unknown Query Case Set: " + args[QUERY_CASE_POSITION + argOffset] + ". Expected to start with 'micro', 'macro', 'geosparql' or a file/folder path to load.");
+                }
             }
         } else {
             queryCases = GeosparqlBenchmark.loadAll();
