@@ -67,6 +67,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        //args = new String[]{"tdb_union", "micro_union", "both"};
 
         try {
             SystemType systemType = SystemType.valueOf(args[0].toUpperCase());

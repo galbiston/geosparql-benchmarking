@@ -24,12 +24,12 @@ public class GeosparqlJenaTDBUnion_TestSystemFactory extends GeosparqlJenaTDB_Te
     public static final String TEST_SYSTEM_NAME = "GeoSparqlJenaTDB_Union";
 
     public GeosparqlJenaTDBUnion_TestSystemFactory(File datasetFolder, String resultsFolder, Boolean inferenceEnabled) {
-        super(datasetFolder, resultsFolder, inferenceEnabled, true);
+        super(datasetFolder, resultsFolder, inferenceEnabled);
     }
 
     @Override
     public TestSystem getTestSystem() {
-        return new GeosparqlJena_TestSystem(datasetFolder, IndexOption.NONE);
+        return new GeosparqlJena_TestSystem(datasetFolder, IndexOption.MEMORY, true);
     }
 
     @Override
