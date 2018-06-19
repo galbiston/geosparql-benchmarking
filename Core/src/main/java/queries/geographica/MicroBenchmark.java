@@ -63,7 +63,7 @@ public class MicroBenchmark {
         }
     }
 
-    private static String selectQueryFolder(QueryFormat queryFormat, String subFolder) {
+    public static final String selectQueryFolder(QueryFormat queryFormat, String subFolder) {
         switch (queryFormat) {
             case UNION:
                 return UNION_FOLDER + subFolder;
@@ -72,7 +72,7 @@ public class MicroBenchmark {
         }
     }
 
-    private static HashMap<String, String> loadQueryResources(QueryFormat queryFormat) {
+    public static final HashMap<String, String> loadQueryResources(QueryFormat queryFormat) {
         String baseFolder;
         switch (queryFormat) {
             case UNION:
