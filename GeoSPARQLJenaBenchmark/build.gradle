@@ -25,7 +25,7 @@ dependencies {
     ext.geosparqlVersion = "1.0.0"
     compile "org.ntu:GeoSPARQLJena:$geosparqlVersion"
 
-    compile ('org.apache.jena:jena-cmds:3.7.0'){
+    compile ('org.apache.jena:jena-cmds:3.8.0'){
         exclude group: "org.apache.jena", module: "apache-jena-libs"
         exclude group: "org.slf4j", module: "slf4j-log4j12"
     }
