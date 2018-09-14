@@ -33,7 +33,7 @@
     </ex:PlaceOfInterest>
     <sf:Point rdf:about="http://example.org/Geometry#PointB">
         <geo:asWKT rdf:datatype="http://www.opengis.net/ont/geosparql#wktLiteral"><![CDATA[<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(90 60)]]></geo:asWKT>
-    </sf:Point>	
+    </sf:Point>
 
     <!-- Point C -->
     <ex:PlaceOfInterest rdf:about="http://example.org/Feature#C">
@@ -51,15 +51,6 @@
     </ex:PlaceOfInterest>
     <sf:Point rdf:about="http://example.org/Geometry#PointC2">
         <geo:asWKT rdf:datatype="http://www.opengis.net/ont/geosparql#wktLiteral"><![CDATA[<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(30 20)]]></geo:asWKT>
-    </sf:Point>
-	
-	<!-- Point M -->
-    <ex:PlaceOfInterest rdf:about="http://example.org/Feature#M">
-        <ex:hasExactGeometry rdf:resource="http://example.org/Geometry#PointM"/>
-        <ex:name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PlaceM</ex:name>
-    </ex:PlaceOfInterest>
-    <sf:Point rdf:about="http://example.org/Geometry#PointM">
-        <geo:asWKT rdf:datatype="http://www.opengis.net/ont/geosparql#wktLiteral"><![CDATA[POINT(300 200)]]></geo:asWKT>
     </sf:Point>
 
     <!-- LineString D -->
