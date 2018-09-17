@@ -60,7 +60,7 @@ public class GeosparqlJena_TestSystem implements TestSystem {
         this.indexOption = indexOption;
         this.isUnionDefaultGraph = isUnionDefaultGraph;
         try {
-            GeoSPARQLSupport.loadFunctions(indexOption, dataset);
+            GeoSPARQLSupport.loadFunctions(indexOption);
             GeoSPARQLSupport.resetIndexesAndRegistries();
         } catch (Exception ex) {
             throw new AssertionError("Issue accessing GeosparqlJena library. " + ex.getMessage());

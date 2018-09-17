@@ -15,7 +15,7 @@ import execution_results.QueryResult;
 import implementation.GeoSPARQLSupport;
 import implementation.data_conversion.ConvertData;
 import implementation.data_conversion.GeoSPARQLPredicates;
-import implementation.datatype.GeoDatatypeEnum;
+import implementation.datatype.WKTDatatype;
 import implementation.vocabulary.SRS_URI;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -475,7 +475,7 @@ public class Main {
         String geometryLiteral = "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(37.98 23.71)";
         String outputSrsURI = "http://www.opengis.net/def/crs/EPSG/0/2100";
 
-        String convertedGeometryLiteral = ConvertData.convertGeometryLiteral(geometryLiteral, outputSrsURI, GeoDatatypeEnum.WKT);
+        String convertedGeometryLiteral = ConvertData.convertGeometryLiteral(geometryLiteral, outputSrsURI, WKTDatatype.INSTANCE);
         System.out.println("Original: " + geometryLiteral);
         System.out.println("Conversion: " + convertedGeometryLiteral);
     }
