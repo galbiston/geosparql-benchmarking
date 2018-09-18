@@ -6,7 +6,7 @@
 package geosparql_benchmarking.geosparql_jena;
 
 import execution.TestSystem;
-import implementation.index.IndexConfiguration.IndexOption;
+import geosparql_jena.implementation.index.IndexConfiguration.IndexOption;
 import java.lang.invoke.MethodHandles;
 import org.apache.jena.query.Dataset;
 import org.slf4j.Logger;
