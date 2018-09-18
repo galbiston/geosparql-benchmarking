@@ -338,7 +338,7 @@ public class Main {
     public static void test() {
 
         Dataset dataset = TDBFactory.createDataset(GEOSPARQL_JENA_TDB_FOLDER.getAbsolutePath());
-        GeoSPARQLSupport.loadFunctionsMemoryIndex();
+        GeoSPARQLSupport.setupMemoryIndex();
         String queryString = "PREFIX geof: <http://www.opengis.net/def/function/geosparql/>\n"
                 + "PREFIX datasets: <http://geographica.di.uoa.gr/dataset/>                           \n"
                 + "PREFIX geonames: <http://www.geonames.org/ontology#>                               \n"
