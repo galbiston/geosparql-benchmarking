@@ -19,22 +19,22 @@ if (!hasProperty('mainClass')) {
 dependencies {
 
     //Core Benchmarking Project
-    compile project(":Core")
+    implementation project(":Core")
 
     //GeoSPARQL Extension
     ext.geosparqlVersion = "1.0.0"
-    compile "io.github.galbiston:GeoSPARQLJena:$geosparqlVersion"
+    implementation "io.github.galbiston:GeoSPARQLJena:$geosparqlVersion"
 
-    compile ('org.apache.jena:jena-cmds:3.8.0'){
+    implementation ('org.apache.jena:jena-cmds:3.8.0'){
         exclude group: "org.apache.jena", module: "apache-jena-libs"
         exclude group: "org.slf4j", module: "slf4j-log4j12"
     }
 
     //SLF4J Logback
-    compile "ch.qos.logback:logback-classic:$logbackVersion"
+    implementation "ch.qos.logback:logback-classic:$logbackVersion"
 
     //System Out Bridge to Logging
-    compile "uk.org.lidalia:sysout-over-slf4j:$sysoutBridgeVersion"
+    implementation "uk.org.lidalia:sysout-over-slf4j:$sysoutBridgeVersion"
 }
 
 run {

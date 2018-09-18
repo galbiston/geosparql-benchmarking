@@ -19,22 +19,22 @@ if (!hasProperty('mainClass')) {
 dependencies {
 
     //Core Benchmarking Project
-    compile project(":Core")
+    implementation project(":Core")
 
     //Jar Libraries
-    compile fileTree(dir: 'libs/strabon', include: '*.jar')
+    implementation fileTree(dir: 'libs/strabon', include: '*.jar')
 
     //Postgresql
-    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.1'
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.1'
 
     //SLF4J Log4j
-    //compile "org.slf4j:slf4j-log4j12:$slf4jVersion"
-    compile "org.slf4j:log4j-over-slf4j:$slf4jVersion"
+    //implementation "org.slf4j:slf4j-log4j12:$slf4jVersion"
+    implementation "org.slf4j:log4j-over-slf4j:$slf4jVersion"
     //SLF4J Logback
-    compile "ch.qos.logback:logback-classic:$logbackVersion"
+    implementation "ch.qos.logback:logback-classic:$logbackVersion"
 
     //System Out Bridge to Logging
-    compile "uk.org.lidalia:sysout-over-slf4j:$sysoutBridgeVersion"
+    implementation "uk.org.lidalia:sysout-over-slf4j:$sysoutBridgeVersion"
 }
 
 run {
