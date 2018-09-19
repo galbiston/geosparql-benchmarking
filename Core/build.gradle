@@ -2,22 +2,15 @@
 //   for this project. This initialization is applied in the "build.gradle"
 //   of the root project.
 
-// NetBeans will automatically add "run" and "debug" tasks relying on the
-// "mainClass" property. You may however define the property prior executing
-// tasks by passing a "-PmainClass=<QUALIFIED_CLASS_NAME>" argument.
-//
-// Note however, that you may define your own "run" and "debug" task if you
-// prefer. In this case NetBeans will not add these tasks but you may rely on
-// your own implementation.
 apply plugin: 'java-library'
 
 dependencies {
-    
+
     //OpenCSV
     ext.openCSVVersion = "3.9"
     implementation "com.opencsv:opencsv:$openCSVVersion"
 
     //SLF4J
     implementation "org.slf4j:slf4j-api:$slf4jVersion"
-   
+
 }
