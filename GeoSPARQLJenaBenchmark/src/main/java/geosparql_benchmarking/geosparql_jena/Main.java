@@ -12,9 +12,9 @@ import execution.QueryLoader;
 import execution.TestSystem;
 import execution.TestSystemFactory;
 import execution_results.QueryResult;
-import geosparql_jena.implementation.GeoSPARQLSupport;
+import geosparql_jena.configuration.GeoSPARQLConfig;
+import geosparql_jena.configuration.GeoSPARQLOperations;
 import geosparql_jena.implementation.data_conversion.ConvertData;
-import geosparql_jena.implementation.data_conversion.GeoSPARQLPredicates;
 import geosparql_jena.implementation.datatype.WKTDatatype;
 import geosparql_jena.implementation.vocabulary.SRS_URI;
 import java.io.File;
@@ -318,7 +318,7 @@ public class Main {
             //Output file will go in the new folder.
             File outputFile = new File(outputFolder, outputFilename);
 
-            GeoSPARQLPredicates.applyFile(datasetFile, Lang.NT, outputFile, Lang.NT);
+            GeoSPARQLOperations.applyDefaultGeometry(datasetFile, Lang.NT, outputFile, Lang.NT);
         }
     }
 
@@ -338,7 +338,7 @@ public class Main {
     public static void test() {
 
         Dataset dataset = TDBFactory.createDataset(GEOSPARQL_JENA_TDB_FOLDER.getAbsolutePath());
-        GeoSPARQLSupport.setupMemoryIndex();
+        GeoSPARQLConfig.setupMemoryIndex();
         String queryString = "PREFIX geof: <http://www.opengis.net/def/function/geosparql/>\n"
                 + "PREFIX datasets: <http://geographica.di.uoa.gr/dataset/>                           \n"
                 + "PREFIX geonames: <http://www.geonames.org/ontology#>                               \n"

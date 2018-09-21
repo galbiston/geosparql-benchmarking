@@ -7,7 +7,7 @@ package geosparql_benchmarking.geosparql_jena;
 
 import execution.TestSystem;
 import execution_results.QueryResult;
-import geosparql_jena.implementation.GeoSPARQLSupport;
+import geosparql_jena.configuration.GeoSPARQLConfig;
 import geosparql_jena.implementation.index.IndexConfiguration.IndexOption;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
@@ -60,8 +60,8 @@ public class GeosparqlJena_TestSystem implements TestSystem {
         this.indexOption = indexOption;
         this.isUnionDefaultGraph = isUnionDefaultGraph;
         try {
-            GeoSPARQLSupport.setup(indexOption);
-            GeoSPARQLSupport.reset();
+            GeoSPARQLConfig.setup(indexOption);
+            GeoSPARQLConfig.reset();
         } catch (Exception ex) {
             throw new AssertionError("Issue accessing GeosparqlJena library. " + ex.getMessage());
         }
@@ -91,7 +91,7 @@ public class GeosparqlJena_TestSystem implements TestSystem {
             TDBFactory.release(dataset);
         }
         dataset = null;
-        GeoSPARQLSupport.reset();
+        GeoSPARQLConfig.reset();
         try {
             System.gc();
             Thread.sleep(5000); //Sleep for 5s to allow any Operating System clearing.
