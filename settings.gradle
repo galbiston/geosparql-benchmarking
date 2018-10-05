@@ -1,4 +1,4 @@
-rootProject.name = 'GeoSPARQLBenchmarking'
+rootProject.name = 'geosparql-benchmarking'
 
 enableFeaturePreview('STABLE_PUBLISHING')
 

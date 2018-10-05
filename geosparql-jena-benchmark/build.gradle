@@ -8,7 +8,7 @@ if (!hasProperty('mainClass')) {
 dependencies {
 
     //Core Benchmarking Project
-    implementation project(":Core")
+    implementation project(":core-benchmark")
 
     //GeoSPARQL Extension
     ext.geosparqlVersion = "1.0.0"
