@@ -10,9 +10,9 @@ import com.hp.hpl.jena.query.ResultSetFormatter;
 import data_setup.BenchmarkParameters;
 import data_setup.GraphURI;
 import execution.BenchmarkExecution;
-import execution.ExecutionParameters;
 import execution.QueryCase;
 import execution.TestSystem;
+import execution.cli.ExecutionParameters;
 import execution_results.QueryResult;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -41,10 +41,11 @@ public class Main {
     public static void main(String[] args) {
 
         try {
-            ExecutionParameters parameters = ExecutionParameters.extract(args);
+            ExecutionParameters parameters = ExecutionParameters.extract("Parliament", args);
 
             Parliament_TestSystemFactory testSystemFactory = new Parliament_TestSystemFactory(PARLIAMENT_RESULTS_FOLDER_NAME, PARLIAMENT_KNOWLEDGE_BASE_FOLDER);
             BenchmarkExecution.runType(testSystemFactory, parameters);
+
         } catch (Exception ex) {
             LOGGER.error("{} for arguments {}", ex.getMessage(), args);
         }

@@ -6,12 +6,12 @@ import data_setup.Dataset_CRS84;
 import data_setup.Dataset_WGS84_Legacy;
 import data_setup.GraphURI;
 import execution.BenchmarkExecution;
-import execution.ExecutionParameters;
 import execution.QueryCase;
 import execution.QueryLoader;
 import execution.TestSystem;
 import execution.TestSystemFactory;
 import execution_results.QueryResult;
+import geosparql_benchmarking.geosparql_jena.cli.JenaExecutionParameters;
 import io.github.galbiston.geosparql_jena.configuration.GeoSPARQLConfig;
 import io.github.galbiston.geosparql_jena.configuration.GeoSPARQLOperations;
 import io.github.galbiston.geosparql_jena.implementation.data_conversion.ConvertData;
@@ -57,12 +57,6 @@ public class Main {
     public static final String GEOSPARL_JENA_NO_INDEX_RESULTS_FOLDER_NAME = "geosparql_jena_no_index";
     public static final File GEOSPARQL_SCHEMA_FILE = new File("geosparql_vocab_all_v1_0_1_updated.rdf");
 
-    private static final Integer ARGUMENT_OFFSET = 1;
-
-    public static enum SystemType {
-        TDB, TDB_UNION, MEMORY, MEMORY_UNION, NO_INDEX
-    }
-
     /**
      * @param args the command line arguments
      */
@@ -70,34 +64,11 @@ public class Main {
         //args = new String[]{"tdb_union", "micro_union", "both"};
 
         try {
-            SystemType systemType = SystemType.valueOf(args[0].toUpperCase());
 
-            ExecutionParameters parameters = ExecutionParameters.extract(args, ARGUMENT_OFFSET);
-
-            TestSystemFactory testSystemFactory;
-            switch (systemType) {
-                case TDB:
-                    testSystemFactory = new GeosparqlJenaTDB_TestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_TDB_RESULTS_FOLDER_NAME, parameters.getInferenceEnabled());
-                    break;
-                case TDB_UNION:
-                    testSystemFactory = new GeosparqlJenaTDBUnion_TestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_TDB_UNION_RESULTS_FOLDER_NAME, parameters.getInferenceEnabled());
-                    break;
-                case NO_INDEX:
-                    testSystemFactory = new GeosparqlJenaTDBNoIndex_TestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_NO_INDEX_RESULTS_FOLDER_NAME, parameters.getInferenceEnabled());
-                    break;
-                case MEMORY_UNION:
-                    Dataset memDataset = DatasetFactory.createTxnMem();
-                    GeosparqlJenaInMemoryUnion_TestSystemFactory.loadDataset(parameters.getDatasetMap(), parameters.getInferenceEnabled(), memDataset);
-                    testSystemFactory = new GeosparqlJenaInMemoryUnion_TestSystemFactory(memDataset, GEOSPARL_JENA_IN_MEMORY_UNION_RESULTS_FOLDER_NAME, parameters.getInferenceEnabled());
-                    break;
-                default:
-                    memDataset = DatasetFactory.createTxnMem();
-                    GeosparqlJenaInMemory_TestSystemFactory.loadDataset(parameters.getDatasetMap(), parameters.getInferenceEnabled(), memDataset);
-                    testSystemFactory = new GeosparqlJenaInMemory_TestSystemFactory(memDataset, GEOSPARL_JENA_IN_MEMORY_RESULTS_FOLDER_NAME, parameters.getInferenceEnabled());
-                    break;
-            }
-
+            JenaExecutionParameters parameters = JenaExecutionParameters.extract("GeoSPARQL", args);
+            TestSystemFactory testSystemFactory = buildTestSystemFactory(parameters);
             BenchmarkExecution.runType(testSystemFactory, parameters);
+
         } catch (Exception ex) {
             LOGGER.error("{} for arguments {}", ex.getMessage(), args);
         }
@@ -135,6 +106,34 @@ public class Main {
         //rdfsJenaMemTest(memDataset);
         //generateGeonamesFile();
         //generatePoints();
+    }
+
+    public static TestSystemFactory buildTestSystemFactory(JenaExecutionParameters parameters) {
+        SystemType systemType = parameters.getSystemType();
+        TestSystemFactory testSystemFactory;
+        switch (systemType) {
+            case TDB:
+                testSystemFactory = new GeosparqlJenaTDB_TestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_TDB_RESULTS_FOLDER_NAME, parameters.getInferenceEnabled());
+                break;
+            case TDB_UNION:
+                testSystemFactory = new GeosparqlJenaTDBUnion_TestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_TDB_UNION_RESULTS_FOLDER_NAME, parameters.getInferenceEnabled());
+                break;
+            case NO_INDEX:
+                testSystemFactory = new GeosparqlJenaTDBNoIndex_TestSystemFactory(GEOSPARQL_JENA_TDB_FOLDER, GEOSPARL_JENA_NO_INDEX_RESULTS_FOLDER_NAME, parameters.getInferenceEnabled());
+                break;
+            case MEMORY_UNION:
+                Dataset memDataset = DatasetFactory.createTxnMem();
+                GeosparqlJenaInMemoryUnion_TestSystemFactory.loadDataset(parameters.getDatasetMap(), parameters.getInferenceEnabled(), memDataset);
+                testSystemFactory = new GeosparqlJenaInMemoryUnion_TestSystemFactory(memDataset, GEOSPARL_JENA_IN_MEMORY_UNION_RESULTS_FOLDER_NAME, parameters.getInferenceEnabled());
+                break;
+            default:
+                memDataset = DatasetFactory.createTxnMem();
+                GeosparqlJenaInMemory_TestSystemFactory.loadDataset(parameters.getDatasetMap(), parameters.getInferenceEnabled(), memDataset);
+                testSystemFactory = new GeosparqlJenaInMemory_TestSystemFactory(memDataset, GEOSPARL_JENA_IN_MEMORY_RESULTS_FOLDER_NAME, parameters.getInferenceEnabled());
+                break;
+        }
+
+        return testSystemFactory;
     }
 
     public static void runPartsTDB(Boolean inferenceEnabled) {

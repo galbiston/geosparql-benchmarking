@@ -1,5 +1,6 @@
 package execution;
 
+import execution.cli.ExecutionParameters;
 import execution_results.DatasetLoadResult;
 import execution_results.IterationResult;
 import execution_results.QueryResult;
@@ -25,10 +26,6 @@ public class BenchmarkExecution {
 
     public static final File RESULTS_FOLDER = new File("../results");
 
-    public static enum BenchmarkType {
-        BOTH, WARM, COLD, CONFORMANCE, DATALOAD
-    }
-
     static {
         RESULTS_FOLDER.mkdir();
     }
@@ -43,7 +40,9 @@ public class BenchmarkExecution {
      * @param parameters
      */
     public static void runType(TestSystemFactory testSystemFactory, ExecutionParameters parameters) {
-        runType(testSystemFactory, parameters.getIterations(), parameters.getTimeout(), parameters.getQueryCases(), parameters.getLineLimit(), parameters.getBenchmarkType(), parameters.getDatasetMap());
+        if (parameters.isReady()) {
+            runType(testSystemFactory, parameters.getIterations(), parameters.getTimeout(), parameters.getQueryCases(), parameters.getLineLimit(), parameters.getBenchmarkType(), parameters.getDatasetMap());
+        }
     }
 
     /**

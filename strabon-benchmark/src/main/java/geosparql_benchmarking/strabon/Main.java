@@ -4,9 +4,9 @@ import data_setup.GraphURI;
 import eu.earthobservatory.runtime.postgis.Strabon;
 import eu.earthobservatory.utils.Format;
 import execution.BenchmarkExecution;
-import execution.ExecutionParameters;
 import execution.TestSystem;
 import execution.TestSystemFactory;
+import execution.cli.ExecutionParameters;
 import execution_results.QueryResult;
 import java.io.File;
 import java.io.IOException;
@@ -51,8 +51,10 @@ public class Main {
 
             Strabon_TestSystemFactory testSystemFactory = new Strabon_TestSystemFactory(dbName, user, password, port, host, resultsFolder, inferenceEnabled, baseURI, format, postgresBinPath, postgresDataPath, databaseTemplate);
 
-            ExecutionParameters parameters = ExecutionParameters.extract(args);
+            ExecutionParameters parameters = ExecutionParameters.extract("Strabon", args);
+
             BenchmarkExecution.runType(testSystemFactory, parameters);
+
         } catch (Exception ex) {
             LOGGER.error("{} for arguments {}", ex.getMessage(), args);
         }
@@ -88,7 +90,7 @@ public class Main {
         String queryString = "SELECT ?sub ?obj WHERE{ GRAPH <" + GraphURI.LGD_URI + "> { ?sub " + property + " ?obj}}LIMIT 1";
         //String queryString = "SELECT ?sub ?obj WHERE{ ?sub " + property +  " ?obj}LIMIT 1";
 
-        //Strabon doesn't seem to apply RDFS inferencing even though ahs a paraemter when data loading.
+        //Strabon doesn't seem to apply RDFS inferencing even though it has a paraemter when data loading.
         //Geographica benchmarking paper (page 10) and running this query show it doesn't.
         try (Strabon_TestSystem strabonTestSystem = testSystemFactory.getStrabonTestSystem()) {
             Strabon strabon = strabonTestSystem.getStrabon();

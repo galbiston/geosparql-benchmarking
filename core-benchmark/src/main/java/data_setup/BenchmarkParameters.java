@@ -13,7 +13,7 @@ import java.time.Duration;
  */
 public class BenchmarkParameters {
 
-    public static final Integer ITERATIONS = 5; //1;
+    public static final Integer ITERATIONS = 10; //1;
     public static final Duration TIMEOUT = Duration.ofSeconds(3600);
 
     /**

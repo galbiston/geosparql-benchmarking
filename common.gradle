@@ -36,6 +36,12 @@ dependencies {
 
     //System Out Bridge to Logging
     ext.sysoutBridgeVersion = "1.0.2"
+    
+    //JCommander
+    ext.jcommanderVersion = "1.72"
+    
+    //OpenCSV
+    ext.openCSVVersion = "3.9"
 }
 
 String mavenArtifactId = name

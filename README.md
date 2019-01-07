@@ -1,8 +1,20 @@
-Geosparql Benchmarking
+#Geosparql Benchmarking
 
 This framework is for the testing the performance and feature set of three RDF spatial databases: GeosparqlJena, Parliament and Strabon.
 
---GeosparqlJena
+##Command Line Parameters
+Parameters are provided on a positional basis only.
+
+1) 
+
+##Benchmark Test Systems
+
+###Core
+Contains the classes and interfaces to execute the benchmark. New test systems can be incorporated by implementing the `execute.TestSystem` and `execute.TestSystemFactory`.
+The `execute.TestSystem` provides the individual instances for each iteration of the benchmark queries. 
+The `execute.TestSystemFactory` handles the dataset loading, instances of `execute.TestSystem` and results location.
+
+###GeosparqlJena
 
 Setup: There is one step to follow in setting up GeosparqlJena. That is running the project or calling GeoSPARQLSupport.loadFunctions() in a Java application. This is already done by the test system.
 
@@ -12,7 +24,7 @@ stats (reference).opt - Apache Jena TDB has a TDB Optimizer that provides counts
 
 geosparql_jena_tdb - The GeosparqlJena datasets are stored in this folder. It is a Apache Jena TDB2 folder. Deleting this folder will require reloading of the datasets.
 
---Parliament
+###Parliament
 
 Setup: There are several steps to follow in setting up Parliament. These have been followed to setup the benchmarking framework in a Windows 10 x64 environment. Every effort has been made to ensure the benchmarking framework is platform agnostic or easily adaptable. The Parliament distributions contain a more up-to date User Guide than provided on the main website page. More information and downloads from: http://parliament.semwebcentral.org/ and http://semwebcentral.org/frs/?group_id=159
 
@@ -24,15 +36,16 @@ ParliamentConfig.txt - Configuration of Parliament is through this file in the p
 
 parliament_kb - The Parliament knowledge base contains the loaded datasets and their indexes. Deleting this folder will require reloading of the datasets.
 
---Strabon
+###Strabon
 
 Setup: There are several steps to follow in setting up Strabon. These have been followed to setup the benchmarking framework in a Windows 10 x64 environment. Every effort has been made to ensure the benchmarking framework is platform agnostic or easily adaptable. A key manual step is the creation of the PostGIS template database called "template_postgis" which is used during dataset loading trials. The single dataset loading and query benchmarking assume that a "endpoint" database has been created using this template (see pgAdmin instructions) with port=5432, host="localhost", user="postgres" and password="postgres". These are all the same values as provided in the Strabon setup instructions and can be modified in the Strabon project Main class. Setup steps are available from: http://www.strabon.di.uoa.gr/
 
 postgresql.conf - Tuning of Postgres requires modification of this file in PostrgreSQL/version/data. A copy of the file used is provided in the Strabon project folder. The appended values need to occur once in the file so existing values may need commenting out (e.g. shared_buffers, max_connections). The Strabon suggested values do not align with those on the "Tuning Your PostgreSQL Server" wiki page (https://wiki.postgresql.org/wiki/Tuning_Your_PostgreSQL_Server) or exceed maximums to start PostgreSQL10 (on Windows at least). Adjustment of the memory values resulted in repeated issues with Strabon running out of shared memory. More information is available in the Strabon distribution README available from: http://hg.strabon.di.uoa.gr/Strabon and https://github.com/esarbanis/strabon
 
 
-Benchmarking Versions
+##Benchmarking Versions
 
 GeosparqlJena - 1.0.0 (Apache Jena 3.7.0)
 Parliament - 2.7.10 released 2016-01-06
 Strabon - 3.3.2-SNAPSHOT on 2018-03-22 (PostgreSQL 10.3, PostGIS 2.4) - No releases could be found.
+

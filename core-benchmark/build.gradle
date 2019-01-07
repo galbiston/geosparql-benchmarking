@@ -6,11 +6,12 @@ apply plugin: 'java-library'
 
 dependencies {
 
-    //OpenCSV
-    ext.openCSVVersion = "3.9"
+    //OpenCSV   
     implementation "com.opencsv:opencsv:$openCSVVersion"
 
     //SLF4J
     implementation "org.slf4j:slf4j-api:$slf4jVersion"
 
+    //JCommander
+    implementation "com.beust:jcommander:$jcommanderVersion"
 }
