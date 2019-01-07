@@ -125,7 +125,7 @@ public class MicroBenchmark {
      * that is not specified in the GeoSPARQL standard.
      *
      * @param queryFormat
-     * @return
+     * @return List of query cases.
      */
     public static final List<QueryCase> loadAggregationsQueries(QueryFormat queryFormat) {
         String queryFolder = selectQueryFolder(queryFormat, AGGREGATIONS);
@@ -140,7 +140,7 @@ public class MicroBenchmark {
      * 28 and 29).
      *
      * @param queryFormat
-     * @return
+     * @return List of query cases.
      */
     public static final List<QueryCase> loadMainQuerySet(QueryFormat queryFormat) {
         List<QueryCase> queryCases = new ArrayList<>();
@@ -154,7 +154,7 @@ public class MicroBenchmark {
      * Query 6 uses Strabon only syntax "strdf:area" that is not specified in
      * the GeoSPARQL standard.
      *
-     * @return
+     * @return List of query cases.
      */
     public static final List<QueryCase> loadNonTopologicalFunctionsQuery_6() {
         List<QueryCase> queryCases = new ArrayList<>();
@@ -167,7 +167,7 @@ public class MicroBenchmark {
      * files.
      *
      * @param queryFormat
-     * @return
+     * @return List of query cases.
      */
     public static final List<QueryCase> loadSpatialSelectionsQueries(QueryFormat queryFormat) {
         String queryFolder = selectQueryFolder(queryFormat, SPATIAL_SELECTIONS);
@@ -216,7 +216,7 @@ public class MicroBenchmark {
      * syntax that is not specified in the GeoSPARQL standard.
      *
      * @param queryFormat
-     * @return
+     * @return List of query cases.
      */
     public static final List<QueryCase> loadNonTopologicalFunctionsQueries(QueryFormat queryFormat) {
         String queryFolder = selectQueryFolder(queryFormat, NON_TOPOLOGICAL_FUNCTIONS);

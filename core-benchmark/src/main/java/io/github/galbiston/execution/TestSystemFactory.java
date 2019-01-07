@@ -39,14 +39,14 @@ public interface TestSystemFactory {
      *
      * @param datasetMap
      * @param iteration
-     * @return
+     * @return Result of dataset load.
      */
     public DatasetLoadResult loadDataset(TreeMap<String, File> datasetMap, Integer iteration);
 
     /**
      * Clears the entire contents of the dataset.
      *
-     * @return
+     * @return If dataset clearance successful.
      */
     public Boolean clearDataset();
 
@@ -54,7 +54,7 @@ public interface TestSystemFactory {
      * Clear the entire contents of the dataset before loading fresh data.
      *
      * @param datasetMap
-     * @return
+     * @return If dataset clearance successful.
      */
     public Boolean clearLoadDataset(TreeMap<String, File> datasetMap);
 }
