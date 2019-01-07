@@ -46,7 +46,7 @@ public class Main {
 
         try {
 
-            JenaExecutionParameters parameters = JenaExecutionParameters.extract("GeoSPARQL", args);
+            JenaExecutionParameters parameters = JenaExecutionParameters.extract("GeoSPARQL-Jena", args);
             TestSystemFactory testSystemFactory = buildTestSystemFactory(parameters);
             BenchmarkExecution.runType(testSystemFactory, parameters);
 
