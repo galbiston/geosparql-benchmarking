@@ -17,7 +17,7 @@
  */
 package io.github.galbiston.geosparql_benchmarking.geosparql_jena;
 
-import io.github.galbiston.execution.QueryTask;
+import io.github.galbiston.geosparql_benchmarking.execution.QueryTask;
 import io.github.galbiston.geosparql_benchmarking.execution_results.VarValue;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;

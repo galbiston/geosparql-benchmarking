@@ -17,12 +17,12 @@
  */
 package io.github.galbiston.geosparql_benchmarking.strabon;
 
-import io.github.galbiston.data_setup.GraphURI;
 import eu.earthobservatory.runtime.postgis.Strabon;
 import eu.earthobservatory.utils.Format;
-import io.github.galbiston.execution.BenchmarkExecution;
-import io.github.galbiston.execution.TestSystem;
-import io.github.galbiston.execution.TestSystemFactory;
+import io.github.galbiston.geosparql_benchmarking.data_setup.GraphURI;
+import io.github.galbiston.geosparql_benchmarking.execution.BenchmarkExecution;
+import io.github.galbiston.geosparql_benchmarking.execution.TestSystem;
+import io.github.galbiston.geosparql_benchmarking.execution.TestSystemFactory;
 import io.github.galbiston.geosparql_benchmarking.execution_results.QueryResult;
 import java.io.File;
 import java.io.IOException;

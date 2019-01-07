@@ -18,9 +18,9 @@
 package io.github.galbiston.geosparql_benchmarking.strabon;
 
 import eu.earthobservatory.runtime.postgis.Strabon;
-import io.github.galbiston.execution.BenchmarkExecution;
-import io.github.galbiston.execution.TestSystem;
-import io.github.galbiston.execution.TestSystemFactory;
+import io.github.galbiston.geosparql_benchmarking.execution.BenchmarkExecution;
+import io.github.galbiston.geosparql_benchmarking.execution.TestSystem;
+import io.github.galbiston.geosparql_benchmarking.execution.TestSystemFactory;
 import io.github.galbiston.geosparql_benchmarking.execution_results.DatasetLoadResult;
 import io.github.galbiston.geosparql_benchmarking.execution_results.DatasetLoadTimeResult;
 import java.io.File;

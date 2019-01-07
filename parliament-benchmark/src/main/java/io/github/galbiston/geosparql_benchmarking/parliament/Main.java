@@ -17,7 +17,7 @@
  */
 package io.github.galbiston.geosparql_benchmarking.parliament;
 
-import io.github.galbiston.execution.BenchmarkExecution;
+import io.github.galbiston.geosparql_benchmarking.execution.BenchmarkExecution;
 import io.github.galbiston.geosparql_benchmarking.execution.cli.ExecutionParameters;
 import java.io.File;
 import java.lang.invoke.MethodHandles;

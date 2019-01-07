@@ -19,7 +19,7 @@ package io.github.galbiston.geosparql_benchmarking.strabon;
 
 import eu.earthobservatory.runtime.postgis.Strabon;
 import eu.earthobservatory.utils.Format;
-import io.github.galbiston.execution.QueryTask;
+import io.github.galbiston.geosparql_benchmarking.execution.QueryTask;
 import io.github.galbiston.geosparql_benchmarking.execution_results.VarValue;
 import java.util.ArrayList;
 import java.util.List;

@@ -18,8 +18,8 @@
 package io.github.galbiston.geosparql_benchmarking.strabon;
 
 import eu.earthobservatory.runtime.postgis.Strabon;
-import io.github.galbiston.execution.QueryTask;
-import io.github.galbiston.execution.TestSystem;
+import io.github.galbiston.geosparql_benchmarking.execution.QueryTask;
+import io.github.galbiston.geosparql_benchmarking.execution.TestSystem;
 import io.github.galbiston.geosparql_benchmarking.execution_results.QueryResult;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;

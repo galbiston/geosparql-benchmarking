@@ -17,50 +17,15 @@
  */
 package io.github.galbiston.geosparql_benchmarking.geosparql_jena;
 
-import io.github.galbiston.data_setup.BenchmarkParameters;
-import io.github.galbiston.data_setup.DataGeneration;
-import io.github.galbiston.data_setup.Dataset_CRS84;
-import io.github.galbiston.data_setup.Dataset_WGS84_Legacy;
-import io.github.galbiston.data_setup.GraphURI;
-import io.github.galbiston.execution.BenchmarkExecution;
-import io.github.galbiston.execution.QueryCase;
-import io.github.galbiston.execution.QueryLoader;
-import io.github.galbiston.execution.TestSystem;
-import io.github.galbiston.execution.TestSystemFactory;
-import io.github.galbiston.geosparql_benchmarking.execution_results.QueryResult;
+import io.github.galbiston.geosparql_benchmarking.execution.BenchmarkExecution;
+import io.github.galbiston.geosparql_benchmarking.execution.TestSystemFactory;
 import io.github.galbiston.geosparql_benchmarking.geosparql_jena.cli.JenaExecutionParameters;
-import io.github.galbiston.geosparql_jena.configuration.GeoSPARQLConfig;
-import io.github.galbiston.geosparql_jena.configuration.GeoSPARQLOperations;
-import io.github.galbiston.geosparql_jena.implementation.data_conversion.ConvertData;
-import io.github.galbiston.geosparql_jena.implementation.datatype.WKTDatatype;
-import io.github.galbiston.geosparql_jena.implementation.vocabulary.SRS_URI;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.TreeMap;
-import org.apache.commons.io.FileUtils;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.ReadWrite;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.query.ResultSetFormatter;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.tdb.TDBFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import io.github.galbiston.geosparql_benchmarking.queries.geographica.MicroBenchmark;
-import static io.github.galbiston.geosparql_benchmarking.queries.geographica.MicroBenchmark.SPATIAL_SELECTIONS;
-import static io.github.galbiston.geosparql_benchmarking.queries.geographica.MicroBenchmark.loadQueryResources;
-import io.github.galbiston.geosparql_benchmarking.queries.geographica.QueryFormat;
 
 public class Main {
 
@@ -117,6 +82,5 @@ public class Main {
 
         return testSystemFactory;
     }
-
 
 }
