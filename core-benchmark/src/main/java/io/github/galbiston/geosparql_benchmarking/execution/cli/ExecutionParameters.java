@@ -75,6 +75,10 @@ public class ExecutionParameters {
     @Parameter(names = {"--help", "-h"}, description = "Application help. @path/to/file can be used to submit parameters in a file.", help = true, order = 7)
     private boolean help = false;
 
+    public String getQueryCaseName() {
+        return queryCaseName;
+    }
+
     public List<QueryCase> getQueryCases() {
         return queryCases;
     }
@@ -87,8 +91,16 @@ public class ExecutionParameters {
         return inferenceEnabled;
     }
 
+    public String getDatasetName() {
+        return datasetInfo.getDatasetName();
+    }
+
     public TreeMap<String, File> getDatasetMap() {
         return datasetInfo.getDatasetMap();
+    }
+
+    public DatasetInfo getDatasetInfo() {
+        return datasetInfo;
     }
 
     public Integer getIterations() {
