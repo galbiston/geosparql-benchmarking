@@ -93,7 +93,7 @@ A set of queries without these `GRAPH` clauses is provided and are termed "union
 ## Benchmarking Versions
 The following versions of the test systems were successfully utilised with the framework.
 
-* Geosparql-Jena: 1.0.0 (Apache Jena 3.7.0)
+* GeoSPARQL-Jena: 1.0.0 (Apache Jena 3.7.0)
 * Parliament: 2.7.10 released 2016-01-06
 * Strabon: 3.3.2-SNAPSHOT on 2018-03-22 (PostgreSQL 10.3, PostGIS 2.4) - No releases could be found.
 
