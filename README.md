@@ -3,9 +3,13 @@
 This framework is for the testing the performance and feature set of three RDF spatial databases: GeosparqlJena, Parliament and Strabon.
 
 ##Command Line Parameters
-Parameters are provided on a positional basis only.
+Parameters are provided using .
 
 1) 
+
+###GeoSPARQL-Jena Additional Parameter
+
+8) 
 
 ##Benchmark Test Systems
 
@@ -49,3 +53,7 @@ GeosparqlJena - 1.0.0 (Apache Jena 3.7.0)
 Parliament - 2.7.10 released 2016-01-06
 Strabon - 3.3.2-SNAPSHOT on 2018-03-22 (PostgreSQL 10.3, PostGIS 2.4) - No releases could be found.
 
+##TODO
+
+- Conformance testing of GeoSPARQL standard: partial implementation of queries has been undertaken but needs finalising.
+- Results comparison: automatic comparison of tables of generated results need comparing between test systems and ideal datasets.
