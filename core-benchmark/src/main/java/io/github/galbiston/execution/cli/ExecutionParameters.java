@@ -23,6 +23,8 @@ import io.github.galbiston.data_setup.BenchmarkParameters;
 import io.github.galbiston.execution.BenchmarkType;
 import io.github.galbiston.execution.DatasetInfo;
 import io.github.galbiston.execution.QueryCase;
+import static io.github.galbiston.execution.cli.DatasetConverter.USER_PREFIX;
+import io.github.galbiston.queries.geosparql.GeosparqlBenchmark;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
@@ -30,7 +32,6 @@ import java.util.List;
 import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import io.github.galbiston.queries.geosparql.GeosparqlBenchmark;
 
 /**
  *
@@ -62,7 +63,7 @@ public class ExecutionParameters {
 
     //6) Dataset Map
     @Parameter(names = {"--dataset", "-d"}, description = "Dataset to be used in benchmarking. Either 'GreekGrid', 'WGS84', 'WGS84_Legacy', 'CRS84' or a file/folder path to load.", converter = DatasetConverter.class, order = 5)
-    private DatasetInfo datasetInfo = DatasetInfo.WGS_84;
+    private DatasetInfo datasetInfo = DatasetInfo.CRS_84;
 
     //7) Query Cases
     @Parameter(names = {"--queryCases", "-q"}, description = "Query cases to be used in benchmarking. Either 'micro', 'macro', 'geosparql' (or other more specific sets in 'query' package) or a file/folder path to load.", order = 6)
@@ -122,6 +123,12 @@ public class ExecutionParameters {
     protected void finish() {
         //Query case loading can be dependent upon the number of iterations, i.e. macro queries.
         queryCases = QueryCaseLoader.load(queryCaseName, iterations);
+
+        //Ensure that the conformance dataset is used by default when type is conformance and not a user dataset.
+        String datasetName = datasetInfo.getDatasetName();
+        if (benchmarkType.equals(BenchmarkType.CONFORMANCE) && !datasetName.startsWith(USER_PREFIX)) {
+            datasetInfo = DatasetInfo.CONFORMANCE;
+        }
     }
 
     public static ExecutionParameters extract(String benchmarkName, String[] args) {

@@ -29,6 +29,8 @@ import java.util.TreeMap;
  */
 public class DatasetConverter implements IStringConverter<DatasetInfo> {
 
+    public static final String USER_PREFIX = "User: ";
+
     @Override
     public DatasetInfo convert(String datasetName) {
 
@@ -57,7 +59,7 @@ public class DatasetConverter implements IStringConverter<DatasetInfo> {
                         datasetMap.put(GraphURI.USER + file.getName(), file);
                     }
 
-                    return new DatasetInfo("User: " + fileArg.getName(), datasetMap);
+                    return new DatasetInfo(USER_PREFIX + fileArg.getName(), datasetMap);
 
                 } else {
                     throw new IllegalArgumentException("Unknown Data Set: " + datasetName + ". Expected 'GreekGrid', 'WGS84', 'WGS84_Legacy', 'CRS84' or a file/folder path to load.");
