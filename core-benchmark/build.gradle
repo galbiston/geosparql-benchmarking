@@ -3,6 +3,8 @@
 //   of the root project.
 
 apply plugin: 'java-library'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
 dependencies {
 
@@ -14,4 +16,82 @@ dependencies {
 
     //JCommander
     implementation "com.beust:jcommander:$jcommanderVersion"
+}
+
+
+group = 'io.github.galbiston'
+version = '1.0.0'
+
+
+task javadocJar(type: Jar) {
+    from javadoc
+    classifier = 'javadoc'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                artifactId = 'geosparql-benchmarking-core'
+                from components.java
+                artifact sourcesJar
+                artifact javadocJar
+                pom {
+                    name = 'GeoSPARQL Benchmarking Core Library'
+                    description = 'Core library for GeoSPARQL benchmarking framework.'
+                    url = 'https://github.com/galbiston/geosparql-benchmarking'
+                    licenses {
+                        license {
+                            name = 'The Apache License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+                    developers {
+                        developer {
+                            name = 'Greg Albiston'
+                            email = 'galbiston@mail.com'
+                        }
+                    }
+                    scm {
+                        connection = 'scm:git:git://github.com/galbiston/geosparql-benchmarking.git'
+                        developerConnection = 'scm:git:ssh://git@github.com:galbiston/geosparql-benchmarking.git'
+                        url = 'https://github.com/galbiston/geosparql-benchmarking'
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            credentials {
+                username sonatypeUsername
+                password sonatypePassword
+            }
+        }
+    }
+}
+
+build.finalizedBy(publishToMavenLocal)
+
+signing {
+    sign publishing.publications.mavenJava
+}
+
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html4', true)
+    }
+}
+
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
+        tasks.withType(JavaCompile) {
+            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+        }
+    }
 }
