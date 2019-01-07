@@ -31,7 +31,7 @@ geopsarql_vocab_all.rdf - This file provides the schema for Geosparql 1.0. The f
 
 stats.opt - Apache Jena TDB has a TDB Optimizer that provides counts of resources and properties in the dataset. In the benchmarking framework this would be regenerated each time the dataset is loaded and included in the load timings. This file is provided for reference of the counts in the whole benchmarking dataset should there be an issue with future optimising then it should be placed in the geosparql_jena_tdb folder. More information on the TDB Optimizer is available from: https://jena.apache.org/documentation/tdb/optimizer.html#running-tdbstats
 
-geosparql_jena_tdb - The GeosparqlJena datasets are stored in this folder. It is a Apache Jena TDB2 folder. Deleting this folder will require reloading of the datasets.
+geosparql_jena_tdb - The GeoSPARQL-Jena datasets are stored in this folder. It is a Apache Jena TDB2 folder. Deleting this folder will require reloading of the datasets.
 
 ### Parliament
 
@@ -93,7 +93,7 @@ A set of queries without these `GRAPH` clauses is provided and are termed "union
 ## Benchmarking Versions
 The following versions of the test systems were successfully utilised with the framework.
 
-* GeosparqlJena: 1.0.0 (Apache Jena 3.7.0)
+* Geosparql-Jena: 1.0.0 (Apache Jena 3.7.0)
 * Parliament: 2.7.10 released 2016-01-06
 * Strabon: 3.3.2-SNAPSHOT on 2018-03-22 (PostgreSQL 10.3, PostGIS 2.4) - No releases could be found.
 
