@@ -19,7 +19,7 @@ package io.github.galbiston.geosparql_benchmarking.geosparql_jena.cli;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import io.github.galbiston.execution.cli.ExecutionParameters;
+import io.github.galbiston.geosparql_benchmarking.execution.cli.ExecutionParameters;
 import io.github.galbiston.geosparql_benchmarking.geosparql_jena.SystemType;
 
 /**

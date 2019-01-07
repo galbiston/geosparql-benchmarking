@@ -27,7 +27,7 @@ import io.github.galbiston.execution.QueryCase;
 import io.github.galbiston.execution.QueryLoader;
 import io.github.galbiston.execution.TestSystem;
 import io.github.galbiston.execution.TestSystemFactory;
-import io.github.galbiston.execution_results.QueryResult;
+import io.github.galbiston.geosparql_benchmarking.execution_results.QueryResult;
 import io.github.galbiston.geosparql_jena.configuration.GeoSPARQLConfig;
 import io.github.galbiston.geosparql_jena.configuration.GeoSPARQLOperations;
 import io.github.galbiston.geosparql_jena.implementation.data_conversion.ConvertData;
@@ -56,9 +56,9 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.tdb.TDBFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import io.github.galbiston.queries.geographica.MicroBenchmark;
-import static io.github.galbiston.queries.geographica.MicroBenchmark.loadQueryResources;
-import io.github.galbiston.queries.geographica.QueryFormat;
+import io.github.galbiston.geosparql_benchmarking.queries.geographica.MicroBenchmark;
+import static io.github.galbiston.geosparql_benchmarking.queries.geographica.MicroBenchmark.loadQueryResources;
+import io.github.galbiston.geosparql_benchmarking.queries.geographica.QueryFormat;
 
 /**
  *

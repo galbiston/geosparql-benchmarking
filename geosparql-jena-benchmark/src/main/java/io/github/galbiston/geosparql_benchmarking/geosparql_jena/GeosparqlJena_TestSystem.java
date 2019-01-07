@@ -18,7 +18,7 @@
 package io.github.galbiston.geosparql_benchmarking.geosparql_jena;
 
 import io.github.galbiston.execution.TestSystem;
-import io.github.galbiston.execution_results.QueryResult;
+import io.github.galbiston.geosparql_benchmarking.execution_results.QueryResult;
 import io.github.galbiston.geosparql_jena.configuration.GeoSPARQLConfig;
 import io.github.galbiston.geosparql_jena.implementation.index.IndexConfiguration.IndexOption;
 import java.io.File;

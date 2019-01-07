@@ -27,7 +27,7 @@ import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import io.github.galbiston.execution.QueryTask;
-import io.github.galbiston.execution_results.VarValue;
+import io.github.galbiston.geosparql_benchmarking.execution_results.VarValue;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Iterator;

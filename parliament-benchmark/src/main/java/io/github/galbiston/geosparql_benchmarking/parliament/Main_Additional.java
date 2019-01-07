@@ -29,7 +29,7 @@ import io.github.galbiston.data_setup.GraphURI;
 import io.github.galbiston.execution.BenchmarkExecution;
 import io.github.galbiston.execution.QueryCase;
 import io.github.galbiston.execution.TestSystem;
-import io.github.galbiston.execution_results.QueryResult;
+import io.github.galbiston.geosparql_benchmarking.execution_results.QueryResult;
 import static io.github.galbiston.geosparql_benchmarking.parliament.Main.PARLIAMENT_KNOWLEDGE_BASE_FOLDER;
 import static io.github.galbiston.geosparql_benchmarking.parliament.Main.PARLIAMENT_RESULTS_FOLDER_NAME;
 import java.io.File;

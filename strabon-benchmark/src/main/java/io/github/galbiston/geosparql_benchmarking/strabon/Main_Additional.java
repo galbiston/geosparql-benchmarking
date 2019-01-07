@@ -23,7 +23,7 @@ import eu.earthobservatory.utils.Format;
 import io.github.galbiston.execution.BenchmarkExecution;
 import io.github.galbiston.execution.TestSystem;
 import io.github.galbiston.execution.TestSystemFactory;
-import io.github.galbiston.execution_results.QueryResult;
+import io.github.galbiston.geosparql_benchmarking.execution_results.QueryResult;
 import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;

@@ -18,7 +18,7 @@
 package io.github.galbiston.geosparql_benchmarking.strabon;
 
 import io.github.galbiston.execution.BenchmarkExecution;
-import io.github.galbiston.execution.cli.ExecutionParameters;
+import io.github.galbiston.geosparql_benchmarking.execution.cli.ExecutionParameters;
 import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

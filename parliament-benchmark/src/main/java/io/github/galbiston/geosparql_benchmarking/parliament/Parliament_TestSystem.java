@@ -37,7 +37,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
 import io.github.galbiston.execution.QueryTask;
 import io.github.galbiston.execution.TestSystem;
-import io.github.galbiston.execution_results.QueryResult;
+import io.github.galbiston.geosparql_benchmarking.execution_results.QueryResult;
 import java.lang.invoke.MethodHandles;
 import java.util.Iterator;
 import java.util.Properties;
