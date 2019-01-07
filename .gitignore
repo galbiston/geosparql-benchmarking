@@ -13,7 +13,7 @@ gradle-app.setting
 # Cache of project
 .gradletasknamecache
 /.nb-gradle/
-
+.nb-gradle-properties
 
 datasets_*
 geosparql_jena_*
@@ -24,3 +24,4 @@ lgd-parliament.ttl
 results
 *.log
 crash_screenshot.PNG
+BenchmarkingDocs
