@@ -1,7 +1,8 @@
 #Geosparql Benchmarking
 
 This Java framework is for testing the performance of three RDF spatial databases: Geosparql-Jena, Parliament and Strabon.
-The framework tests a subset of the GeoSPARQL standard using the queries and datasets based on the Geographica project (http://geographica.di.uoa.gr/). 
+The framework tests a subset of the GeoSPARQL standard using the queries and datasets based on the Geographica project (http://geographica.di.uoa.gr/) and the paper "Geographica: A Benchmark
+for Geospatial RDF Stores". 
 A core library is used for the benchmark with two interfaces needing to be implemented to add additional test systems.
 
 The dependencies of each test system being benchmarked must be independently satisfied.
