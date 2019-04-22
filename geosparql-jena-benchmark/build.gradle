@@ -11,7 +11,7 @@ dependencies {
     implementation project(":core-benchmark")
 
     //GeoSPARQL Extension
-    ext.geosparqlVersion = "1.1.0"
+    ext.geosparqlVersion = "1.1.1"
     implementation "io.github.galbiston:geosparql-jena:$geosparqlVersion"
 
     ext.jenaVersion = "3.10.0"
