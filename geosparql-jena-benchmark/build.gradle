@@ -11,10 +11,12 @@ dependencies {
     implementation project(":core-benchmark")
 
     //GeoSPARQL Extension
-    ext.geosparqlVersion = "1.0.0"
+    ext.geosparqlVersion = "1.1.0"
     implementation "io.github.galbiston:geosparql-jena:$geosparqlVersion"
 
-    implementation ('org.apache.jena:jena-cmds:3.8.0'){
+    ext.jenaVersion = "3.10.0"
+    implementation "org.apache.jena:jena-tdb:$jenaVersion"
+    implementation ("org.apache.jena:jena-cmds:$jenaVersion"){
         exclude group: "org.apache.jena", module: "apache-jena-libs"
         exclude group: "org.slf4j", module: "slf4j-log4j12"
     }
@@ -24,6 +26,9 @@ dependencies {
 
     //System Out Bridge to Logging
     implementation "uk.org.lidalia:sysout-over-slf4j:$sysoutBridgeVersion"
+
+    //JCommander
+    implementation "com.beust:jcommander:$jcommanderVersion"
 }
 
 run {

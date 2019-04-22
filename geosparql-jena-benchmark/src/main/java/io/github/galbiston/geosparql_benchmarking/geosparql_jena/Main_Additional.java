@@ -33,7 +33,6 @@ import static io.github.galbiston.geosparql_benchmarking.queries.geographica.Mic
 import io.github.galbiston.geosparql_benchmarking.queries.geographica.QueryFormat;
 import io.github.galbiston.geosparql_jena.configuration.GeoSPARQLConfig;
 import io.github.galbiston.geosparql_jena.configuration.GeoSPARQLOperations;
-import io.github.galbiston.geosparql_jena.implementation.data_conversion.ConvertData;
 import io.github.galbiston.geosparql_jena.implementation.datatype.WKTDatatype;
 import io.github.galbiston.geosparql_jena.implementation.vocabulary.SRS_URI;
 import java.io.File;
@@ -191,7 +190,7 @@ public class Main_Additional {
         File outputFolder = Dataset_CRS84.FOLDER;
         Lang outputLanguage = Lang.NTRIPLES;
         String outputSrsURI = SRS_URI.DEFAULT_WKT_CRS84;
-        ConvertData.convertFolder(inputFolder, inputLanguage, outputFolder, outputLanguage, outputSrsURI);
+        GeoSPARQLOperations.convertFolder(inputFolder, inputLanguage, outputFolder, outputLanguage, outputSrsURI);
     }
 
     private static void equalsTest2() {
@@ -309,7 +308,7 @@ public class Main_Additional {
         System.out.println("convertCRS");
         String geometryLiteral = "<http://www.opengis.net/def/crs/EPSG/0/4326> POINT(37.98 23.71)";
         String outputSrsURI = "http://www.opengis.net/def/crs/EPSG/0/2100";
-        String convertedGeometryLiteral = ConvertData.convertGeometryLiteral(geometryLiteral, outputSrsURI, WKTDatatype.INSTANCE);
+        String convertedGeometryLiteral = GeoSPARQLOperations.convertGeometryLiteral(geometryLiteral, outputSrsURI, WKTDatatype.INSTANCE);
         System.out.println("Original: " + geometryLiteral);
         System.out.println("Conversion: " + convertedGeometryLiteral);
     }
