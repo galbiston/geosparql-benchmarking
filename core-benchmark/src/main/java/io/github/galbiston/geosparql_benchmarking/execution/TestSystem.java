@@ -28,4 +28,6 @@ public interface TestSystem extends Closeable {
 
     public QueryTask getQueryTask(String query);
 
+    public void setIsConformanceTestSystem(boolean b);
+
 }

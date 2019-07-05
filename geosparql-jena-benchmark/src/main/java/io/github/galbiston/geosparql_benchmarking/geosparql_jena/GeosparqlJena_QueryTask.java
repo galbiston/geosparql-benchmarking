@@ -53,20 +53,28 @@ public class GeosparqlJena_QueryTask extends QueryTask {
     private ResultSet rs;
     private boolean queryExecutionError;
     private String queryExecutionErrorMsg;
+    private boolean isConformanceTestSytem;
 
-    public GeosparqlJena_QueryTask(String queryString, Dataset dataset, Boolean isUnionDefaultGraph) {
+    public GeosparqlJena_QueryTask(String queryString, Dataset dataset, Boolean isUnionDefaultGraph, int i) {
         this.queryString = queryString;
         this.dataset = dataset;
         this.isUnionDefaultGraph = isUnionDefaultGraph;
     }
 
+    public GeosparqlJena_QueryTask(String queryString, Dataset dataset, Boolean isUnionDefaultGraph, boolean isConformanceTestSytem) {
+        this.queryString = queryString;
+        this.dataset = dataset;
+        this.isUnionDefaultGraph = isUnionDefaultGraph;
+        this.isConformanceTestSytem = isConformanceTestSytem;
+    }
+
     @Override
     protected void prepareQuery() {
         dataset.begin(ReadWrite.READ);
-         queryExecutionError = false;
+        queryExecutionError = false;
         //todo: if statement for conformance testing
         //qexec = QueryExecutionFactory.create(queryString, dataset);
-        qexec = QueryExecutionFactory.create(queryString, dataset.getNamedModel("Conformance"));    
+        qexec = QueryExecutionFactory.create(queryString, dataset.getNamedModel("Conformance"));
         if (isUnionDefaultGraph) {
             qexec.getContext().set(TDB.symUnionDefaultGraph, true);
         }
@@ -75,32 +83,40 @@ public class GeosparqlJena_QueryTask extends QueryTask {
 
     @Override
     protected void executeQuery() {
-            while (rs.hasNext()) {
-                QuerySolution qs = rs.next();
-                Iterator<String> varNames = qs.varNames();
-                List<VarValue> result = new ArrayList<>();
+        while (rs.hasNext()) {
+            QuerySolution qs = rs.next();
+            Iterator<String> varNames = qs.varNames();
+            List<VarValue> result = new ArrayList<>();
 
-                while (varNames.hasNext()) {
-                    String varName = varNames.next();
-                    String valueStr;
-                    RDFNode solution = qs.get(varName);
-                    if (solution.isLiteral()) {
-                        Literal literal = solution.asLiteral();
-                        //todo: if statement for conformance testing
-                        valueStr = literal.asNode().toString();//.getLexicalForm();
-                    } else if (solution.isResource()) {
-                        Resource resource = solution.asResource();
-                        valueStr = resource.getURI();
-                    } else {
-                        Node anon = solution.asNode();
-                        valueStr = anon.getBlankNodeLabel();
-                        LOGGER.error("Anon Node result: {}", valueStr);
+            while (varNames.hasNext()) {
+                String varName = varNames.next();
+                String valueStr;
+                RDFNode solution = qs.get(varName);
+                
+                //valueStr = "This is NOT a Conformance Test System";//literal.getLexicalForm();
+                //if (isConformanceTestSytem) {
+                //    valueStr = "YES this is a Conformance Test System";//literal.asNode().toString();
+                //}
+                
+                if (solution.isLiteral()) {
+                    Literal literal = solution.asLiteral();
+                    valueStr = literal.getLexicalForm();
+                    if (!isConformanceTestSytem) {
+                        valueStr = literal.asNode().toString();
                     }
-                    VarValue varValue = new VarValue(varName, valueStr);
-                    result.add(varValue);
+                } else if (solution.isResource()) {
+                    Resource resource = solution.asResource();
+                    valueStr = resource.getURI();;
+                } else {
+                    Node anon = solution.asNode();
+                    valueStr = anon.getBlankNodeLabel();
+                    LOGGER.error("Anon Node result: {}", valueStr);
                 }
-                results.add(result);
+                VarValue varValue = new VarValue(varName, valueStr);
+                result.add(varValue);
             }
+            results.add(result);
+        }
     }
 
     @Override
@@ -108,7 +124,7 @@ public class GeosparqlJena_QueryTask extends QueryTask {
         qexec.close();
         dataset.end();
     }
-    
+
     public boolean isQueryExecutionError() {
         return queryExecutionError;
     }
@@ -125,4 +141,11 @@ public class GeosparqlJena_QueryTask extends QueryTask {
         this.queryExecutionErrorMsg = queryExecutionErrorMsg;
     }
 
+    public boolean isIsConformanceTestSytem() {
+        return isConformanceTestSytem;
+    }
+
+    public void setIsConformanceTestSytem(boolean isConformanceTestSytem) {
+        this.isConformanceTestSytem = isConformanceTestSytem;
+    }
 }

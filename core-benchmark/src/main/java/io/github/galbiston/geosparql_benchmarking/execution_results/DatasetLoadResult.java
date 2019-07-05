@@ -20,13 +20,18 @@ package io.github.galbiston.geosparql_benchmarking.execution_results;
 import com.opencsv.CSVWriter;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.time.Duration;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -153,7 +158,7 @@ public class DatasetLoadResult {
         FileWriter fr = null;
         BufferedWriter br = null;
 
-        LOGGER.info("------ Saving Query Results to file:" + queryResult);
+        LOGGER.info("------ Saving Query Results to file:" + queryResult.toString());
 
         try {
             fr = new FileWriter(file);
@@ -177,7 +182,7 @@ public class DatasetLoadResult {
         }
     }
     
-         /**
+    /**
      * Using BufferedWriter to reduce real IO operations and saves time
      * @param queryResult
      * @param queryResultFileName
@@ -229,5 +234,5 @@ public class DatasetLoadResult {
             }
         }
     }
-
+    
 }

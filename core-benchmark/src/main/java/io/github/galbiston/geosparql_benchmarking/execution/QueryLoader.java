@@ -89,7 +89,7 @@ public class QueryLoader {
 
     public static final QueryCase readQueryXMLFile(String filepath, int count, String groupName) {
         QueryCase queryCase = null;
-  
+
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(QueryCase.class);
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
@@ -137,7 +137,7 @@ public class QueryLoader {
 //               for(QueryResultSeverity q : queryCase.getQueryResultSeverity()) {
 //                 System.out.println(" QueryResultSeverity : " + i++ + " : " + q.name());
 //               }
-               
+
                 return queryCase;
             } catch (FileNotFoundException ex) {
                 LOGGER.error("Could not open query file: {}#{}", queryCase, ex.getMessage());
@@ -185,9 +185,9 @@ public class QueryLoader {
         for (File file : files) {
 
             if (file.isDirectory()) {
-                List<QueryCase> folderQueryCases = readFolderXML(file, count);
-                count += folderQueryCases.size();
-                queryCases.addAll(folderQueryCases);
+                //List<QueryCase> folderQueryCases = readFolderXML(file, count);
+                //count += folderQueryCases.size();
+                //queryCases.addAll(folderQueryCases);
             } else {
                 count++;
                 String filepath = file.getAbsolutePath();

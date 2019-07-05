@@ -24,6 +24,7 @@ import io.github.galbiston.geosparql_benchmarking.execution_results.QueryResult;
 import io.github.galbiston.geosparql_benchmarking.execution_results.DatasetLoadResult;
 import static io.github.galbiston.geosparql_benchmarking.execution_results.DatasetLoadResult.getQueryCaseXMLFiles;
 import static io.github.galbiston.geosparql_benchmarking.execution_results.DatasetLoadResult.saveQueryResult;
+import io.github.galbiston.geosparql_benchmarking.execution_results.VarValue;
 import io.github.galbiston.geosparql_benchmarking.results_validation.QueryResultsValidator;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
@@ -46,11 +47,10 @@ public class BenchmarkExecution {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     public static final File RESULTS_FOLDER = new File("../results");
-    private static boolean queryExecutionError;
-    private static String queryExecutionErrorMsg;
-    private static QueryResult queryResult;
+    private static boolean queryExecutionError = false;
     private static QueryCase queryCaseCopy;
     private static int queryIndex;
+    private static File dirNameCopy;
 
     static {
         RESULTS_FOLDER.mkdir();
@@ -278,12 +278,13 @@ public class BenchmarkExecution {
             LOGGER.info("------ DIRECTORY: " + dir.getAbsolutePath() + " ------");
 
             if (!queryCases.isEmpty()) {
-                testSystemFactory.loadDataset(dir.getAbsolutePath()+queryCases.get(0).getDatasetFileNames().get(0).trim());
+                testSystemFactory.loadDataset(dir.getAbsolutePath() + queryCases.get(0).getDatasetFileNames().get(0).trim());
 
                 LOGGER.info("------Conformance Run - System: {}, Folder: {} - Started------", testSystemName, runResultsFolder);
                 long initStartNanoTime = System.nanoTime();
                 queryIndex = 0;
                 try (TestSystem testSystem = testSystemFactory.getTestSystem()) {
+                    testSystem.setIsConformanceTestSystem(true);
                     long initEndNanoTime = System.nanoTime();
                     for (QueryCase queryCase : queryCases) {
                         String queryName = queryCase.getQueryName();
@@ -291,12 +292,17 @@ public class BenchmarkExecution {
                         File resultsFolder = new File(runResultsFolder, queryType);
                         QueryCase.writeQueryFile(runResultsFolder, queryCase, testSystemName, testTimestamp);
                         queryCaseCopy = queryCase;
+                        dirNameCopy = new File(dir, queryCase.getQueryResultsFileNames().get(queryIndex).trim());
+
                         //Benchmark executions.
                         String queryString = testSystem.translateQuery(queryCase.getQueryString());
 
                         LOGGER.info("------Conformance Iteration - System: {}, Query: {}, Type: {} - Started------", testSystemName, queryName, queryType);
-                        /*QueryResult*/ queryResult = runQueryWithTimeout(testSystem, queryString, timeout);
-                        saveQueryResult(queryResult, dir.getAbsolutePath()+queryCase.getQueryResultsFileNames().get(queryIndex).trim());
+                        QueryResult queryResult = runQueryWithTimeout(testSystem, queryString, timeout);
+
+                        if (!queryExecutionError) {
+                            saveQueryResult(queryResult, dir.getAbsolutePath() + queryCase.getQueryResultsFileNames().get(queryIndex).trim());
+                        }
                         LOGGER.info("------Conformance Iteration - System: {}, Query: {}, Type: {} - Completed------", testSystemName, queryName, queryType);
 
                         int iteration = 1;
@@ -319,7 +325,6 @@ public class BenchmarkExecution {
                 //validate Results
                 QueryResultsValidator qv = new QueryResultsValidator();
                 qv.run(dir.getAbsolutePath());
-                //qv.run(CONFORMANCE_RUN_RESULTS_FOLDER_NAME+"/components");
 
                 LOGGER.info("------Conformance Run - System: {}, Folder: {} - Completed------", testSystemName, runResultsFolder);
             }
@@ -355,14 +360,18 @@ public class BenchmarkExecution {
             ExecutorService executor = Executors.newFixedThreadPool(1);
             QueryTask runnable = testSystem.getQueryTask(query);
             Future<?> future = executor.submit(runnable);
+            queryExecutionError = false;
 
-            QueryResult queryResult;
+            QueryResult queryResult = new QueryResult();
             try {
                 LOGGER.debug("Query Future: Started");
                 future.get(timeout.getSeconds(), TimeUnit.SECONDS);
                 queryResult = runnable.getQueryResult();
                 LOGGER.debug("Query Future: Completed");
             } catch (TimeoutException | InterruptedException | ExecutionException ex) {
+                queryExecutionError = true;
+                LOGGER.info("Save Exception to:" + dirNameCopy);
+                saveQueryResult(ex.getMessage(), dirNameCopy.getAbsolutePath());
                 LOGGER.error("Query Exception: {}", ex.getMessage());
                 queryResult = new QueryResult(0, 0, 0, new ArrayList<>(), false);
             } finally {
@@ -373,9 +382,9 @@ public class BenchmarkExecution {
             return queryResult;
         } catch (Exception e) {
             queryExecutionError = true;
-            queryExecutionErrorMsg = e.toString();
-            saveQueryResult(queryExecutionErrorMsg, /*dir.getAbsolutePath()+*/queryCaseCopy.getQueryResultsFileNames().get(queryIndex));
-            //e.printStackTrace();
+            saveQueryResult("e.getMessage()", dirNameCopy.getAbsolutePath());
+            LOGGER.error("Query Exception: {}", e.getMessage());
+            LOGGER.error("---- Exception saved as result." + e.getMessage());
         }
         return null;
     }

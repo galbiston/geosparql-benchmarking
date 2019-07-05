@@ -1,1 +1,15 @@
-http://example.org/Feature#Y
+http://example.org/Feature#A
+http://example.org/Feature#B
+http://example.org/Feature#C
+http://example.org/Feature#C2
+http://example.org/Feature#D
+http://example.org/Feature#E
+http://example.org/Feature#Empty
+http://example.org/Feature#F
+http://example.org/Feature#G
+http://example.org/Feature#H
+http://example.org/Feature#I
+http://example.org/Feature#J
+http://example.org/Feature#K
+http://example.org/Feature#L
+http://example.org/Feature#X
