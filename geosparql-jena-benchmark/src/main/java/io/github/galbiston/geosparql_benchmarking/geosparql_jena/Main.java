@@ -20,8 +20,11 @@ package io.github.galbiston.geosparql_benchmarking.geosparql_jena;
 import io.github.galbiston.geosparql_benchmarking.execution.BenchmarkExecution;
 import io.github.galbiston.geosparql_benchmarking.execution.TestSystemFactory;
 import io.github.galbiston.geosparql_benchmarking.geosparql_jena.cli.JenaExecutionParameters;
+import io.github.galbiston.geosparql_benchmarking.results_validation.QueryResultSeverity;
+import io.github.galbiston.geosparql_benchmarking.results_validation.QueryResultType;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
+import java.util.logging.Level;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
 import org.slf4j.Logger;
@@ -45,13 +48,19 @@ public class Main {
     public static void main(String[] args) {
 
         try {
+            /**/
+            //createQueryCase();
 
-            JenaExecutionParameters parameters = JenaExecutionParameters.extract("GeoSPARQL-Jena", args);
-            TestSystemFactory testSystemFactory = buildTestSystemFactory(parameters);
-            BenchmarkExecution.runType(testSystemFactory, parameters);
+            try {
+                JenaExecutionParameters parameters = JenaExecutionParameters.extract("GeoSPARQL-Jena", args);
+                TestSystemFactory testSystemFactory = buildTestSystemFactory(parameters);
+                BenchmarkExecution.runType(testSystemFactory, parameters);
 
+            } catch (Exception ex) {
+                LOGGER.error("{} for arguments {}", ex.getMessage(), args);
+            }
         } catch (Exception ex) {
-            LOGGER.error("{} for arguments {}", ex.getMessage(), args);
+            java.util.logging.Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -83,4 +92,25 @@ public class Main {
         return testSystemFactory;
     }
 
+    public static void createQueryCase(/*pass params*/) {
+        QueryCaseCreator qcaseCreator = new QueryCaseCreator();
+
+        String filename = "C:\\Users\\CMP3KALONA\\Documents\\NetBeansProjects\\geosparql-benchmarking\\results\\conformance\\components\\B\\req\\topology-vocab-extension\\sf-spatial-relations\\sfContains\\poly-poly\\query.xml";
+        String queryName = "Core";
+        String queryType = "Spatial-Relation";
+        String queryString = "PREFIX geo: <http://www.opengis.net/ont/geosparql#>\n"
+                + "PREFIX geof: <http://www.opengis.net/def/function/geosparql/>\n"
+                + "SELECT ?geom\n"
+                + "WHERE{\n"
+                + "    <http://example.org/Geometry#PolygonJ> geo:sfContains <http://example.org/Geometry#PolygonL> .\n"
+                + "    BIND(<http://example.org/Geometry#PolygonL> AS ?geom) .\n"
+                + "}";
+        String expectedResFile = "C:\\Users\\CMP3KALONA\\Documents\\NetBeansProjects\\geosparql-benchmarking\\results\\conformance\\components\\B\\req\\topology-vocab-extension\\sf-spatial-relations\\sfContains\\poly-poly\\expected_results.txt";
+        String dataset = "C:\\Users\\CMP3KALONA\\Documents\\NetBeansProjects\\geosparql-benchmarking\\results\\conformance\\components\\B\\req\\topology-vocab-extension\\sf-spatial-relations\\sfContains\\poly-poly\\geosparql_conformance.rdf";
+        String resultsFile = "C:\\Users\\CMP3KALONA\\Documents\\NetBeansProjects\\geosparql-benchmarking\\results\\conformance\\components\\B\\req\\topology-vocab-extension\\sf-spatial-relations\\sfContains\\poly-poly\\query_results.txt";
+        String orderBy = "geom";
+        qcaseCreator.createQueryCaseFile(filename, queryName, queryType,
+                queryString, expectedResFile, dataset, resultsFile, orderBy, QueryResultType.PASS, QueryResultSeverity.WITH_RESULTS);
+        /**/
+    }
 }

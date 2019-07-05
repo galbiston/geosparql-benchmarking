@@ -17,10 +17,15 @@
  */
 package io.github.galbiston.geosparql_benchmarking.execution;
 
+import io.github.galbiston.geosparql_benchmarking.data_setup.GraphURI;
 import io.github.galbiston.geosparql_benchmarking.execution.cli.ExecutionParameters;
-import io.github.galbiston.geosparql_benchmarking.execution_results.DatasetLoadResult;
 import io.github.galbiston.geosparql_benchmarking.execution_results.IterationResult;
 import io.github.galbiston.geosparql_benchmarking.execution_results.QueryResult;
+import io.github.galbiston.geosparql_benchmarking.execution_results.DatasetLoadResult;
+import static io.github.galbiston.geosparql_benchmarking.execution_results.DatasetLoadResult.getQueryCaseXMLFiles;
+import static io.github.galbiston.geosparql_benchmarking.execution_results.DatasetLoadResult.saveQueryResult;
+import io.github.galbiston.geosparql_benchmarking.execution_results.VarValue;
+import io.github.galbiston.geosparql_benchmarking.results_validation.QueryResultsValidator;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.time.Duration;
@@ -42,6 +47,10 @@ public class BenchmarkExecution {
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     public static final File RESULTS_FOLDER = new File("../results");
+    private static boolean queryExecutionError = false;
+    private static QueryCase queryCaseCopy;
+    private static int queryIndex;
+    private static File dirNameCopy;
 
     static {
         RESULTS_FOLDER.mkdir();
@@ -49,7 +58,7 @@ public class BenchmarkExecution {
 
     public static final String COLD_RUN_RESULTS_FOLDER_NAME = "cold_run";
     public static final String WARM_RUN_RESULTS_FOLDER_NAME = "warm_run";
-    public static final String CONFORMANCE_RUN_RESULTS_FOLDER_NAME = "conformance_run";
+    public static final String CONFORMANCE_RUN_RESULTS_FOLDER_NAME = "../conformance_run_data";//"conformance_run";
 
     /**
      *
@@ -248,45 +257,78 @@ public class BenchmarkExecution {
      */
     public static final void runConformance(TestSystemFactory testSystemFactory, Duration timeout, List<QueryCase> queryCases, Integer resultsLineLimit) {
 
+        LOGGER.info("In runConformance");
         String testSystemName = testSystemFactory.getTestSystemName();
         String testTimestamp = LocalDateTime.now().format(IterationResult.FILE_DATE_TIME_FORMAT);
         File testSystemResultsFolder = testSystemFactory.getResultsFolder();
         File runResultsFolder = new File(testSystemResultsFolder, CONFORMANCE_RUN_RESULTS_FOLDER_NAME);
         runResultsFolder.mkdir();
-        LOGGER.info("------Conformance Run - System: {}, Folder: {} - Started------", testSystemName, runResultsFolder);
-        long initStartNanoTime = System.nanoTime();
-        try (TestSystem testSystem = testSystemFactory.getTestSystem()) {
-            long initEndNanoTime = System.nanoTime();
-            for (QueryCase queryCase : queryCases) {
-                String queryName = queryCase.getQueryName();
-                String queryType = queryCase.getQueryType();
-                File resultsFolder = new File(runResultsFolder, queryType);
-                QueryCase.writeQueryFile(runResultsFolder, queryCase, testSystemName, testTimestamp);
 
-                //Benchmark executions.
-                String queryString = testSystem.translateQuery(queryCase.getQueryString());
+        //clear default
+        queryCases.clear();
+        String rootDirectory = CONFORMANCE_RUN_RESULTS_FOLDER_NAME;
+        List<File> files = new ArrayList<>();
 
-                LOGGER.info("------Conformance Iteration - System: {}, Query: {}, Type: {} - Started------", testSystemName, queryName, queryType);
-                QueryResult queryResult = runQueryWithTimeout(testSystem, queryString, timeout);
-                LOGGER.info("------Conformance Iteration - System: {}, Query: {}, Type: {} - Completed------", testSystemName, queryName, queryType);
+        getQueryCaseXMLFiles(rootDirectory, files);
+        LOGGER.info("Folder count:" + files.size());
+        for (File dir : files) {
+            queryCases.clear();
+            queryCases = QueryLoader.readFolderXML(dir);
+            LOGGER.info("------");
+            LOGGER.info("------ DIRECTORY: " + dir.getAbsolutePath() + " ------");
 
-                int iteration = 1;
-                IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, iteration, queryResult, initStartNanoTime, initEndNanoTime);
-                //Write summary for all queries and iterations performed to a single file. Reduce footprint by writing immediately.
-                IterationResult.writeSummaryFile(runResultsFolder, iterationResult, testSystemName, testTimestamp);
+            if (!queryCases.isEmpty()) {
+                testSystemFactory.loadDataset(dir.getAbsolutePath() + queryCases.get(0).getDatasetFileNames().get(0).trim());
 
-                if (queryResult.isCompleted()) {
-                    //Write results for all iterations for each query to own file.
-                    IterationResult.writeResultsFile(resultsFolder, iterationResult, queryResult, testTimestamp, resultsLineLimit);
-                } else {
-                    LOGGER.warn("System: {}, Query: {}, Type: {} - Did not complete.", testSystemName, queryName, queryType);
+                LOGGER.info("------Conformance Run - System: {}, Folder: {} - Started------", testSystemName, runResultsFolder);
+                long initStartNanoTime = System.nanoTime();
+                queryIndex = 0;
+                try (TestSystem testSystem = testSystemFactory.getTestSystem()) {
+                    testSystem.setIsConformanceTestSystem(true);
+                    long initEndNanoTime = System.nanoTime();
+                    for (QueryCase queryCase : queryCases) {
+                        String queryName = queryCase.getQueryName();
+                        String queryType = queryCase.getQueryType();
+                        File resultsFolder = new File(runResultsFolder, queryType);
+                        QueryCase.writeQueryFile(runResultsFolder, queryCase, testSystemName, testTimestamp);
+                        queryCaseCopy = queryCase;
+                        dirNameCopy = new File(dir, queryCase.getQueryResultsFileNames().get(queryIndex).trim());
+
+                        //Benchmark executions.
+                        String queryString = testSystem.translateQuery(queryCase.getQueryString());
+
+                        LOGGER.info("------Conformance Iteration - System: {}, Query: {}, Type: {} - Started------", testSystemName, queryName, queryType);
+                        QueryResult queryResult = runQueryWithTimeout(testSystem, queryString, timeout);
+
+                        if (!queryExecutionError) {
+                            saveQueryResult(queryResult, dir.getAbsolutePath() + queryCase.getQueryResultsFileNames().get(queryIndex).trim());
+                        }
+                        LOGGER.info("------Conformance Iteration - System: {}, Query: {}, Type: {} - Completed------", testSystemName, queryName, queryType);
+
+                        int iteration = 1;
+                        IterationResult iterationResult = new IterationResult(testSystemName, queryType, queryName, queryString, iteration, queryResult, initStartNanoTime, initEndNanoTime);
+                        //Write summary for all queries and iterations performed to a single file. Reduce footprint by writing immediately.
+                        IterationResult.writeSummaryFile(runResultsFolder, iterationResult, testSystemName, testTimestamp);
+
+                        if (queryResult.isCompleted()) {
+                            //Write results for all iterations for each query to own file.
+                            IterationResult.writeResultsFile(resultsFolder, iterationResult, queryResult, testTimestamp, resultsLineLimit);
+                        } else {
+                            LOGGER.warn("System: {}, Query: {}, Type: {} - Did not complete.", testSystemName, queryName, queryType);
+                        }
+                    }
+
+                } catch (Exception ex) {
+                    LOGGER.error("Exception: {}", ex.getMessage());
                 }
-            }
-        } catch (Exception ex) {
-            LOGGER.error("Exception: {}", ex.getMessage());
-        }
 
-        LOGGER.info("------Conformance Run - System: {}, Folder: {} - Completed------", testSystemName, runResultsFolder);
+                //validate Results
+                QueryResultsValidator qv = new QueryResultsValidator();
+                qv.run(dir.getAbsolutePath());
+
+                LOGGER.info("------Conformance Run - System: {}, Folder: {} - Completed------", testSystemName, runResultsFolder);
+            }
+        }
     }
 
     public static final void runDatasetLoad(TestSystemFactory testSystemFactory, Integer iterations, TreeMap<String, File> datasetMap) {
@@ -312,27 +354,38 @@ public class BenchmarkExecution {
         DatasetLoadResult.writeSummaryFile(resultsFolder, datasetLoadResults, testSystemName, testTimestamp);
     }
 
-    public static final QueryResult runQueryWithTimeout(TestSystem testSystem, String query, Duration timeout) throws Exception {
+    public static final QueryResult runQueryWithTimeout(TestSystem testSystem, String query, Duration timeout) /*throws Exception*/ {
 
-        ExecutorService executor = Executors.newFixedThreadPool(1);
-        QueryTask runnable = testSystem.getQueryTask(query);
-        Future<?> future = executor.submit(runnable);
-
-        QueryResult queryResult;
         try {
-            LOGGER.debug("Query Future: Started");
-            future.get(timeout.getSeconds(), TimeUnit.SECONDS);
-            queryResult = runnable.getQueryResult();
-            LOGGER.debug("Query Future: Completed");
-        } catch (TimeoutException | InterruptedException | ExecutionException ex) {
-            LOGGER.error("Query Exception: {}", ex.getMessage());
-            queryResult = new QueryResult(0, 0, 0, new ArrayList<>(), false);
-        } finally {
-            LOGGER.debug("Query Future: Executor Shutdown");
-            executor.shutdown();
+            ExecutorService executor = Executors.newFixedThreadPool(1);
+            QueryTask runnable = testSystem.getQueryTask(query);
+            Future<?> future = executor.submit(runnable);
+            queryExecutionError = false;
+
+            QueryResult queryResult = new QueryResult();
+            try {
+                LOGGER.debug("Query Future: Started");
+                future.get(timeout.getSeconds(), TimeUnit.SECONDS);
+                queryResult = runnable.getQueryResult();
+                LOGGER.debug("Query Future: Completed");
+            } catch (TimeoutException | InterruptedException | ExecutionException ex) {
+                queryExecutionError = true;
+                LOGGER.info("Save Exception to:" + dirNameCopy);
+                saveQueryResult(ex.getMessage(), dirNameCopy.getAbsolutePath());
+                LOGGER.error("Query Exception: {}", ex.getMessage());
+                queryResult = new QueryResult(0, 0, 0, new ArrayList<>(), false);
+            } finally {
+                LOGGER.debug("Query Future: Executor Shutdown");
+                executor.shutdown();
+            }
+
+            return queryResult;
+        } catch (Exception e) {
+            queryExecutionError = true;
+            saveQueryResult("e.getMessage()", dirNameCopy.getAbsolutePath());
+            LOGGER.error("Query Exception: {}", e.getMessage());
+            LOGGER.error("---- Exception saved as result." + e.getMessage());
         }
-
-        return queryResult;
+        return null;
     }
-
 }

@@ -18,6 +18,7 @@
 package io.github.galbiston.geosparql_benchmarking.geosparql_jena;
 
 import io.github.galbiston.geosparql_benchmarking.execution.QueryTask;
+import static io.github.galbiston.geosparql_benchmarking.execution_results.DatasetLoadResult.saveQueryResult;
 import io.github.galbiston.geosparql_benchmarking.execution_results.VarValue;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -50,17 +51,30 @@ public class GeosparqlJena_QueryTask extends QueryTask {
     private final Boolean isUnionDefaultGraph;
     private QueryExecution qexec;
     private ResultSet rs;
+    private boolean queryExecutionError;
+    private String queryExecutionErrorMsg;
+    private boolean isConformanceTestSytem;
 
-    public GeosparqlJena_QueryTask(String queryString, Dataset dataset, Boolean isUnionDefaultGraph) {
+    public GeosparqlJena_QueryTask(String queryString, Dataset dataset, Boolean isUnionDefaultGraph, int i) {
         this.queryString = queryString;
         this.dataset = dataset;
         this.isUnionDefaultGraph = isUnionDefaultGraph;
     }
 
+    public GeosparqlJena_QueryTask(String queryString, Dataset dataset, Boolean isUnionDefaultGraph, boolean isConformanceTestSytem) {
+        this.queryString = queryString;
+        this.dataset = dataset;
+        this.isUnionDefaultGraph = isUnionDefaultGraph;
+        this.isConformanceTestSytem = isConformanceTestSytem;
+    }
+
     @Override
     protected void prepareQuery() {
         dataset.begin(ReadWrite.READ);
-        qexec = QueryExecutionFactory.create(queryString, dataset);
+        queryExecutionError = false;
+        //todo: if statement for conformance testing
+        //qexec = QueryExecutionFactory.create(queryString, dataset);
+        qexec = QueryExecutionFactory.create(queryString, dataset.getNamedModel("Conformance"));
         if (isUnionDefaultGraph) {
             qexec.getContext().set(TDB.symUnionDefaultGraph, true);
         }
@@ -78,12 +92,21 @@ public class GeosparqlJena_QueryTask extends QueryTask {
                 String varName = varNames.next();
                 String valueStr;
                 RDFNode solution = qs.get(varName);
+                
+                //valueStr = "This is NOT a Conformance Test System";//literal.getLexicalForm();
+                //if (isConformanceTestSytem) {
+                //    valueStr = "YES this is a Conformance Test System";//literal.asNode().toString();
+                //}
+                
                 if (solution.isLiteral()) {
                     Literal literal = solution.asLiteral();
                     valueStr = literal.getLexicalForm();
+                    if (!isConformanceTestSytem) {
+                        valueStr = literal.asNode().toString();
+                    }
                 } else if (solution.isResource()) {
                     Resource resource = solution.asResource();
-                    valueStr = resource.getURI();
+                    valueStr = resource.getURI();;
                 } else {
                     Node anon = solution.asNode();
                     valueStr = anon.getBlankNodeLabel();
@@ -102,4 +125,27 @@ public class GeosparqlJena_QueryTask extends QueryTask {
         dataset.end();
     }
 
+    public boolean isQueryExecutionError() {
+        return queryExecutionError;
+    }
+
+    public void setQueryExecutionError(boolean queryExecutionError) {
+        this.queryExecutionError = queryExecutionError;
+    }
+
+    public String getQueryExecutionErrorMsg() {
+        return queryExecutionErrorMsg;
+    }
+
+    public void setQueryExecutionErrorMsg(String queryExecutionErrorMsg) {
+        this.queryExecutionErrorMsg = queryExecutionErrorMsg;
+    }
+
+    public boolean isIsConformanceTestSytem() {
+        return isConformanceTestSytem;
+    }
+
+    public void setIsConformanceTestSytem(boolean isConformanceTestSytem) {
+        this.isConformanceTestSytem = isConformanceTestSytem;
+    }
 }

@@ -228,4 +228,9 @@ public class GeosparqlJenaTDB_TestSystemFactory implements TestSystemFactory {
             TDBFactory.release(dataset);
         }
     }
+
+    @Override
+    public void loadDataset(String path) {
+        throw new UnsupportedOperationException("Not supported yet."); 
+    }
 }

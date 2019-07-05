@@ -41,6 +41,7 @@ public class GeosparqlJena_TestSystem implements TestSystem {
     private Dataset dataset;
     private IndexOption indexOption;
     private Boolean isUnionDefaultGraph;
+    public boolean isConformanceTestSystem = false;
 
     public GeosparqlJena_TestSystem(File datasetFolder, IndexOption indexOption, Boolean isUnionDefaultGraph) {
         //Access the datset from the folder.
@@ -81,7 +82,7 @@ public class GeosparqlJena_TestSystem implements TestSystem {
 
     @Override
     public GeosparqlJena_QueryTask getQueryTask(String query) {
-        return new GeosparqlJena_QueryTask(query, dataset, isUnionDefaultGraph);
+        return new GeosparqlJena_QueryTask(query, dataset, isUnionDefaultGraph, isConformanceTestSystem);
     }
 
     @Override
@@ -117,6 +118,11 @@ public class GeosparqlJena_TestSystem implements TestSystem {
     public String translateQuery(String query) {
         //No query translation required.
         return query;
+    }
+
+    @Override
+    public void setIsConformanceTestSystem(boolean b) {
+       this.isConformanceTestSystem = b;
     }
 
 }

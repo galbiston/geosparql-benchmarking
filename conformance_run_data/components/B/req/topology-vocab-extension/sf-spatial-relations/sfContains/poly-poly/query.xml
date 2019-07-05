@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<queryCase>
+<queryType>core</queryType>
+<queryName>spatial-object-class__</queryName>
+<queryStrings>PREFIX geo: &lt;http://www.opengis.net/ont/geosparql#&gt;
+  SELECT ?feature WHERE{
+                 ?feature rdf:type geo:Feature .
+                 } ORDER BY ?feature</queryStrings>
+<expectedResultsFileNames>/expected_results.txt</expectedResultsFileNames>
+<queryResultsFileNames>/query_results.txt</queryResultsFileNames>
+<datasetFileNames>/geosparql_conformance.rdf</datasetFileNames>
+<queryOrderBys>geom</queryOrderBys>
+<queryResultType>PASS</queryResultType>
+<queryResultSeverity>WITH_RESULTS</queryResultSeverity>
+</queryCase>

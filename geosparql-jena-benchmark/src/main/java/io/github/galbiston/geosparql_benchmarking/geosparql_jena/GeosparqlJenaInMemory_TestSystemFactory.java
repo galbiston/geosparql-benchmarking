@@ -84,7 +84,7 @@ public class GeosparqlJenaInMemory_TestSystemFactory implements TestSystemFactor
     public DatasetLoadResult loadDataset(TreeMap<String, File> datasetMap, Integer iteration) {
         return loadDataset(datasetMap, inferenceEnabled, dataset, iteration);
     }
-
+    
     @Override
     public Boolean clearLoadDataset(TreeMap<String, File> datasetMap) {
 
@@ -153,5 +153,16 @@ public class GeosparqlJenaInMemory_TestSystemFactory implements TestSystemFactor
         long endNanoTime = System.nanoTime();
         LOGGER.info("Geosparql Jena Memory Loading: Completed");
         return new DatasetLoadResult(TEST_SYSTEM_NAME, isCompleted, iteration, startNanoTime, endNanoTime, datasetLoadTimeResults);
+    }
+    
+    @Override
+    public void loadDataset(String modelFileName) {
+        LOGGER.info("GeosparqlConf Jena Memory Loading: Conformance Dataset Started");
+        Model geosparqlSchema = RDFDataMgr.loadModel(new File(modelFileName).getAbsolutePath());
+        dataset.begin(ReadWrite.WRITE);
+        dataset.addNamedModel("Conformance", geosparqlSchema);
+        dataset.commit();
+        dataset.end();
+        LOGGER.info("GeosparqlConf Jena Memory Loading: Conformance Dataset Completed");
     }
 }
