@@ -274,4 +274,9 @@ public class Strabon_TestSystem implements TestSystem {
         return translatedQuery;
     }
 
+    @Override
+    public void setIsConformanceTestSystem(boolean b) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

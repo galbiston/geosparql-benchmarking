@@ -161,4 +161,8 @@ public class Parliament_TestSystem implements TestSystem {
         return factory;
     }
 
+    @Override
+    public void setIsConformanceTestSystem(boolean b) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

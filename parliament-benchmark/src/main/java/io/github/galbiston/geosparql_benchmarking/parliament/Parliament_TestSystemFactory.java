@@ -196,4 +196,9 @@ public class Parliament_TestSystemFactory implements TestSystemFactory {
         return new DatasetLoadResult(TEST_SYSTEM_NAME, isCompleted, iteration, startNanoTime, endNanoTime, datasetLoadTimeResults);
     }
 
+    @Override
+    public void loadDataset(String datasetFileName) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
