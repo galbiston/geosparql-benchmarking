@@ -47,8 +47,6 @@ public class Main {
      */
     public static void main(String[] args) {
 
-        PropertyTestMethods.docreate();
-
         try {
             /**/
             //createQueryCase();
