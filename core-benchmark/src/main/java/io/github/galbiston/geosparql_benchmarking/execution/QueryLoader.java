@@ -17,15 +17,24 @@
  */
 package io.github.galbiston.geosparql_benchmarking.execution;
 
+import io.github.galbiston.geosparql_benchmarking.results_validation.QueryResultSeverity;
+import io.github.galbiston.geosparql_benchmarking.results_validation.QueryResultType;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,6 +81,73 @@ public class QueryLoader {
         return new QueryCase(queryName, queryGroupName, readFile(filepath));
     }
 
+    public static Optional<String> getExtensionByStringHandling(String filename) {
+        return Optional.ofNullable(filename)
+                .filter(f -> f.contains("."))
+                .map(f -> f.substring(filename.lastIndexOf(".") + 1));
+    }
+
+    public static final QueryCase readQueryXMLFile(String filepath, int count, String groupName) {
+        QueryCase queryCase = null;
+  
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(QueryCase.class);
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+
+//            System.out.println("Output from XML File: " + filepath);
+            Unmarshaller um = jaxbContext.createUnmarshaller();
+
+            try {
+                queryCase = (QueryCase) um.unmarshal(new FileReader(filepath));
+//               System.out.println(" queryName: " + queryCase.getQueryName());
+//               System.out.println(" queryType: " + queryCase.getQueryType());
+//               
+//               Integer i = 1; 
+//               for(String q : queryCase.getQueryStrings()) {
+//                 System.out.println(" queryStrings : " + i++ + " : " + q);
+//               }
+//               
+//               i = 1;
+//               for(String q : queryCase.getExpectedResultsFileNames()) {
+//                 System.out.println(" ExpectedResultsFileNames : " + i++ + " : " + q);
+//               }         
+//               
+//               i = 1;
+//               for(String q : queryCase.setQueryResultsFileNames()) {
+//                 System.out.println(" QueryResultsFileNames : " + i++ + " : " + q);
+//               }               
+//               
+//               i = 1;
+//               for(String q : queryCase.getDatasetFileNames()) {
+//                 System.out.println(" DatasetFileNames : " + i++ + " : " + q);
+//               }
+//
+//               i = 1;
+//               for(String q : queryCase.getQueryOrderBys()) {
+//                 System.out.println(" QueryOrderBys : " + i++ + " : " + q);
+//               }
+//               
+//               i = 1;
+//               for(QueryResultType q : queryCase.getQueryResultType()) {
+//                 System.out.println(" QueryResultType : " + i++ + " : " + q.name());
+//               }
+//               
+//               i = 1;
+//               for(QueryResultSeverity q : queryCase.getQueryResultSeverity()) {
+//                 System.out.println(" QueryResultSeverity : " + i++ + " : " + q.name());
+//               }
+               
+                return queryCase;
+            } catch (FileNotFoundException ex) {
+                LOGGER.error("Could not open query file: {}#{}", queryCase, ex.getMessage());
+            }
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static final List<QueryCase> readFolder(File directory) {
         return readFolder(directory, 0);
     }
@@ -95,6 +171,43 @@ public class QueryLoader {
             }
         }
         return queryCases;
+    }
+
+    public static final List<QueryCase> readFolderXML(File directory) {
+        return readFolderXML(directory, 0);
+    }
+
+    public static final List<QueryCase> readFolderXML(File directory, int count) {
+
+        List<QueryCase> queryCases = new ArrayList<>();
+        File[] files = directory.listFiles();
+
+        for (File file : files) {
+
+            if (file.isDirectory()) {
+                List<QueryCase> folderQueryCases = readFolderXML(file, count);
+                count += folderQueryCases.size();
+                queryCases.addAll(folderQueryCases);
+            } else {
+                count++;
+                String filepath = file.getAbsolutePath();
+                File pf = new File(filepath);
+
+                if (pf.isFile() && getFileExtensionName(pf).indexOf("xml") != -1) {
+                    QueryCase queryCase = readQueryXMLFile(filepath, count, directory.getName());
+                    checkIteration(queryCases, queryCase);
+                }
+            }
+        }
+        return queryCases;
+    }
+
+    public static String getFileExtensionName(File f) {
+        if (f.getName().indexOf(".") == -1) {
+            return "";
+        } else {
+            return f.getName().substring(f.getName().length() - 3, f.getName().length());
+        }
     }
 
     private static void checkIteration(List<QueryCase> queryCases, QueryCase queryCase) {

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<queryCase>
+<queryType>core</queryType>
+<queryName>feature-class__</queryName>
+<queryStrings>PREFIX geo: &lt;http://www.opengis.net/ont/geosparql#&gt;
+PREFIX geof: &lt;http://www.opengis.net/def/function/geosparql/&gt;
+
+SELECT ?geom
+WHERE{
+    &lt;http://example.org/Feature#X&gt; geo:sfContains &lt;http://example.org/Feature#Y&gt; .
+    BIND(&lt;http://example.org/Feature#Y&gt; AS ?geom) .
+}</queryStrings>
+<expectedResultsFileNames>/expected_results.txt</expectedResultsFileNames>
+<queryResultsFileNames>/query_results.txt</queryResultsFileNames>
+<datasetFileNames>/geosparql_conformance.rdf</datasetFileNames>
+<queryOrderBys>geom</queryOrderBys>
+<queryResultType>PASS</queryResultType>
+<queryResultSeverity>WITH_RESULTS</queryResultSeverity>
+</queryCase>

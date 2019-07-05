@@ -1,0 +1,1 @@
+QueryType:core QueryName:spatial-object-class__ Expected:PASS - WITH_RESULTS Result:FAILED

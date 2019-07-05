@@ -57,4 +57,12 @@ public interface TestSystemFactory {
      * @return If dataset clearance successful.
      */
     public Boolean clearLoadDataset(TreeMap<String, File> datasetMap);
+
+    /**
+     * Clear the entire contents of the dataset before loading fresh data.
+     *
+     * @param datasetFileName
+     * @return If dataset clearance successful.
+     */
+    public void loadDataset(String datasetFileName);
 }

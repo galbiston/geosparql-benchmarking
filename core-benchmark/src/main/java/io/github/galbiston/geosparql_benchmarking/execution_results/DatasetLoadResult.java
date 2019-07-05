@@ -18,6 +18,7 @@
 package io.github.galbiston.geosparql_benchmarking.execution_results;
 
 import com.opencsv.CSVWriter;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -140,4 +141,93 @@ public class DatasetLoadResult {
             LOGGER.error("IOException: {}", ex.getMessage());
         }
     }
+    
+     /**
+     * Using BufferedWriter to reduce real IO operations and saves time
+     * @param queryResult
+     * @param queryResultFileName
+     */
+    public static void saveQueryResult(QueryResult queryResult, String queryResultFileName) {
+        
+        File file = new File(queryResultFileName);
+        FileWriter fr = null;
+        BufferedWriter br = null;
+
+        LOGGER.info("------ Saving Query Results to file:" + queryResult);
+
+        try {
+            fr = new FileWriter(file);
+            br = new BufferedWriter(fr);
+
+            for (List<VarValue> vvList : queryResult.getResults()) {
+                for (VarValue vv : vvList) {
+                    //LOGGER.info("VAR:" + vv.toString());
+                     br.write(vv.getValue().replace("\"",""));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                br.close();
+                fr.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+         /**
+     * Using BufferedWriter to reduce real IO operations and saves time
+     * @param queryResult
+     * @param queryResultFileName
+     */
+    public static void saveQueryResult(String queryResult, String queryResultFileName) {
+
+        File file = new File(queryResultFileName);
+        FileWriter fr = null;
+        BufferedWriter br = null;
+
+        LOGGER.info("------ Saving Query Results to file:" + queryResult);
+
+        try {
+            fr = new FileWriter(file);
+            br = new BufferedWriter(fr);
+
+            br.write(queryResult.replace("\"", ""));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                br.close();
+                fr.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    public static void getQueryCaseXMLFiles(String directoryName, List<File> files) {
+        File directory = new File(directoryName);
+
+        //System.out.println("FILE:"+directory.getAbsolutePath());
+        // Get all files from a directory.
+        File[] fList = directory.listFiles();
+        if (fList != null) {
+            for (File file : fList) {
+                if (file.isFile()) {
+                    String testFiles = "query_results.txt|conformance_results.txt";
+                    if (testFiles.toLowerCase().contains(file.getName().toLowerCase())) {
+                        System.out.println("DELETE:" + file);
+                        file.delete();
+                    }
+                } else if (file.isDirectory()) {
+                    getQueryCaseXMLFiles(file.getAbsolutePath(), files);
+                    System.out.println(file);
+                    files.add(file);
+                }
+            }
+        }
+    }
+
 }

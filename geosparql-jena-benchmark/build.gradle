@@ -1,8 +1,8 @@
 apply plugin: 'application'
-mainClassName = 'geosparql_benchmarking.geosparql_jena.Main'
+mainClassName = 'io.github.galbiston.geosparql_benchmarking.geosparql_jena.Main'
 
 if (!hasProperty('mainClass')) {
-    ext.mainClass = 'geosparql_benchmarking.geosparql_jena.Main'
+    ext.mainClass = 'io.github.galbiston.geosparql_benchmarking.geosparql_jena.Main'
 }
 
 dependencies {
@@ -29,6 +29,9 @@ dependencies {
 
     //JCommander
     implementation "com.beust:jcommander:$jcommanderVersion"
+    
+    //JAXB
+    compile "com.sun.xml.bind:jaxb-core:2.2.7"
 }
 
 run {

@@ -18,6 +18,7 @@
 package io.github.galbiston.geosparql_benchmarking.geosparql_jena;
 
 import io.github.galbiston.geosparql_benchmarking.execution.QueryTask;
+import static io.github.galbiston.geosparql_benchmarking.execution_results.DatasetLoadResult.saveQueryResult;
 import io.github.galbiston.geosparql_benchmarking.execution_results.VarValue;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -50,6 +51,8 @@ public class GeosparqlJena_QueryTask extends QueryTask {
     private final Boolean isUnionDefaultGraph;
     private QueryExecution qexec;
     private ResultSet rs;
+    private boolean queryExecutionError;
+    private String queryExecutionErrorMsg;
 
     public GeosparqlJena_QueryTask(String queryString, Dataset dataset, Boolean isUnionDefaultGraph) {
         this.queryString = queryString;
@@ -60,7 +63,10 @@ public class GeosparqlJena_QueryTask extends QueryTask {
     @Override
     protected void prepareQuery() {
         dataset.begin(ReadWrite.READ);
-        qexec = QueryExecutionFactory.create(queryString, dataset);
+         queryExecutionError = false;
+        //todo: if statement for conformance testing
+        //qexec = QueryExecutionFactory.create(queryString, dataset);
+        qexec = QueryExecutionFactory.create(queryString, dataset.getNamedModel("Conformance"));    
         if (isUnionDefaultGraph) {
             qexec.getContext().set(TDB.symUnionDefaultGraph, true);
         }
@@ -69,37 +75,54 @@ public class GeosparqlJena_QueryTask extends QueryTask {
 
     @Override
     protected void executeQuery() {
-        while (rs.hasNext()) {
-            QuerySolution qs = rs.next();
-            Iterator<String> varNames = qs.varNames();
-            List<VarValue> result = new ArrayList<>();
+            while (rs.hasNext()) {
+                QuerySolution qs = rs.next();
+                Iterator<String> varNames = qs.varNames();
+                List<VarValue> result = new ArrayList<>();
 
-            while (varNames.hasNext()) {
-                String varName = varNames.next();
-                String valueStr;
-                RDFNode solution = qs.get(varName);
-                if (solution.isLiteral()) {
-                    Literal literal = solution.asLiteral();
-                    valueStr = literal.getLexicalForm();
-                } else if (solution.isResource()) {
-                    Resource resource = solution.asResource();
-                    valueStr = resource.getURI();
-                } else {
-                    Node anon = solution.asNode();
-                    valueStr = anon.getBlankNodeLabel();
-                    LOGGER.error("Anon Node result: {}", valueStr);
+                while (varNames.hasNext()) {
+                    String varName = varNames.next();
+                    String valueStr;
+                    RDFNode solution = qs.get(varName);
+                    if (solution.isLiteral()) {
+                        Literal literal = solution.asLiteral();
+                        //todo: if statement for conformance testing
+                        valueStr = literal.asNode().toString();//.getLexicalForm();
+                    } else if (solution.isResource()) {
+                        Resource resource = solution.asResource();
+                        valueStr = resource.getURI();
+                    } else {
+                        Node anon = solution.asNode();
+                        valueStr = anon.getBlankNodeLabel();
+                        LOGGER.error("Anon Node result: {}", valueStr);
+                    }
+                    VarValue varValue = new VarValue(varName, valueStr);
+                    result.add(varValue);
                 }
-                VarValue varValue = new VarValue(varName, valueStr);
-                result.add(varValue);
+                results.add(result);
             }
-            results.add(result);
-        }
     }
 
     @Override
     protected void endQuery() {
         qexec.close();
         dataset.end();
+    }
+    
+    public boolean isQueryExecutionError() {
+        return queryExecutionError;
+    }
+
+    public void setQueryExecutionError(boolean queryExecutionError) {
+        this.queryExecutionError = queryExecutionError;
+    }
+
+    public String getQueryExecutionErrorMsg() {
+        return queryExecutionErrorMsg;
+    }
+
+    public void setQueryExecutionErrorMsg(String queryExecutionErrorMsg) {
+        this.queryExecutionErrorMsg = queryExecutionErrorMsg;
     }
 
 }

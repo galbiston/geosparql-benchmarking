@@ -27,7 +27,7 @@ task javadocJar(type: Jar) {
     from javadoc
     classifier = 'javadoc'
 }
-
+/*
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -61,6 +61,7 @@ publishing {
             }
         }
     }
+   
     repositories {
         maven {
             url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
@@ -69,14 +70,14 @@ publishing {
                 password sonatypePassword
             }
         }
-    }
+    } 
 }
 
 build.finalizedBy(publishToMavenLocal)
 
 signing {
     sign publishing.publications.mavenJava
-}
+}*/
 
 
 javadoc {
